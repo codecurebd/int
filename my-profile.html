@@ -1,1006 +1,1702 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>My Profile – CodeCureBD</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
-  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
-  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link rel="stylesheet" href="tailwind.css" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .page-title-icon {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6, #9333ea);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
-      flex-shrink: 0;
-    }
-    .page-title-icon i {
-      color: #fff;
-      font-size: 1.1rem;
-      line-height: 1;
-    }
-    .profile-cover {
-      height: 140px;
-      border-radius: 20px 20px 0 0;
-      background: linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%);
-      position: relative;
-      overflow: hidden;
-      transition: background 0.4s ease;
-    }
-    .profile-cover::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.9;
-      pointer-events: none;
-    }
-    .cover-change-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 2;
-      background: rgba(0,0,0,0.45);
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(6px);
-      transition: background 0.2s;
-    }
-    .cover-change-btn:hover { background: rgba(0,0,0,0.65); }
-    .cover-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    @media (min-width: 480px) {
-      .cover-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-    .cover-option {
-      height: 64px;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 3px solid transparent;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .cover-option:hover { transform: scale(1.03); }
-    .cover-option.selected {
-      border-color: #fff;
-      box-shadow: 0 0 0 2px #0066FF;
-    }
-    .cover-option .check {
-      position: absolute;
-      bottom: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #0066FF;
-      color: #fff;
-      font-size: 0.65rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .cover-option.selected .check { display: flex; }
+    <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>My Profile – CodeCureBD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ── base reset ── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f6f9fc;
+            color: #111827;
+            -webkit-font-smoothing: antialiased;
+        }
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+        }
 
-    .profile-card-wrap {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-    }
-    .profile-avatar-big {
-      width: 104px; height: 104px; border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.2rem; color: white;
-      flex-shrink: 0; box-shadow: 0 8px 30px rgba(102,126,234,0.35);
-      transition: transform 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border: 4px solid #fff;
-      margin-top: -52px;
-    }
-    .profile-avatar-big:hover { transform: scale(1.03); }
-    .profile-avatar-big img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-    .profile-avatar-big .change-photo-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 0.75rem; font-weight: 600;
-      opacity: 0; transition: opacity 0.3s ease; cursor: pointer; border-radius: 50%;
-      flex-direction: column; gap: 2px;
-    }
-    .profile-avatar-big:hover .change-photo-overlay { opacity: 1; }
-    .member-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,102,255,0.08); color: #0066FF;
-      font-size: 0.75rem; font-weight: 600;
-      padding: 4px 12px; border-radius: 999px;
-    }
-    .completion-wrap { margin-top: 1rem; }
-    .completion-bar {
-      height: 8px; border-radius: 999px; background: #e5e7eb; overflow: hidden;
-    }
-    .completion-fill {
-      height: 100%; border-radius: 999px;
-      background: linear-gradient(90deg, #0066FF, #8B5CF6);
-      transition: width 0.6s ease;
-    }
-    .stat-card {
-      background: rgba(255,255,255,0.75);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 16px;
-      padding: 1.1rem 1rem;
-      text-align: center;
-      transition: 0.25s;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
-    }
-    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.06); }
-    .stat-value { font-size: 1.6rem; font-weight: 800; color: #111827; line-height: 1.2; }
-    .stat-label { font-size: 0.75rem; color: #6b7280; margin-top: 4px; font-weight: 500; }
-    .stat-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: inline-flex; align-items: center; justify-content: center;
-      margin-bottom: 8px; font-size: 0.95rem;
-    }
-    .activity-item {
-      display: flex; gap: 12px; align-items: flex-start;
-      padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-    .activity-item:last-child { border-bottom: none; }
-    .activity-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; font-size: 0.95rem;
-    }
-    .status-pill {
-      font-size: 0.7rem; font-weight: 600; padding: 2px 8px;
-      border-radius: 999px; text-transform: capitalize;
-    }
-    .status-pending { background: #fef3c7; color: #b45309; }
-    .status-processing { background: #dbeafe; color: #1d4ed8; }
-    .status-completed, .status-delivered, .status-done, .status-resolved { background: #d1fae5; color: #059669; }
-    .status-cancelled, .status-rejected { background: #fee2e2; color: #dc2626; }
-    .skeleton-avatar { width: 104px; height: 104px; border-radius: 50%; background: #e5e7eb; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; margin-top: -52px; border: 4px solid #fff; }
-    .skeleton-line { height: 16px; background: #e5e7eb; border-radius: 8px; margin-bottom: 0.75rem; animation: pulse 1.5s ease-in-out infinite; }
-    .skeleton-line.short { width: 40%; }
-    .skeleton-line.medium { width: 70%; }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-    .fade-up { opacity:0; transform:translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
-    .fade-up.visible { opacity:1; transform:translateY(0); }
-    .scroll-top-btn { position:fixed; bottom:30px; right:30px; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; border:none; font-size:1.2rem; cursor:pointer; box-shadow:0 8px 30px rgba(0,122,255,0.35); z-index:999; opacity:0; transform:scale(0.8); transition: opacity 0.3s, transform 0.3s; pointer-events:none; }
-    .scroll-top-btn.show { opacity:1; transform:scale(1); pointer-events:auto; }
-    .glass-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.7); border-radius: 16px; padding: 1.25rem; box-shadow: 0 4px 16px rgba(0,0,0,0.02); transition: all 0.3s ease; }
-    .glass-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.06); transform: translateY(-3px); }
-    .action-card { text-align: center; padding: 1rem; transition: 0.3s; cursor: pointer; text-decoration: none; display: block; }
-    .action-card .action-icon { font-size: 1.6rem; display: block; margin-bottom: 0.4rem; }
-    .action-card .action-label { font-size: 0.85rem; color: #374151; font-weight: 500; }
-    .btn-primary { background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; padding:10px 22px; border-radius:60px; font-weight:600; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none; }
-    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,122,255,0.35); }
-    .btn-primary:disabled { opacity:0.7; cursor:not-allowed; transform:none !important; }
-    .btn-outline { background:rgba(255,255,255,0.5); color:#1c1c1e; padding:10px 22px; border-radius:60px; font-weight:600; border:1.5px solid rgba(60,60,67,0.08); cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
-    .btn-outline:hover { background:rgba(0,122,255,0.04); border-color:#007AFF; color:#007AFF; transform:translateY(-2px); }
-    .form-input { width:100%; padding:12px 16px; border:1.5px solid rgba(60,60,67,0.08); border-radius:12px; font-size:0.95rem; background:rgba(255,255,255,0.8); outline:none; }
-    .form-input:focus { border-color:#007AFF; background:#fff; box-shadow:0 0 0 4px rgba(0,122,255,0.08); }
-    .info-label { font-size:0.8rem; color:#8e8e93; margin-bottom:2px; }
-    .info-value { font-size:1rem; font-weight:500; color:#1c1c1e; }
-    .email-verify-btn { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
-    .email-verify-btn:hover { background: #bfdbfe; }
-    .email-verify-btn.verified { background: #d1fae5; color: #059669; border-color: #6ee7b7; cursor: default; }
-    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; max-height: 300px; overflow-y: auto; padding: 4px; }
-    .photo-grid .photo-item { aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; border: 3px solid transparent; cursor: pointer; transition: all 0.25s ease; position: relative; background: #f3f4f6; }
-    .photo-grid .photo-item:hover { transform: scale(1.03); border-color: #007AFF; }
-    .photo-grid .photo-item.selected { border-color: #34C759; box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.3); }
-    .photo-grid .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .photo-grid .photo-item .delete-photo { position: absolute; top: 4px; right: 4px; background: rgba(220,38,38,0.85); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
-    .photo-grid .photo-item:hover .delete-photo { opacity: 1; }
-    .photo-upload-zone { border: 2px dashed #d1d5db; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.5); min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .photo-upload-zone:hover { border-color: #007AFF; background: rgba(0,122,255,0.04); }
-    .photo-upload-zone i { font-size: 2rem; color: #9ca3af; margin-bottom: 0.25rem; }
-    @media (max-width: 480px) {
-      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
-      .profile-cover { height: 110px; }
-    }
-  </style>
+        /* ── page title ── */
+        .page-title-icon {
+            width: 52px;
+            height: 52px;
+            min-width: 52px;
+            min-height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #2563eb, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.30);
+            flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .page-title-icon:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(37, 99, 235, 0.35);
+        }
+        .page-title-icon i {
+            color: #fff;
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+
+        /* ── profile cover ── */
+        .profile-cover {
+            height: 160px;
+            border-radius: 24px 24px 0 0;
+            background: linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%);
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+        .profile-cover::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        .cover-change-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.40);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 999px;
+            padding: 7px 16px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+        }
+        .cover-change-btn:hover {
+            background: rgba(0, 0, 0, 0.60);
+            transform: scale(1.04);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.20);
+        }
+        .cover-change-btn i {
+            font-size: 0.8rem;
+        }
+
+        /* ── profile card ── */
+        .profile-card-wrap {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 48px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
+        }
+        .profile-card-wrap:hover {
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-avatar-big {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.35);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #fff;
+            margin-top: -56px;
+            cursor: default;
+        }
+        .profile-avatar-big:hover {
+            transform: scale(1.04);
+            box-shadow: 0 16px 48px rgba(102, 126, 234, 0.40);
+        }
+        .profile-avatar-big img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-avatar-big .change-photo-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            cursor: pointer;
+            border-radius: 50%;
+            flex-direction: column;
+            gap: 3px;
+            letter-spacing: 0.3px;
+        }
+        .profile-avatar-big:hover .change-photo-overlay {
+            opacity: 1;
+        }
+        .profile-avatar-big .change-photo-overlay i {
+            font-size: 1.2rem;
+        }
+
+        .skeleton-avatar {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e5e7eb 30%, #d1d5db 60%, #e5e7eb 80%);
+            background-size: 200% 200%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            flex-shrink: 0;
+            margin-top: -56px;
+            border: 4px solid #fff;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .skeleton-line {
+            height: 14px;
+            background: linear-gradient(135deg, #e5e7eb 30%, #d1d5db 60%, #e5e7eb 80%);
+            background-size: 200% 200%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+        }
+        .skeleton-line.short {
+            width: 40%;
+        }
+        .skeleton-line.medium {
+            width: 70%;
+        }
+
+        /* ── member badge ── */
+        .member-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563eb;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(37, 99, 235, 0.10);
+        }
+        .member-badge i {
+            font-size: 0.65rem;
+        }
+
+        /* ── completion ── */
+        .completion-wrap {
+            margin-top: 1.25rem;
+        }
+        .completion-bar {
+            height: 8px;
+            border-radius: 999px;
+            background: #eef2f6;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        .completion-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 0%;
+        }
+
+        /* ── info grid ── */
+        .info-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #8e8e93;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-label i {
+            font-size: 0.7rem;
+            color: #8e8e93;
+            opacity: 0.7;
+        }
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1c1c1e;
+        }
+
+        /* ── stat cards ── */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.70);
+            border-radius: 18px;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.50), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.07);
+        }
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        .stat-value {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #0a0a0f;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            color: #6b7280;
+            margin-top: 4px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover .stat-icon {
+            transform: scale(1.08) rotate(-3deg);
+        }
+
+        /* ── glass card ── */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.74);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.70);
+            border-radius: 20px;
+            padding: 1.4rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .glass-card:hover {
+            box-shadow: 0 16px 56px rgba(0, 0, 0, 0.06);
+            transform: translateY(-4px);
+        }
+
+        /* ── action card ── */
+        .action-card {
+            text-align: center;
+            padding: 1.2rem 0.8rem;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.60);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+        }
+        .action-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.07);
+            background: rgba(255, 255, 255, 0.90);
+        }
+        .action-card .action-icon {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 0.4rem;
+            transition: transform 0.3s ease;
+        }
+        .action-card:hover .action-icon {
+            transform: scale(1.10) rotate(-2deg);
+        }
+        .action-card .action-label {
+            font-size: 0.82rem;
+            color: #1f2937;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        /* ── activity ── */
+        .activity-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            transition: background 0.25s ease;
+            border-radius: 12px;
+            padding-left: 4px;
+            padding-right: 4px;
+            margin: 0 -4px;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item:hover {
+            background: rgba(37, 99, 235, 0.03);
+        }
+        .activity-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .activity-item:hover .activity-icon {
+            transform: scale(1.06);
+        }
+
+        .status-pill {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: 999px;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+        .status-processing {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        .status-completed,
+        .status-delivered,
+        .status-done,
+        .status-resolved {
+            background: #d1fae5;
+            color: #059669;
+        }
+        .status-cancelled,
+        .status-rejected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* ── buttons ── */
+        .btn-primary {
+            background: linear-gradient(145deg, #2563eb, #7c3aed);
+            color: #fff;
+            padding: 10px 26px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.35);
+        }
+        .btn-primary:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.60);
+            color: #1c1c1e;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1.5px solid rgba(60, 60, 67, 0.08);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .btn-outline:hover {
+            background: rgba(37, 99, 235, 0.06);
+            border-color: #2563eb;
+            color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+        }
+
+        .email-verify-btn {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #93c5fd;
+            box-shadow: none;
+        }
+        .email-verify-btn:hover {
+            background: #bfdbfe;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(29, 78, 216, 0.15);
+        }
+        .email-verify-btn.verified {
+            background: #d1fae5;
+            color: #059669;
+            border-color: #6ee7b7;
+            cursor: default;
+            box-shadow: none;
+        }
+        .email-verify-btn.verified:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── form ── */
+        .form-input {
+            width: 100%;
+            padding: 13px 18px;
+            border: 1.5px solid rgba(60, 60, 67, 0.08);
+            border-radius: 14px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.80);
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-input:focus {
+            border-color: #2563eb;
+            background: #fff;
+            box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.08);
+        }
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* ── cover modal ── */
+        .cover-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        @media (min-width: 480px) {
+            .cover-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .cover-option {
+            height: 72px;
+            border-radius: 16px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cover-option:hover {
+            transform: scale(1.06);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+        }
+        .cover-option.selected {
+            border-color: #fff;
+            box-shadow: 0 0 0 3px #2563eb, 0 8px 32px rgba(37, 99, 235, 0.20);
+        }
+        .cover-option .check {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+        }
+        .cover-option.selected .check {
+            display: flex;
+        }
+
+        /* ── photo modal ── */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 14px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 4px 2px;
+        }
+        .photo-grid .photo-item {
+            aspect-ratio: 1/1;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            background: #f3f4f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .photo-grid .photo-item:hover {
+            transform: scale(1.05);
+            border-color: #2563eb;
+            box-shadow: 0 8px 28px rgba(37, 99, 235, 0.15);
+        }
+        .photo-grid .photo-item.selected {
+            border-color: #34C759;
+            box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.25);
+        }
+        .photo-grid .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .photo-grid .photo-item .delete-photo {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(220, 38, 38, 0.88);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .photo-grid .photo-item:hover .delete-photo {
+            opacity: 1;
+        }
+        .photo-grid .photo-item .delete-photo:hover {
+            transform: scale(1.15);
+            background: rgba(220, 38, 38, 1);
+        }
+
+        .photo-upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 16px;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            background: rgba(255, 255, 255, 0.50);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .photo-upload-zone:hover {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.04);
+            transform: scale(1.01);
+        }
+        .photo-upload-zone i {
+            font-size: 2.4rem;
+            color: #9ca3af;
+            margin-bottom: 0.3rem;
+            transition: color 0.3s ease;
+        }
+        .photo-upload-zone:hover i {
+            color: #2563eb;
+        }
+        .photo-upload-zone span {
+            color: #6b7280;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* ── scroll top ── */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #2563eb, #7c3aed);
+            color: #fff;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.30);
+            z-index: 999;
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+        .scroll-top-btn.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+        .scroll-top-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 16px 48px rgba(37, 99, 235, 0.40);
+        }
+
+        /* ── fade up ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── modals ── */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 28px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.18);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* ── toast ── */
+        #toast-container {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 90%;
+            max-width: 420px;
+            pointer-events: none;
+        }
+        #toast-container .toast {
+            pointer-events: auto;
+            padding: 14px 24px;
+            border-radius: 16px;
+            background: rgba(30, 30, 35, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.20);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            width: 100%;
+            animation: slideUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        #toast-container .toast.hide {
+            opacity: 0;
+            transform: translateY(20px) scale(0.96);
+        }
+        #toast-container .toast i {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        #toast-container .toast.success i {
+            color: #34d399;
+        }
+        #toast-container .toast.error i {
+            color: #f87171;
+        }
+        #toast-container .toast.warning i {
+            color: #fbbf24;
+        }
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ── admin panel card ── */
+        .admin-panel-card {
+            border: 2px solid rgba(139, 92, 246, 0.20);
+            background: rgba(139, 92, 246, 0.04);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .admin-panel-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.35);
+        }
+
+        /* ── responsive ── */
+        @media (max-width: 480px) {
+            .profile-cover {
+                height: 120px;
+            }
+            .profile-avatar-big {
+                width: 88px;
+                height: 88px;
+                margin-top: -44px;
+                font-size: 2rem;
+            }
+            .skeleton-avatar {
+                width: 88px;
+                height: 88px;
+                margin-top: -44px;
+            }
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 10px;
+            }
+            .stat-card {
+                padding: 0.9rem 0.5rem;
+            }
+            .stat-value {
+                font-size: 1.3rem;
+            }
+            .stat-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 0.85rem;
+            }
+            .page-title-icon {
+                width: 44px;
+                height: 44px;
+                min-width: 44px;
+                min-height: 44px;
+            }
+            .page-title-icon i {
+                font-size: 1rem;
+            }
+            .glass-card {
+                padding: 1rem;
+            }
+            .action-card {
+                padding: 0.9rem 0.5rem;
+            }
+            .action-card .action-icon {
+                font-size: 1.4rem;
+            }
+            .action-card .action-label {
+                font-size: 0.7rem;
+            }
+            .cover-change-btn {
+                font-size: 0.6rem;
+                padding: 5px 12px;
+                top: 10px;
+                right: 10px;
+            }
+            .cover-change-btn i {
+                font-size: 0.65rem;
+            }
+            .modal-content {
+                border-radius: 20px;
+                padding: 1.25rem !important;
+            }
+            .cover-option {
+                height: 56px;
+                border-radius: 12px;
+            }
+            .cover-option .check {
+                width: 20px;
+                height: 20px;
+                font-size: 0.55rem;
+                bottom: 4px;
+                right: 4px;
+            }
+        }
+        @media (min-width: 640px) {
+            .profile-cover {
+                height: 180px;
+            }
+        }
+
+        /* ── misc helpers ── */
+        .no-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .no-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 999px;
+        }
+        .no-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
 </head>
 <body>
-  <div class="page-wrapper">
-    <div id="navbar-placeholder"></div>
-    <main class="main-content">
-      <section class="pt-4 pb-16 px-4 sm:px-6 max-w-3xl mx-auto">
+    <div class="page-wrapper">
+        <div id="navbar-placeholder"></div>
+        <main class="main-content">
+            <section class="pt-5 pb-20 px-4 sm:px-6 max-w-3xl mx-auto">
 
-        <!-- Page title -->
-        <div class="flex items-center gap-3 mb-5 fade-up">
-          <div class="page-title-icon" aria-hidden="true">
-            <i class="fas fa-user"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">My Profile</h1>
-            <p class="text-sm text-gray-500">Manage your account & activity</p>
-          </div>
-        </div>
-
-        <!-- Profile card with cover -->
-        <div class="profile-card-wrap fade-up mb-6">
-          <div class="profile-cover" id="profileCover">
-            <button type="button" class="cover-change-btn" onclick="window.openCoverModal()" title="Change cover">
-              <i class="fas fa-image"></i> Cover
-            </button>
-          </div>
-          <div class="px-5 sm:px-6 pb-6">
-            <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4" id="profileHeader">
-              <div class="skeleton-avatar" id="avatarSkeleton"></div>
-              <div class="profile-avatar-big hidden" id="profileAvatarBig">
-                <i class="fas fa-user" id="avatarLetter"></i>
-                <div class="change-photo-overlay" onclick="window.openPhotoModal()">
-                  <i class="fas fa-camera text-lg"></i>
-                  <span>Change</span>
+                <!-- Page title -->
+                <div class="flex items-center gap-4 mb-6 fade-up">
+                    <div class="page-title-icon" aria-hidden="true">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">My Profile</h1>
+                        <p class="text-sm text-gray-500 font-medium">Manage your account &amp; activity</p>
+                    </div>
                 </div>
-              </div>
 
-              <div class="flex-1 text-center sm:text-left w-full" id="profileInfo">
-                <div class="skeleton-line medium" id="nameSkeleton"></div>
-                <div class="skeleton-line short" id="emailSkeleton"></div>
-                <div class="skeleton-line" style="width:30%;" id="roleSkeleton"></div>
-                <div id="profileData" class="hidden">
-                  <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
-                    <h2 id="profileDisplayName" class="text-2xl font-bold text-gray-900"></h2>
-                    <span id="profileRole" class="inline-block text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full"></span>
-                  </div>
-                  <p id="profileEmail" class="text-gray-500 text-sm"></p>
-                  <div class="mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                    <span class="member-badge" id="memberSinceBadge"><i class="fas fa-calendar-check"></i> Member</span>
-                  </div>
-                  <div class="mt-2 flex items-center gap-3 flex-wrap justify-center sm:justify-start">
-                    <span id="emailVerifiedStatus" class="text-sm"></span>
-                    <button onclick="verifyEmail()" id="verifyEmailBtn" class="btn-primary text-sm py-1.5 px-4 email-verify-btn">
-                      <i class="fas fa-envelope"></i> Verify Email
-                    </button>
-                    <button onclick="checkEmailVerified()" id="checkVerifiedBtn" class="btn-outline text-sm py-1.5 px-4">
-                      <i class="fas fa-sync-alt"></i> I've verified
-                    </button>
-                  </div>
-                  <p id="verifyEmailHint" class="text-xs text-gray-400 mt-1 hidden">Check Inbox and Spam/Junk.</p>
+                <!-- Profile card -->
+                <div class="profile-card-wrap fade-up mb-6">
+                    <div class="profile-cover" id="profileCover">
+                        <button type="button" class="cover-change-btn" onclick="window.openCoverModal()" title="Change cover">
+                            <i class="fas fa-image"></i> Cover
+                        </button>
+                    </div>
+                    <div class="px-5 sm:px-7 pb-7">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4" id="profileHeader">
+                            <div class="skeleton-avatar" id="avatarSkeleton"></div>
+                            <div class="profile-avatar-big hidden" id="profileAvatarBig">
+                                <i class="fas fa-user" id="avatarLetter"></i>
+                                <div class="change-photo-overlay" onclick="window.openPhotoModal()">
+                                    <i class="fas fa-camera text-lg"></i>
+                                    <span>Change</span>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 text-center sm:text-left w-full" id="profileInfo">
+                                <div class="skeleton-line medium" id="nameSkeleton"></div>
+                                <div class="skeleton-line short" id="emailSkeleton"></div>
+                                <div class="skeleton-line" style="width:30%;" id="roleSkeleton"></div>
+                                <div id="profileData" class="hidden">
+                                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
+                                        <h2 id="profileDisplayName" class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight"></h2>
+                                        <span id="profileRole" class="inline-block text-xs font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-full"></span>
+                                    </div>
+                                    <p id="profileEmail" class="text-gray-500 text-sm font-medium"></p>
+                                    <div class="mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                        <span class="member-badge" id="memberSinceBadge"><i class="fas fa-calendar-check"></i> Member</span>
+                                    </div>
+                                    <div class="mt-2 flex flex-wrap items-center gap-3 justify-center sm:justify-start">
+                                        <span id="emailVerifiedStatus" class="text-sm font-medium"></span>
+                                        <button onclick="verifyEmail()" id="verifyEmailBtn" class="btn-primary text-sm py-1.5 px-5 email-verify-btn">
+                                            <i class="fas fa-envelope"></i> Verify Email
+                                        </button>
+                                        <button onclick="checkEmailVerified()" id="checkVerifiedBtn" class="btn-outline text-sm py-1.5 px-5">
+                                            <i class="fas fa-sync-alt"></i> I've verified
+                                        </button>
+                                    </div>
+                                    <p id="verifyEmailHint" class="text-xs text-gray-400 mt-1 hidden">Check Inbox and Spam/Junk.</p>
+                                </div>
+                            </div>
+
+                            <button onclick="toggleEditForm()" class="btn-outline text-sm py-2 px-5 flex-shrink-0" id="editToggleBtn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+
+                        <!-- Completion -->
+                        <div class="completion-wrap fade-up" id="completionSection">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-sm font-semibold text-gray-700">Profile completion</span>
+                                <span class="text-sm font-extrabold text-blue-600" id="completionPercent">0%</span>
+                            </div>
+                            <div class="completion-bar">
+                                <div class="completion-fill" id="completionFill" style="width:0%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1.5 font-medium" id="completionHint">Add missing info to complete your profile</p>
+                        </div>
+
+                        <hr class="my-5 border-gray-100/80" />
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="infoGrid">
+                            <div><p class="info-label"><i class="fas fa-envelope"></i>Email</p><p class="info-value" id="profileEmailDisplay">-</p></div>
+                            <div><p class="info-label"><i class="fas fa-phone"></i>Phone</p><p class="info-value" id="profilePhoneDisplay">Not set</p></div>
+                            <div><p class="info-label"><i class="fas fa-user-tag"></i>Role</p><p class="info-value" id="profileRoleDisplay">User</p></div>
+                            <div><p class="info-label"><i class="fas fa-calendar-alt"></i>Joined</p><p class="info-value" id="profileJoinedDisplay">-</p></div>
+                        </div>
+
+                        <!-- Edit form -->
+                        <div id="editForm" class="hidden mt-6 pt-6 border-t border-gray-100/80">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4"><i class="fas fa-pen text-blue-500 mr-2"></i>Edit Profile</h3>
+                            <form id="profileEditForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Display Name</label>
+                                    <input type="text" id="editDisplayName" class="form-input" placeholder="Your name" required />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
+                                    <input type="tel" id="editPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" />
+                                </div>
+                                <div class="flex flex-wrap gap-3">
+                                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                                    <button type="button" onclick="toggleEditForm()" class="btn-outline">Cancel</button>
+                                </div>
+                                <div id="editFeedback" class="text-sm hidden"></div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-              </div>
 
-              <button onclick="toggleEditForm()" class="btn-outline text-sm py-2 px-4 flex-shrink-0" id="editToggleBtn">
-                <i class="fas fa-edit"></i> Edit
-              </button>
-            </div>
-
-            <!-- Profile completion -->
-            <div class="completion-wrap fade-up" id="completionSection">
-              <div class="flex justify-between items-center mb-1.5">
-                <span class="text-sm font-medium text-gray-700">Profile completion</span>
-                <span class="text-sm font-bold text-blue-600" id="completionPercent">0%</span>
-              </div>
-              <div class="completion-bar">
-                <div class="completion-fill" id="completionFill" style="width:0%"></div>
-              </div>
-              <p class="text-xs text-gray-400 mt-1.5" id="completionHint">Add missing info to complete your profile</p>
-            </div>
-
-            <hr class="my-5 border-gray-100" />
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="infoGrid">
-              <div><p class="info-label"><i class="fas fa-envelope mr-2"></i>Email</p><p class="info-value" id="profileEmailDisplay">-</p></div>
-              <div><p class="info-label"><i class="fas fa-phone mr-2"></i>Phone</p><p class="info-value" id="profilePhoneDisplay">Not set</p></div>
-              <div><p class="info-label"><i class="fas fa-user-tag mr-2"></i>Role</p><p class="info-value" id="profileRoleDisplay">User</p></div>
-              <div><p class="info-label"><i class="fas fa-calendar-alt mr-2"></i>Joined</p><p class="info-value" id="profileJoinedDisplay">-</p></div>
-            </div>
-
-            <div id="editForm" class="hidden mt-6 pt-6 border-t border-gray-100">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-pen text-blue-500 mr-2"></i>Edit Profile</h3>
-              <form id="profileEditForm" class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Display Name</label>
-                  <input type="text" id="editDisplayName" class="form-input" placeholder="Your name" required />
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 fade-up" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i class="fas fa-box"></i></div>
+                        <div class="stat-value" id="statTotalOrders">–</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#fef3c7;color:#d97706;"><i class="fas fa-clock"></i></div>
+                        <div class="stat-value" id="statPendingOrders">–</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value" id="statCompletedOrders">–</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#ffedd5;color:#ea580c;"><i class="fas fa-tools"></i></div>
+                        <div class="stat-value" id="statFixRequests">–</div>
+                        <div class="stat-label">Fix Requests</div>
+                    </div>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
-                  <input type="tel" id="editPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" />
+
+                <!-- Recent activity -->
+                <div class="glass-card fade-up mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-extrabold text-gray-900"><i class="fas fa-history text-blue-500 mr-2"></i>Recent Activity</h3>
+                    </div>
+                    <div id="recentActivity">
+                        <div class="text-center py-8 text-gray-400 text-sm">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> Loading activity...
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100/80">
+                        <a href="my-orders.html" class="text-sm text-blue-600 font-semibold hover:underline"><i class="fas fa-box mr-1"></i> All orders</a>
+                        <span class="text-gray-300">·</span>
+                        <a href="my-fix-requests.html" class="text-sm text-blue-600 font-semibold hover:underline"><i class="fas fa-tools mr-1"></i> All fixes</a>
+                        <span class="text-gray-300">·</span>
+                        <a href="messages.html" class="text-sm text-blue-600 font-semibold hover:underline"><i class="fas fa-comments mr-1"></i> Messages <span id="unreadMsgBadge" class="hidden text-red-500 font-bold"></span></a>
+                    </div>
                 </div>
-                <div class="flex flex-wrap gap-3">
-                  <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Changes</button>
-                  <button type="button" onclick="toggleEditForm()" class="btn-outline">Cancel</button>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 fade-up">
+                    <a href="my-orders.html" class="action-card"><span class="action-icon"><i class="fas fa-box text-blue-500"></i></span><span class="action-label">My Orders</span></a>
+                    <a href="my-fix-requests.html" class="action-card"><span class="action-icon"><i class="fas fa-tools text-orange-500"></i></span><span class="action-label">Fix Requests</span></a>
+                    <a href="messages.html" class="action-card"><span class="action-icon"><i class="fas fa-comments text-green-500"></i></span><span class="action-label">Support Chat</span></a>
+                    <a href="settings.html" class="action-card"><span class="action-icon"><i class="fas fa-cog text-gray-500"></i></span><span class="action-label">Settings</span></a>
                 </div>
-                <div id="editFeedback" class="text-sm hidden"></div>
-              </form>
-            </div>
-          </div>
-        </div>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 fade-up" id="statsGrid">
-          <div class="stat-card">
-            <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i class="fas fa-box"></i></div>
-            <div class="stat-value" id="statTotalOrders">–</div>
-            <div class="stat-label">Total Orders</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background:#fef3c7;color:#d97706;"><i class="fas fa-clock"></i></div>
-            <div class="stat-value" id="statPendingOrders">–</div>
-            <div class="stat-label">Pending</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fas fa-check-circle"></i></div>
-            <div class="stat-value" id="statCompletedOrders">–</div>
-            <div class="stat-label">Completed</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background:#ffedd5;color:#ea580c;"><i class="fas fa-tools"></i></div>
-            <div class="stat-value" id="statFixRequests">–</div>
-            <div class="stat-label">Fix Requests</div>
-          </div>
-        </div>
-
-        <!-- Recent activity -->
-        <div class="glass-card fade-up mb-6" style="transform:none;">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-bold text-gray-900"><i class="fas fa-history text-blue-500 mr-2"></i>Recent Activity</h3>
-          </div>
-          <div id="recentActivity">
-            <div class="text-center py-6 text-gray-400 text-sm">
-              <i class="fas fa-spinner fa-spin mr-2"></i> Loading activity...
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
-            <a href="my-orders.html" class="text-sm text-blue-600 font-medium hover:underline"><i class="fas fa-box mr-1"></i> All orders</a>
-            <span class="text-gray-300">·</span>
-            <a href="my-fix-requests.html" class="text-sm text-blue-600 font-medium hover:underline"><i class="fas fa-tools mr-1"></i> All fixes</a>
-            <span class="text-gray-300">·</span>
-            <a href="messages.html" class="text-sm text-blue-600 font-medium hover:underline"><i class="fas fa-comments mr-1"></i> Messages <span id="unreadMsgBadge" class="hidden text-red-500 font-bold"></span></a>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 fade-up">
-          <a href="my-orders.html" class="glass-card action-card"><span class="action-icon"><i class="fas fa-box text-blue-500"></i></span><span class="action-label">My Orders</span></a>
-          <a href="my-fix-requests.html" class="glass-card action-card"><span class="action-icon"><i class="fas fa-tools text-orange-500"></i></span><span class="action-label">Fix Requests</span></a>
-          <a href="messages.html" class="glass-card action-card"><span class="action-icon"><i class="fas fa-comments text-green-500"></i></span><span class="action-label">Support Chat</span></a>
-          <a href="settings.html" class="glass-card action-card"><span class="action-icon"><i class="fas fa-cog text-gray-500"></i></span><span class="action-label">Settings</span></a>
-        </div>
-
-        <div id="adminPanelSection" class="mt-6 hidden fade-up">
-          <div class="glass-card action-card text-center" style="border: 2px solid #8B5CF6; background: rgba(139,92,246,0.05);">
-            <span class="action-icon"><i class="fas fa-shield-alt text-purple-600"></i></span>
-            <span class="action-label font-bold text-purple-700">Admin Panel</span>
-            <p class="text-sm text-gray-500 mt-1">Manage products, orders, users, and more.</p>
-            <a href="admin-panel.html" class="btn-primary mt-3 text-sm py-2 px-6"><i class="fas fa-arrow-right"></i> Go to Admin Panel</a>
-          </div>
-        </div>
-      </section>
-    </main>
-    <div id="footer-placeholder"></div>
-  </div>
-
-  <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
-
-  <!-- Cover select modal (default covers only) -->
-  <div id="coverModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[600] hidden p-4">
-    <div class="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-gray-900">Choose Cover</h3>
-        <button type="button" onclick="closeCoverModal()" class="text-gray-400 hover:text-gray-600 text-2xl"><i class="fas fa-times"></i></button>
-      </div>
-      <p class="text-sm text-gray-500 mb-4">Pick a default cover for your profile.</p>
-      <div class="cover-grid" id="coverGrid"></div>
-      <div class="mt-5 flex justify-end gap-2">
-        <button type="button" onclick="closeCoverModal()" class="btn-outline text-sm py-2 px-4">Cancel</button>
-        <button type="button" id="saveCoverBtn" onclick="window.saveCoverSelection()" class="btn-primary text-sm py-2 px-5">
-          <i class="fas fa-check"></i> Apply
-        </button>
-      </div>
+                <!-- Admin Panel -->
+                <div id="adminPanelSection" class="mt-6 hidden fade-up">
+                    <div class="admin-panel-card">
+                        <span class="action-icon"><i class="fas fa-shield-alt text-purple-600 text-2xl"></i></span>
+                        <span class="action-label font-extrabold text-purple-700 text-base block mt-1">Admin Panel</span>
+                        <p class="text-sm text-gray-500 mt-1 font-medium">Manage products, orders, users, and more.</p>
+                        <a href="admin-panel.html" class="btn-primary mt-3 text-sm py-2.5 px-7 inline-flex"><i class="fas fa-arrow-right"></i> Go to Admin Panel</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div id="footer-placeholder"></div>
     </div>
-  </div>
 
-  <!-- Photo modal -->
-  <div id="photoModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[600] hidden p-4">
-    <div class="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-gray-900">Change Profile Picture</h3>
-        <button onclick="closePhotoModal()" class="text-gray-400 hover:text-gray-600 text-2xl"><i class="fas fa-times"></i></button>
-      </div>
-      <div id="photoGridContainer"><div class="photo-grid" id="photoGrid"></div></div>
-      <div class="mt-4">
-        <div class="photo-upload-zone" id="photoUploadZone" onclick="document.getElementById('photoFileInput').click()">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <span class="text">Click to upload a new photo</span>
-          <input type="file" id="photoFileInput" accept="image/*" style="display:none;" />
+    <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Cover modal -->
+    <div id="coverModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-[600] hidden p-4">
+        <div class="modal-content w-full max-w-lg p-6 sm:p-7 relative">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-extrabold text-gray-900">Choose Cover</h3>
+                <button type="button" onclick="closeCoverModal()" class="text-gray-400 hover:text-gray-600 text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-4">Pick a default cover for your profile.</p>
+            <div class="cover-grid" id="coverGrid"></div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" onclick="closeCoverModal()" class="btn-outline text-sm py-2 px-5">Cancel</button>
+                <button type="button" id="saveCoverBtn" onclick="window.saveCoverSelection()" class="btn-primary text-sm py-2 px-6">
+                    <i class="fas fa-check"></i> Apply
+                </button>
+            </div>
         </div>
-        <div id="uploadProgress" class="hidden mt-2 text-sm text-blue-600"><i class="fas fa-spinner fa-spin"></i> Uploading...</div>
-      </div>
-      <div class="mt-4 text-xs text-gray-400"><i class="fas fa-info-circle"></i> Click a photo to set as profile picture.</div>
     </div>
-  </div>
 
-  <div id="toast-container"></div>
+    <!-- Photo modal -->
+    <div id="photoModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-[600] hidden p-4">
+        <div class="modal-content w-full max-w-lg p-6 sm:p-7 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-extrabold text-gray-900">Change Profile Picture</h3>
+                <button onclick="closePhotoModal()" class="text-gray-400 hover:text-gray-600 text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="photoGridContainer"><div class="photo-grid no-scrollbar" id="photoGrid"></div></div>
+            <div class="mt-4">
+                <div class="photo-upload-zone" id="photoUploadZone" onclick="document.getElementById('photoFileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Click to upload a new photo</span>
+                    <input type="file" id="photoFileInput" accept="image/*" style="display:none;" />
+                </div>
+                <div id="uploadProgress" class="hidden mt-3 text-sm text-blue-600 font-semibold"><i class="fas fa-spinner fa-spin mr-2"></i> Uploading...</div>
+            </div>
+            <div class="mt-4 text-xs text-gray-400 font-medium"><i class="fas fa-info-circle mr-1"></i> Click a photo to set as profile picture.</div>
+        </div>
+    </div>
 
-  <script type="module">
-    import { renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge, renderCartSidebar, setLoading, renderPaymentModal, uploadImage, renderAuthModal } from './components.js';
-    import {
-      auth, db, doc, getDoc, setDoc, updateDoc, onAuthStateChanged,
-      sendEmailVerification, arrayUnion, collection, getDocs, query, where
-    } from './firebase-config.js';
+    <div id="toast-container"></div>
 
-    renderNavbar();
-    renderAuthModal();
-    renderPaymentModal();
-    renderFooter();
-    renderCartSidebar();
-    updateCartBadge();
+    <script type="module">
+        import { renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge, renderCartSidebar, setLoading, renderPaymentModal, uploadImage, renderAuthModal } from './components.js';
+        import {
+            auth, db, doc, getDoc, setDoc, updateDoc, onAuthStateChanged,
+            sendEmailVerification, arrayUnion, collection, getDocs, query, where
+        } from './firebase-config.js';
 
-    window.showToast = (message, type = 'success') => {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-      const toast = document.createElement('div');
-      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
-      toast.className = `toast ${type}`;
-      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
-      container.appendChild(toast);
-      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
-    };
+        renderNavbar();
+        renderAuthModal();
+        renderPaymentModal();
+        renderFooter();
+        renderCartSidebar();
+        updateCartBadge();
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-    });
-
-    const scrollBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => { scrollBtn.classList.toggle('show', window.scrollY > 400); });
-    scrollBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-    const profileDisplayName = document.getElementById('profileDisplayName');
-    const profileEmail = document.getElementById('profileEmail');
-    const profileRole = document.getElementById('profileRole');
-    const profileEmailDisplay = document.getElementById('profileEmailDisplay');
-    const profilePhoneDisplay = document.getElementById('profilePhoneDisplay');
-    const profileRoleDisplay = document.getElementById('profileRoleDisplay');
-    const profileJoinedDisplay = document.getElementById('profileJoinedDisplay');
-    const profileAvatarBig = document.getElementById('profileAvatarBig');
-    const editForm = document.getElementById('editForm');
-    const editDisplayName = document.getElementById('editDisplayName');
-    const editPhone = document.getElementById('editPhone');
-    const editFeedback = document.getElementById('editFeedback');
-    const editToggleBtn = document.getElementById('editToggleBtn');
-    const profileData = document.getElementById('profileData');
-    const nameSkeleton = document.getElementById('nameSkeleton');
-    const emailSkeleton = document.getElementById('emailSkeleton');
-    const roleSkeleton = document.getElementById('roleSkeleton');
-    const avatarSkeleton = document.getElementById('avatarSkeleton');
-    const adminPanelSection = document.getElementById('adminPanelSection');
-    const photoModal = document.getElementById('photoModal');
-    const photoGrid = document.getElementById('photoGrid');
-    const photoFileInput = document.getElementById('photoFileInput');
-    const uploadProgress = document.getElementById('uploadProgress');
-
-    function toDate(val) {
-      if (!val) return null;
-      if (typeof val.toDate === 'function') return val.toDate();
-      if (val.seconds) return new Date(val.seconds * 1000);
-      const d = new Date(val);
-      return isNaN(d.getTime()) ? null : d;
-    }
-
-    function statusClass(status) {
-      const s = (status || 'pending').toLowerCase();
-      if (['completed', 'delivered', 'done', 'resolved'].includes(s)) return 'status-completed';
-      if (['processing', 'in-progress', 'in_progress'].includes(s)) return 'status-processing';
-      if (['cancelled', 'canceled', 'rejected'].includes(s)) return 'status-cancelled';
-      return 'status-pending';
-    }
-
-    function updateCompletion(data, user) {
-      const checks = [
-        { ok: !!(data.displayName && data.displayName.trim()), label: 'name' },
-        { ok: !!(data.phone && data.phone.trim()), label: 'phone' },
-        { ok: !!(data.photoURL), label: 'photo' },
-        { ok: !!(user && user.emailVerified), label: 'email verified' }
-      ];
-      const done = checks.filter(c => c.ok).length;
-      const pct = Math.round((done / checks.length) * 100);
-      document.getElementById('completionPercent').textContent = pct + '%';
-      document.getElementById('completionFill').style.width = pct + '%';
-      const missing = checks.filter(c => !c.ok).map(c => c.label);
-      document.getElementById('completionHint').textContent =
-        missing.length ? 'Add: ' + missing.join(', ') : 'Your profile looks complete ✨';
-    }
-
-    window.verifyEmail = async () => {
-      const user = auth.currentUser;
-      if (!user) { showToast('Not logged in', 'error'); return; }
-      if (user.providerData?.some(p => p.providerId === 'google.com') && user.emailVerified) {
-        showToast('✅ Google email is already verified', 'success');
-        updateEmailVerificationUI(true);
-        return;
-      }
-      await user.reload();
-      if (user.emailVerified) {
-        showToast('✅ Email already verified', 'success');
-        updateEmailVerificationUI(true);
-        try { await updateDoc(doc(db, 'users', user.uid), { emailVerified: true }); } catch (_) {}
-        return;
-      }
-      if (!user.email) { showToast('⚠️ No email on this account', 'error'); return; }
-      const btn = document.getElementById('verifyEmailBtn');
-      const hint = document.getElementById('verifyEmailHint');
-      try {
-        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...'; }
-        const actionCodeSettings = {
-          url: window.location.origin + window.location.pathname.replace(/[^/]*$/, 'my-profile.html'),
-          handleCodeInApp: false
+        window.showToast = (message, type = 'success') => {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
         };
-        await sendEmailVerification(user, actionCodeSettings);
-        showToast('📧 Verification email sent! Check Inbox and Spam.', 'success');
-        if (hint) hint.classList.remove('hidden');
-        let left = 60;
-        if (btn) {
-          const t = setInterval(() => {
-            left--;
-            btn.innerHTML = `<i class="fas fa-envelope"></i> Resend (${left}s)`;
-            if (left <= 0) { clearInterval(t); btn.disabled = false; btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email'; }
-          }, 1000);
-        }
-      } catch (err) {
-        let msg = err.message || 'Failed to send email';
-        if (err.code === 'auth/too-many-requests') msg = 'Too many requests. Wait a few minutes.';
-        showToast('⚠️ ' + msg, 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email'; }
-      }
-    };
 
-    window.checkEmailVerified = async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-      try {
-        await user.reload();
-        if (user.emailVerified) {
-          updateEmailVerificationUI(true);
-          try { await updateDoc(doc(db, 'users', user.uid), { emailVerified: true }); } catch (_) {}
-          showToast('✅ Email verified!', 'success');
-          document.getElementById('verifyEmailHint')?.classList.add('hidden');
-        } else {
-          showToast('Still not verified. Open the link in the email.', 'warning');
-        }
-      } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
-    };
-
-    function updateEmailVerificationUI(isVerified) {
-      const status = document.getElementById('emailVerifiedStatus');
-      const btn = document.getElementById('verifyEmailBtn');
-      const checkBtn = document.getElementById('checkVerifiedBtn');
-      const hint = document.getElementById('verifyEmailHint');
-      if (isVerified) {
-        status.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle"></i> Verified</span>';
-        btn.innerHTML = '<i class="fas fa-check"></i> Verified';
-        btn.className = 'btn-primary text-sm py-1.5 px-4 email-verify-btn verified';
-        btn.disabled = true;
-        checkBtn?.classList.add('hidden');
-        hint?.classList.add('hidden');
-      } else {
-        status.innerHTML = '<span class="text-yellow-600"><i class="fas fa-exclamation-circle"></i> Not verified</span>';
-        btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email';
-        btn.className = 'btn-primary text-sm py-1.5 px-4 email-verify-btn';
-        btn.disabled = false;
-        checkBtn?.classList.remove('hidden');
-      }
-    }
-
-    function setLoadingState(isLoading) {
-      if (isLoading) {
-        avatarSkeleton.classList.remove('hidden');
-        profileAvatarBig.classList.add('hidden');
-        nameSkeleton.classList.remove('hidden');
-        emailSkeleton.classList.remove('hidden');
-        roleSkeleton.classList.remove('hidden');
-        profileData.classList.add('hidden');
-      } else {
-        avatarSkeleton.classList.add('hidden');
-        profileAvatarBig.classList.remove('hidden');
-        nameSkeleton.classList.add('hidden');
-        emailSkeleton.classList.add('hidden');
-        roleSkeleton.classList.add('hidden');
-        profileData.classList.remove('hidden');
-      }
-    }
-
-    async function loadStatsAndActivity(userId) {
-      const activityEl = document.getElementById('recentActivity');
-      try {
-        const [ordersSnap, fixesSnap, msgsSnap] = await Promise.all([
-          getDocs(query(collection(db, 'orders'), where('userId', '==', userId))),
-          getDocs(query(collection(db, 'fixRequests'), where('userId', '==', userId))),
-          getDocs(query(collection(db, 'messages'), where('toUserId', '==', userId)))
-        ]);
-
-        const orders = [];
-        ordersSnap.forEach(d => orders.push({ id: d.id, ...d.data(), _type: 'order' }));
-        const fixes = [];
-        fixesSnap.forEach(d => fixes.push({ id: d.id, ...d.data(), _type: 'fix' }));
-
-        const total = orders.length;
-        const pending = orders.filter(o => (o.status || '').toLowerCase() === 'pending').length;
-        const completed = orders.filter(o => ['completed', 'delivered', 'done'].includes((o.status || '').toLowerCase())).length;
-
-        document.getElementById('statTotalOrders').textContent = total;
-        document.getElementById('statPendingOrders').textContent = pending;
-        document.getElementById('statCompletedOrders').textContent = completed;
-        document.getElementById('statFixRequests').textContent = fixes.length;
-
-        let unread = 0;
-        msgsSnap.forEach(d => {
-          const m = d.data();
-          if (m.fromUserId === 'admin' && m.read === false) unread++;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.08 });
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
         });
-        const badge = document.getElementById('unreadMsgBadge');
-        if (unread > 0) {
-          badge.textContent = `(${unread} new)`;
-          badge.classList.remove('hidden');
-        } else {
-          badge.classList.add('hidden');
+
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => { scrollBtn.classList.toggle('show', window.scrollY > 400); });
+        scrollBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+        const profileDisplayName = document.getElementById('profileDisplayName');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileRole = document.getElementById('profileRole');
+        const profileEmailDisplay = document.getElementById('profileEmailDisplay');
+        const profilePhoneDisplay = document.getElementById('profilePhoneDisplay');
+        const profileRoleDisplay = document.getElementById('profileRoleDisplay');
+        const profileJoinedDisplay = document.getElementById('profileJoinedDisplay');
+        const profileAvatarBig = document.getElementById('profileAvatarBig');
+        const editForm = document.getElementById('editForm');
+        const editDisplayName = document.getElementById('editDisplayName');
+        const editPhone = document.getElementById('editPhone');
+        const editFeedback = document.getElementById('editFeedback');
+        const editToggleBtn = document.getElementById('editToggleBtn');
+        const profileData = document.getElementById('profileData');
+        const nameSkeleton = document.getElementById('nameSkeleton');
+        const emailSkeleton = document.getElementById('emailSkeleton');
+        const roleSkeleton = document.getElementById('roleSkeleton');
+        const avatarSkeleton = document.getElementById('avatarSkeleton');
+        const adminPanelSection = document.getElementById('adminPanelSection');
+        const photoModal = document.getElementById('photoModal');
+        const photoGrid = document.getElementById('photoGrid');
+        const photoFileInput = document.getElementById('photoFileInput');
+        const uploadProgress = document.getElementById('uploadProgress');
+
+        function toDate(val) {
+            if (!val) return null;
+            if (typeof val.toDate === 'function') return val.toDate();
+            if (val.seconds) return new Date(val.seconds * 1000);
+            const d = new Date(val);
+            return isNaN(d.getTime()) ? null : d;
         }
 
-        const combined = [...orders, ...fixes].map(item => {
-          const d = toDate(item.createdAt) || toDate(item.updatedAt) || new Date(0);
-          return { ...item, _date: d };
-        }).sort((a, b) => b._date - a._date).slice(0, 5);
-
-        if (combined.length === 0) {
-          activityEl.innerHTML = `
-            <div class="text-center py-8 text-gray-400">
-              <i class="fas fa-inbox text-3xl mb-2 opacity-40"></i>
-              <p class="text-sm">No recent activity yet.</p>
-              <a href="get-new-website.html" class="text-blue-600 text-sm font-medium hover:underline mt-1 inline-block">Browse packages →</a>
-            </div>`;
-          return;
+        function statusClass(status) {
+            const s = (status || 'pending').toLowerCase();
+            if (['completed', 'delivered', 'done', 'resolved'].includes(s)) return 'status-completed';
+            if (['processing', 'in-progress', 'in_progress'].includes(s)) return 'status-processing';
+            if (['cancelled', 'canceled', 'rejected'].includes(s)) return 'status-cancelled';
+            return 'status-pending';
         }
 
-        activityEl.innerHTML = combined.map(item => {
-          const isOrder = item._type === 'order';
-          const title = isOrder
-            ? (item.orderId || item.id || 'Order').toString().slice(0, 12)
-            : (item.title || item.websiteUrl || 'Fix request');
-          const status = item.status || 'pending';
-          const dateStr = item._date && item._date.getTime()
-            ? item._date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-            : '';
-          const href = isOrder ? 'my-orders.html' : 'my-fix-requests.html';
-          const iconBg = isOrder ? 'background:#dbeafe;color:#2563eb' : 'background:#ffedd5;color:#ea580c';
-          const icon = isOrder ? 'fa-box' : 'fa-tools';
-          const amount = isOrder && item.total != null
-            ? `<span class="text-xs text-gray-500">$${Number(item.total).toFixed(2)}</span>`
-            : '';
+        function updateCompletion(data, user) {
+            const checks = [
+                { ok: !!(data.displayName && data.displayName.trim()), label: 'name' },
+                { ok: !!(data.phone && data.phone.trim()), label: 'phone' },
+                { ok: !!(data.photoURL), label: 'photo' },
+                { ok: !!(user && user.emailVerified), label: 'email verified' }
+            ];
+            const done = checks.filter(c => c.ok).length;
+            const pct = Math.round((done / checks.length) * 100);
+            document.getElementById('completionPercent').textContent = pct + '%';
+            document.getElementById('completionFill').style.width = pct + '%';
+            const missing = checks.filter(c => !c.ok).map(c => c.label);
+            document.getElementById('completionHint').textContent =
+                missing.length ? 'Add: ' + missing.join(', ') : 'Your profile looks complete ✨';
+        }
 
-          return `
-            <a href="${href}" class="activity-item hover:bg-gray-50/80 rounded-lg px-1 -mx-1 transition-colors" style="text-decoration:none;color:inherit;">
-              <div class="activity-icon" style="${iconBg}"><i class="fas ${icon}"></i></div>
-              <div class="flex-1 min-w-0">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="font-medium text-gray-900 text-sm truncate">${isOrder ? 'Order' : 'Fix'}: ${title}</span>
-                  <span class="status-pill ${statusClass(status)}">${status}</span>
-                </div>
-                <div class="flex items-center gap-2 mt-0.5">
-                  <span class="text-xs text-gray-400">${dateStr}</span>
-                  ${amount}
-                </div>
-              </div>
-              <i class="fas fa-chevron-right text-gray-300 text-xs mt-3"></i>
-            </a>`;
-        }).join('');
-      } catch (err) {
-        console.error('Stats/activity error:', err);
-        activityEl.innerHTML = `<p class="text-sm text-red-500 text-center py-4">Could not load activity.</p>`;
-        document.getElementById('statTotalOrders').textContent = '0';
-        document.getElementById('statPendingOrders').textContent = '0';
-        document.getElementById('statCompletedOrders').textContent = '0';
-        document.getElementById('statFixRequests').textContent = '0';
-      }
-    }
-
-    async function loadProfile(user) {
-      if (!user) { window.location.href = 'index.html'; return; }
-      setLoadingState(true);
-      try {
-        try { await user.reload(); } catch (_) {}
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          const name = data.displayName || user.email?.split('@')[0] || 'User';
-          const role = data.role || 'user';
-          const email = data.email || user.email || 'No email';
-
-          profileDisplayName.textContent = name;
-          profileEmail.textContent = email;
-          profileRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
-          profileRole.style.display = role === 'admin' ? 'inline-block' : 'none';
-
-          profileEmailDisplay.textContent = email;
-          profilePhoneDisplay.textContent = data.phone || 'Not set';
-          profileRoleDisplay.textContent = role.charAt(0).toUpperCase() + role.slice(1);
-
-          let joinedStr = '-';
-          if (data.createdAt) {
-            const date = toDate(data.createdAt) || new Date(data.createdAt);
-            if (date && !isNaN(date.getTime())) {
-              joinedStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-              document.getElementById('memberSinceBadge').innerHTML =
-                `<i class="fas fa-calendar-check"></i> Member since ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+        window.verifyEmail = async () => {
+            const user = auth.currentUser;
+            if (!user) { showToast('Not logged in', 'error'); return; }
+            if (user.providerData?.some(p => p.providerId === 'google.com') && user.emailVerified) {
+                showToast('✅ Google email is already verified', 'success');
+                updateEmailVerificationUI(true);
+                return;
             }
-          }
-          profileJoinedDisplay.textContent = joinedStr;
+            await user.reload();
+            if (user.emailVerified) {
+                showToast('✅ Email already verified', 'success');
+                updateEmailVerificationUI(true);
+                try { await updateDoc(doc(db, 'users', user.uid), { emailVerified: true }); } catch (_) {}
+                return;
+            }
+            if (!user.email) { showToast('⚠️ No email on this account', 'error'); return; }
+            const btn = document.getElementById('verifyEmailBtn');
+            const hint = document.getElementById('verifyEmailHint');
+            try {
+                if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...'; }
+                const actionCodeSettings = {
+                    url: window.location.origin + window.location.pathname.replace(/[^/]*$/, 'my-profile.html'),
+                    handleCodeInApp: false
+                };
+                await sendEmailVerification(user, actionCodeSettings);
+                showToast('📧 Verification email sent! Check Inbox and Spam.', 'success');
+                if (hint) hint.classList.remove('hidden');
+                let left = 60;
+                if (btn) {
+                    const t = setInterval(() => {
+                        left--;
+                        btn.innerHTML = `<i class="fas fa-envelope"></i> Resend (${left}s)`;
+                        if (left <= 0) { clearInterval(t);
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email'; }
+                    }, 1000);
+                }
+            } catch (err) {
+                let msg = err.message || 'Failed to send email';
+                if (err.code === 'auth/too-many-requests') msg = 'Too many requests. Wait a few minutes.';
+                showToast('⚠️ ' + msg, 'error');
+                if (btn) { btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email'; }
+            }
+        };
 
-          applyCover(data.coverId || 'aurora');
+        window.checkEmailVerified = async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+            try {
+                await user.reload();
+                if (user.emailVerified) {
+                    updateEmailVerificationUI(true);
+                    try { await updateDoc(doc(db, 'users', user.uid), { emailVerified: true }); } catch (_) {}
+                    showToast('✅ Email verified!', 'success');
+                    document.getElementById('verifyEmailHint')?.classList.add('hidden');
+                } else {
+                    showToast('Still not verified. Open the link in the email.', 'warning');
+                }
+            } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
+        };
 
-          if (data.photoURL) {
-            profileAvatarBig.innerHTML = `<img src="${data.photoURL}" alt="${name}" loading="lazy" /><div class="change-photo-overlay" onclick="window.openPhotoModal()"><i class="fas fa-camera text-lg"></i><span>Change</span></div>`;
-          } else {
-            profileAvatarBig.innerHTML = `<i class="fas fa-user"></i><div class="change-photo-overlay" onclick="window.openPhotoModal()"><i class="fas fa-camera text-lg"></i><span>Change</span></div>`;
-          }
-
-          editDisplayName.value = name;
-          editPhone.value = data.phone || '';
-
-          if (role === 'admin') {
-            adminPanelSection.classList.remove('hidden');
-            observer.observe(adminPanelSection);
-          } else {
-            adminPanelSection.classList.add('hidden');
-          }
-
-          updateEmailVerificationUI(user.emailVerified);
-          updateCompletion(data, user);
-          updateNavbarAuth(user, name, role);
-          document.title = `${name} – Profile`;
-
-          loadStatsAndActivity(user.uid);
-        } else {
-          await setDoc(doc(db, 'users', user.uid), {
-            email: user.email,
-            displayName: user.email?.split('@')[0] || 'User',
-            role: 'user',
-            createdAt: new Date().toISOString()
-          });
-          loadProfile(user);
+        function updateEmailVerificationUI(isVerified) {
+            const status = document.getElementById('emailVerifiedStatus');
+            const btn = document.getElementById('verifyEmailBtn');
+            const checkBtn = document.getElementById('checkVerifiedBtn');
+            const hint = document.getElementById('verifyEmailHint');
+            if (isVerified) {
+                status.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle"></i> Verified</span>';
+                btn.innerHTML = '<i class="fas fa-check"></i> Verified';
+                btn.className = 'btn-primary text-sm py-1.5 px-5 email-verify-btn verified';
+                btn.disabled = true;
+                checkBtn?.classList.add('hidden');
+                hint?.classList.add('hidden');
+            } else {
+                status.innerHTML = '<span class="text-yellow-600"><i class="fas fa-exclamation-circle"></i> Not verified</span>';
+                btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email';
+                btn.className = 'btn-primary text-sm py-1.5 px-5 email-verify-btn';
+                btn.disabled = false;
+                checkBtn?.classList.remove('hidden');
+            }
         }
-      } catch (err) {
-        console.error('Profile load error:', err);
-        showToast('⚠️ Error loading profile: ' + err.message, 'error');
-      } finally {
-        setLoadingState(false);
-      }
-    }
 
-    window.toggleEditForm = () => {
-      editForm.classList.toggle('hidden');
-      if (!editForm.classList.contains('hidden')) {
-        editFeedback.className = 'hidden';
-        editToggleBtn.innerHTML = '<i class="fas fa-times"></i> Close';
-      } else {
-        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-      }
-    };
+        function setLoadingState(isLoading) {
+            if (isLoading) {
+                avatarSkeleton.classList.remove('hidden');
+                profileAvatarBig.classList.add('hidden');
+                nameSkeleton.classList.remove('hidden');
+                emailSkeleton.classList.remove('hidden');
+                roleSkeleton.classList.remove('hidden');
+                profileData.classList.add('hidden');
+            } else {
+                avatarSkeleton.classList.add('hidden');
+                profileAvatarBig.classList.remove('hidden');
+                nameSkeleton.classList.add('hidden');
+                emailSkeleton.classList.add('hidden');
+                roleSkeleton.classList.add('hidden');
+                profileData.classList.remove('hidden');
+            }
+        }
 
-    const profileEditForm = document.getElementById('profileEditForm');
-    const profileEditBtn = profileEditForm.querySelector('button[type="submit"]');
-    profileEditForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const newName = editDisplayName.value.trim();
-      const phone = editPhone.value.trim();
-      editFeedback.className = 'hidden';
-      if (!newName) {
-        editFeedback.className = 'block text-sm text-red-500 mt-2';
-        editFeedback.textContent = '⚠️ Please enter a display name.';
-        showToast('Please enter a display name', 'error');
-        return;
-      }
-      const user = auth.currentUser;
-      if (!user) { showToast('Not logged in', 'error'); return; }
-      setLoading(profileEditBtn, true, 'Saving...');
-      try {
-        await updateDoc(doc(db, 'users', user.uid), { displayName: newName, phone: phone || '' });
-        await loadProfile(user);
-        showToast('✅ Profile updated!', 'success');
-        editForm.classList.add('hidden');
-        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-      } catch (err) {
-        editFeedback.className = 'block text-sm text-red-500 mt-2';
-        editFeedback.textContent = '⚠️ ' + err.message;
-        showToast('⚠️ Error: ' + err.message, 'error');
-      } finally { setLoading(profileEditBtn, false); }
-    });
+        async function loadStatsAndActivity(userId) {
+            const activityEl = document.getElementById('recentActivity');
+            try {
+                const [ordersSnap, fixesSnap, msgsSnap] = await Promise.all([
+                    getDocs(query(collection(db, 'orders'), where('userId', '==', userId))),
+                    getDocs(query(collection(db, 'fixRequests'), where('userId', '==', userId))),
+                    getDocs(query(collection(db, 'messages'), where('toUserId', '==', userId)))
+                ]);
 
+                const orders = [];
+                ordersSnap.forEach(d => orders.push({ id: d.id, ...d.data(), _type: 'order' }));
+                const fixes = [];
+                fixesSnap.forEach(d => fixes.push({ id: d.id, ...d.data(), _type: 'fix' }));
 
-    // ===== Default covers (select only) =====
-    const DEFAULT_COVERS = [
-      { id: 'aurora', label: 'Aurora', css: 'linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%)' },
-      { id: 'ocean', label: 'Ocean', css: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #1e3a8a 100%)' },
-      { id: 'sunset', label: 'Sunset', css: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #db2777 100%)' },
-      { id: 'forest', label: 'Forest', css: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #115e59 100%)' },
-      { id: 'midnight', label: 'Midnight', css: 'linear-gradient(135deg, #1e293b 0%, #4c1d95 55%, #312e81 100%)' },
-      { id: 'candy', label: 'Candy', css: 'linear-gradient(135deg, #f472b6 0%, #a78bfa 50%, #60a5fa 100%)' },
-      { id: 'ember', label: 'Ember', css: 'linear-gradient(135deg, #f97316 0%, #dc2626 50%, #7f1d1d 100%)' },
-      { id: 'slate', label: 'Slate', css: 'linear-gradient(135deg, #64748b 0%, #334155 50%, #0f172a 100%)' }
-    ];
-    let selectedCoverId = 'aurora';
-    let pendingCoverId = 'aurora';
+                const total = orders.length;
+                const pending = orders.filter(o => (o.status || '').toLowerCase() === 'pending').length;
+                const completed = orders.filter(o => ['completed', 'delivered', 'done'].includes((o.status || '').toLowerCase())).length;
 
-    function getCoverById(id) {
-      return DEFAULT_COVERS.find(c => c.id === id) || DEFAULT_COVERS[0];
-    }
+                document.getElementById('statTotalOrders').textContent = total;
+                document.getElementById('statPendingOrders').textContent = pending;
+                document.getElementById('statCompletedOrders').textContent = completed;
+                document.getElementById('statFixRequests').textContent = fixes.length;
 
-    function applyCover(id) {
-      const cover = getCoverById(id);
-      selectedCoverId = cover.id;
-      const el = document.getElementById('profileCover');
-      if (el) el.style.background = cover.css;
-    }
+                let unread = 0;
+                msgsSnap.forEach(d => {
+                    const m = d.data();
+                    if (m.fromUserId === 'admin' && m.read === false) unread++;
+                });
+                const badge = document.getElementById('unreadMsgBadge');
+                if (unread > 0) {
+                    badge.textContent = `(${unread} new)`;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
 
-    window.openCoverModal = function() {
-      if (!auth.currentUser) { showToast('Please sign in first', 'warning'); return; }
-      pendingCoverId = selectedCoverId;
-      const grid = document.getElementById('coverGrid');
-      grid.innerHTML = DEFAULT_COVERS.map(c => `
-        <div class="cover-option ${c.id === pendingCoverId ? 'selected' : ''}"
-             data-cover-id="${c.id}"
-             style="background:${c.css}"
-             title="${c.label}"
-             onclick="window.pickCover('${c.id}')">
-          <span class="check"><i class="fas fa-check"></i></span>
-        </div>
-      `).join('');
-      document.getElementById('coverModal').classList.remove('hidden');
-    };
+                const combined = [...orders, ...fixes].map(item => {
+                    const d = toDate(item.createdAt) || toDate(item.updatedAt) || new Date(0);
+                    return { ...item, _date: d };
+                }).sort((a, b) => b._date - a._date).slice(0, 5);
 
-    window.closeCoverModal = function() {
-      document.getElementById('coverModal').classList.add('hidden');
-    };
+                if (combined.length === 0) {
+                    activityEl.innerHTML = `
+                        <div class="text-center py-10 text-gray-400">
+                            <i class="fas fa-inbox text-4xl mb-3 opacity-30"></i>
+                            <p class="text-sm font-medium">No recent activity yet.</p>
+                            <a href="get-new-website.html" class="text-blue-600 text-sm font-semibold hover:underline mt-2 inline-block">Browse packages →</a>
+                        </div>`;
+                    return;
+                }
 
-    window.pickCover = function(id) {
-      pendingCoverId = id;
-      document.querySelectorAll('#coverGrid .cover-option').forEach(el => {
-        el.classList.toggle('selected', el.getAttribute('data-cover-id') === id);
-      });
-    };
+                activityEl.innerHTML = combined.map(item => {
+                    const isOrder = item._type === 'order';
+                    const title = isOrder ?
+                        (item.orderId || item.id || 'Order').toString().slice(0, 12) :
+                        (item.title || item.websiteUrl || 'Fix request');
+                    const status = item.status || 'pending';
+                    const dateStr = item._date && item._date.getTime() ?
+                        item._date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) :
+                        '';
+                    const href = isOrder ? 'my-orders.html' : 'my-fix-requests.html';
+                    const iconBg = isOrder ? 'background:#dbeafe;color:#2563eb' : 'background:#ffedd5;color:#ea580c';
+                    const icon = isOrder ? 'fa-box' : 'fa-tools';
+                    const amount = isOrder && item.total != null ?
+                        `<span class="text-xs text-gray-500 font-medium">$${Number(item.total).toFixed(2)}</span>` :
+                        '';
 
-    window.saveCoverSelection = async function() {
-      const user = auth.currentUser;
-      if (!user) return;
-      const btn = document.getElementById('saveCoverBtn');
-      try {
-        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
-        await updateDoc(doc(db, 'users', user.uid), { coverId: pendingCoverId });
-        applyCover(pendingCoverId);
-        closeCoverModal();
-        showToast('✅ Cover updated!', 'success');
-      } catch (err) {
-        showToast('⚠️ ' + err.message, 'error');
-      } finally {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Apply'; }
-      }
-    };
+                    return `
+                            <a href="${href}" class="activity-item hover:bg-gray-50/80 rounded-xl px-2 -mx-2 transition-colors" style="text-decoration:none;color:inherit;">
+                                <div class="activity-icon" style="${iconBg}"><i class="fas ${icon}"></i></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="font-semibold text-gray-900 text-sm truncate">${isOrder ? 'Order' : 'Fix'}: ${title}</span>
+                                        <span class="status-pill ${statusClass(status)}">${status}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-xs text-gray-400 font-medium">${dateStr}</span>
+                                        ${amount}
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-3"></i>
+                            </a>`;
+                }).join('');
+            } catch (err) {
+                console.error('Stats/activity error:', err);
+                activityEl.innerHTML = `<p class="text-sm text-red-500 text-center py-6 font-medium">Could not load activity.</p>`;
+                document.getElementById('statTotalOrders').textContent = '0';
+                document.getElementById('statPendingOrders').textContent = '0';
+                document.getElementById('statCompletedOrders').textContent = '0';
+                document.getElementById('statFixRequests').textContent = '0';
+            }
+        }
 
+        async function loadProfile(user) {
+            if (!user) { window.location.href = 'index.html'; return; }
+            setLoadingState(true);
+            try {
+                try { await user.reload(); } catch (_) {}
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    const name = data.displayName || user.email?.split('@')[0] || 'User';
+                    const role = data.role || 'user';
+                    const email = data.email || user.email || 'No email';
 
-    window.openPhotoModal = function() {
-      if (!auth.currentUser) { showToast('Please sign in first', 'warning'); return; }
-      photoModal.classList.remove('hidden');
-      renderPhotoGrid();
-    };
-    window.closePhotoModal = function() {
-      photoModal.classList.add('hidden');
-      photoFileInput.value = '';
-      uploadProgress.classList.add('hidden');
-    };
+                    profileDisplayName.textContent = name;
+                    profileEmail.textContent = email;
+                    profileRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+                    profileRole.style.display = role === 'admin' ? 'inline-block' : 'none';
 
-    async function renderPhotoGrid() {
-      const user = auth.currentUser;
-      if (!user) return;
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) return;
-      const data = userDoc.data();
-      const uploadedImages = data.uploadedImages || [];
-      const currentPhoto = data.photoURL || '';
-      if (uploadedImages.length === 0) {
-        photoGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-400 text-sm">No uploaded photos yet.</div>`;
-        return;
-      }
-      photoGrid.innerHTML = uploadedImages.map(url => `
-        <div class="photo-item ${url === currentPhoto ? 'selected' : ''}" onclick="window.selectPhoto('${url}')">
-          <img src="${url}" alt="Photo" loading="lazy" />
-          <button class="delete-photo" onclick="event.stopPropagation(); window.deletePhoto('${url}')"><i class="fas fa-times"></i></button>
-        </div>
-      `).join('');
-    }
+                    profileEmailDisplay.textContent = email;
+                    profilePhoneDisplay.textContent = data.phone || 'Not set';
+                    profileRoleDisplay.textContent = role.charAt(0).toUpperCase() + role.slice(1);
 
-    window.selectPhoto = async function(url) {
-      const user = auth.currentUser;
-      if (!user) return;
-      try {
-        await updateDoc(doc(db, 'users', user.uid), { photoURL: url });
-        showToast('✅ Profile picture updated!', 'success');
-        closePhotoModal();
-        await loadProfile(user);
-      } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
-    };
+                    let joinedStr = '-';
+                    if (data.createdAt) {
+                        const date = toDate(data.createdAt) || new Date(data.createdAt);
+                        if (date && !isNaN(date.getTime())) {
+                            joinedStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                            document.getElementById('memberSinceBadge').innerHTML =
+                                `<i class="fas fa-calendar-check"></i> Member since ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+                        }
+                    }
+                    profileJoinedDisplay.textContent = joinedStr;
 
-    window.deletePhoto = async function(url) {
-      const user = auth.currentUser;
-      if (!user) return;
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) return;
-      const data = userDoc.data();
-      if (url === (data.photoURL || '')) {
-        showToast('⚠️ Cannot delete current profile picture. Choose another first.', 'warning');
-        return;
-      }
-      if (!confirm('Delete this photo?')) return;
-      try {
-        await updateDoc(doc(db, 'users', user.uid), {
-          uploadedImages: (data.uploadedImages || []).filter(img => img !== url)
+                    applyCover(data.coverId || 'aurora');
+
+                    if (data.photoURL) {
+                        profileAvatarBig.innerHTML =
+                            `<img src="${data.photoURL}" alt="${name}" loading="lazy" /><div class="change-photo-overlay" onclick="window.openPhotoModal()"><i class="fas fa-camera text-lg"></i><span>Change</span></div>`;
+                    } else {
+                        profileAvatarBig.innerHTML =
+                            `<i class="fas fa-user"></i><div class="change-photo-overlay" onclick="window.openPhotoModal()"><i class="fas fa-camera text-lg"></i><span>Change</span></div>`;
+                    }
+
+                    editDisplayName.value = name;
+                    editPhone.value = data.phone || '';
+
+                    if (role === 'admin') {
+                        adminPanelSection.classList.remove('hidden');
+                        observer.observe(adminPanelSection);
+                    } else {
+                        adminPanelSection.classList.add('hidden');
+                    }
+
+                    updateEmailVerificationUI(user.emailVerified);
+                    updateCompletion(data, user);
+                    updateNavbarAuth(user, name, role);
+                    document.title = `${name} – Profile`;
+
+                    loadStatsAndActivity(user.uid);
+                } else {
+                    await setDoc(doc(db, 'users', user.uid), {
+                        email: user.email,
+                        displayName: user.email?.split('@')[0] || 'User',
+                        role: 'user',
+                        createdAt: new Date().toISOString()
+                    });
+                    loadProfile(user);
+                }
+            } catch (err) {
+                console.error('Profile load error:', err);
+                showToast('⚠️ Error loading profile: ' + err.message, 'error');
+            } finally {
+                setLoadingState(false);
+            }
+        }
+
+        window.toggleEditForm = () => {
+            editForm.classList.toggle('hidden');
+            if (!editForm.classList.contains('hidden')) {
+                editFeedback.className = 'hidden';
+                editToggleBtn.innerHTML = '<i class="fas fa-times"></i> Close';
+            } else {
+                editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+            }
+        };
+
+        const profileEditForm = document.getElementById('profileEditForm');
+        const profileEditBtn = profileEditForm.querySelector('button[type="submit"]');
+        profileEditForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newName = editDisplayName.value.trim();
+            const phone = editPhone.value.trim();
+            editFeedback.className = 'hidden';
+            if (!newName) {
+                editFeedback.className = 'block text-sm text-red-500 mt-2';
+                editFeedback.textContent = '⚠️ Please enter a display name.';
+                showToast('Please enter a display name', 'error');
+                return;
+            }
+            const user = auth.currentUser;
+            if (!user) { showToast('Not logged in', 'error'); return; }
+            setLoading(profileEditBtn, true, 'Saving...');
+            try {
+                await updateDoc(doc(db, 'users', user.uid), { displayName: newName, phone: phone || '' });
+                await loadProfile(user);
+                showToast('✅ Profile updated!', 'success');
+                editForm.classList.add('hidden');
+                editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+            } catch (err) {
+                editFeedback.className = 'block text-sm text-red-500 mt-2';
+                editFeedback.textContent = '⚠️ ' + err.message;
+                showToast('⚠️ Error: ' + err.message, 'error');
+            } finally { setLoading(profileEditBtn, false); }
         });
-        showToast('✅ Photo deleted.', 'success');
-        renderPhotoGrid();
-      } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
-    };
 
-    photoFileInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const user = auth.currentUser;
-      if (!user) return;
-      uploadProgress.classList.remove('hidden');
-      try {
-        const url = await uploadImage(file);
-        await updateDoc(doc(db, 'users', user.uid), {
-          uploadedImages: arrayUnion(url),
-          photoURL: url
+        // ===== Default covers =====
+        const DEFAULT_COVERS = [
+            { id: 'aurora', label: 'Aurora', css: 'linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%)' },
+            { id: 'ocean', label: 'Ocean', css: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #1e3a8a 100%)' },
+            { id: 'sunset', label: 'Sunset', css: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #db2777 100%)' },
+            { id: 'forest', label: 'Forest', css: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #115e59 100%)' },
+            { id: 'midnight', label: 'Midnight', css: 'linear-gradient(135deg, #1e293b 0%, #4c1d95 55%, #312e81 100%)' },
+            { id: 'candy', label: 'Candy', css: 'linear-gradient(135deg, #f472b6 0%, #a78bfa 50%, #60a5fa 100%)' },
+            { id: 'ember', label: 'Ember', css: 'linear-gradient(135deg, #f97316 0%, #dc2626 50%, #7f1d1d 100%)' },
+            { id: 'slate', label: 'Slate', css: 'linear-gradient(135deg, #64748b 0%, #334155 50%, #0f172a 100%)' }
+        ];
+        let selectedCoverId = 'aurora';
+        let pendingCoverId = 'aurora';
+
+        function getCoverById(id) {
+            return DEFAULT_COVERS.find(c => c.id === id) || DEFAULT_COVERS[0];
+        }
+
+        function applyCover(id) {
+            const cover = getCoverById(id);
+            selectedCoverId = cover.id;
+            const el = document.getElementById('profileCover');
+            if (el) el.style.background = cover.css;
+        }
+
+        window.openCoverModal = function() {
+            if (!auth.currentUser) { showToast('Please sign in first', 'warning'); return; }
+            pendingCoverId = selectedCoverId;
+            const grid = document.getElementById('coverGrid');
+            grid.innerHTML = DEFAULT_COVERS.map(c => `
+                    <div class="cover-option ${c.id === pendingCoverId ? 'selected' : ''}"
+                         data-cover-id="${c.id}"
+                         style="background:${c.css}"
+                         title="${c.label}"
+                         onclick="window.pickCover('${c.id}')">
+                        <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                `).join('');
+            document.getElementById('coverModal').classList.remove('hidden');
+        };
+
+        window.closeCoverModal = function() {
+            document.getElementById('coverModal').classList.add('hidden');
+        };
+
+        window.pickCover = function(id) {
+            pendingCoverId = id;
+            document.querySelectorAll('#coverGrid .cover-option').forEach(el => {
+                el.classList.toggle('selected', el.getAttribute('data-cover-id') === id);
+            });
+        };
+
+        window.saveCoverSelection = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            const btn = document.getElementById('saveCoverBtn');
+            try {
+                if (btn) { btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+                await updateDoc(doc(db, 'users', user.uid), { coverId: pendingCoverId });
+                applyCover(pendingCoverId);
+                closeCoverModal();
+                showToast('✅ Cover updated!', 'success');
+            } catch (err) {
+                showToast('⚠️ ' + err.message, 'error');
+            } finally {
+                if (btn) { btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Apply'; }
+            }
+        };
+
+        window.openPhotoModal = function() {
+            if (!auth.currentUser) { showToast('Please sign in first', 'warning'); return; }
+            photoModal.classList.remove('hidden');
+            renderPhotoGrid();
+        };
+        window.closePhotoModal = function() {
+            photoModal.classList.add('hidden');
+            photoFileInput.value = '';
+            uploadProgress.classList.add('hidden');
+        };
+
+        async function renderPhotoGrid() {
+            const user = auth.currentUser;
+            if (!user) return;
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists()) return;
+            const data = userDoc.data();
+            const uploadedImages = data.uploadedImages || [];
+            const currentPhoto = data.photoURL || '';
+            if (uploadedImages.length === 0) {
+                photoGrid.innerHTML =
+                    `<div class="col-span-full text-center py-8 text-gray-400 text-sm font-medium">No uploaded photos yet.</div>`;
+                return;
+            }
+            photoGrid.innerHTML = uploadedImages.map(url => `
+                    <div class="photo-item ${url === currentPhoto ? 'selected' : ''}" onclick="window.selectPhoto('${url}')">
+                        <img src="${url}" alt="Photo" loading="lazy" />
+                        <button class="delete-photo" onclick="event.stopPropagation(); window.deletePhoto('${url}')"><i class="fas fa-times"></i></button>
+                    </div>
+                `).join('');
+        }
+
+        window.selectPhoto = async function(url) {
+            const user = auth.currentUser;
+            if (!user) return;
+            try {
+                await updateDoc(doc(db, 'users', user.uid), { photoURL: url });
+                showToast('✅ Profile picture updated!', 'success');
+                closePhotoModal();
+                await loadProfile(user);
+            } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
+        };
+
+        window.deletePhoto = async function(url) {
+            const user = auth.currentUser;
+            if (!user) return;
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists()) return;
+            const data = userDoc.data();
+            if (url === (data.photoURL || '')) {
+                showToast('⚠️ Cannot delete current profile picture. Choose another first.', 'warning');
+                return;
+            }
+            if (!confirm('Delete this photo?')) return;
+            try {
+                await updateDoc(doc(db, 'users', user.uid), {
+                    uploadedImages: (data.uploadedImages || []).filter(img => img !== url)
+                });
+                showToast('✅ Photo deleted.', 'success');
+                renderPhotoGrid();
+            } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
+        };
+
+        photoFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const user = auth.currentUser;
+            if (!user) return;
+            uploadProgress.classList.remove('hidden');
+            try {
+                const url = await uploadImage(file);
+                await updateDoc(doc(db, 'users', user.uid), {
+                    uploadedImages: arrayUnion(url),
+                    photoURL: url
+                });
+                showToast('✅ Photo uploaded!', 'success');
+                uploadProgress.classList.add('hidden');
+                photoFileInput.value = '';
+                closePhotoModal();
+                await loadProfile(user);
+            } catch (err) {
+                uploadProgress.classList.add('hidden');
+                showToast('⚠️ Upload failed: ' + err.message, 'error');
+            }
         });
-        showToast('✅ Photo uploaded!', 'success');
-        uploadProgress.classList.add('hidden');
-        photoFileInput.value = '';
-        closePhotoModal();
-        await loadProfile(user);
-      } catch (err) {
-        uploadProgress.classList.add('hidden');
-        showToast('⚠️ Upload failed: ' + err.message, 'error');
-      }
-    });
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) { window.location.href = 'index.html'; return; }
-      await loadProfile(user);
-    });
-  </script>
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = 'index.html'; return; }
+            await loadProfile(user);
+        });
+    </script>
 </body>
 </html>
