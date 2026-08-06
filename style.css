@@ -268,24 +268,60 @@ select.form-input {
   position: relative;
   font-weight: 500;
   color: #3a3a4c;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, background 0.2s ease;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 0.5rem 1rem;
+  margin: 0 0.2rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 0;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 2.5px;
   background: linear-gradient(135deg, #0066FF, #8B5CF6);
-  transition: width 0.4s ease;
+  transition: width 0.3s ease;
   border-radius: 4px;
 }
-.nav-link:hover { color: #0066FF; }
-.nav-link:hover::after { width: 100%; }
+.nav-link:hover { color: #0066FF; background: rgba(0, 102, 255, 0.06); }
+.nav-link:hover::after { width: 60%; }
+
+/* Active page highlight */
+.nav-link.active {
+  color: #0066FF !important;
+  background: rgba(0, 102, 255, 0.1);
+  font-weight: 600;
+}
+.nav-link.active::after {
+  width: 60%;
+}
+
+/* Desktop nav group spacing */
+#mainNavbar .nav-desktop {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+@media (min-width: 768px) {
+  #mainNavbar .nav-desktop {
+    display: flex;
+  }
+}
+
+/* Mobile nav active */
+#mobileMenu .nav-link.active {
+  background: rgba(0, 102, 255, 0.1);
+  color: #0066FF !important;
+}
+#mobileMenu .nav-link.active::after {
+  display: none;
+}
 
 /* ── Dropdown ── */
 .dropdown-menu {
@@ -325,21 +361,25 @@ select.form-input {
 
 /* ── Profile Avatar ── */
 .profile-avatar {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: linear-gradient(135deg, #0066FF, #8B5CF6);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   flex-shrink: 0;
   border: none;
   box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+  padding: 0;
+}
+.profile-avatar i {
+  font-size: 1rem;
+  line-height: 1;
 }
 .profile-avatar:hover { transform: scale(1.08); box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3); }
 

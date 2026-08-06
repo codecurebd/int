@@ -563,6 +563,25 @@ function setupLandingNavbar() {
 }
 
 // ================================================================
+// ✅ ACTIVE NAV LINK (current page highlight)
+// ================================================================
+function setActiveNavLink() {
+  const path = (window.location.pathname || '').toLowerCase();
+  const file = path.split('/').pop() || 'index.html';
+
+  let key = 'home';
+  if (file === '' || file === 'index.html' || file === 'store') key = 'home';
+  else if (file.includes('get-new-website') || file.includes('product-detail')) key = 'store';
+  else if (file.includes('fix-website')) key = 'fix';
+  else if (file.includes('messages') || file.includes('contact')) key = 'contact';
+  // other pages (profile, orders, etc.) → no main nav active
+
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-nav') === key);
+  });
+}
+
+// ================================================================
 // ✅ NAVBAR
 // ================================================================
 export function renderNavbar() {
@@ -576,11 +595,11 @@ export function renderNavbar() {
           <span class="logo-text tracking-tight">CodeCure<span class="gradient-text">BD</span></span>
         </a>
         
-        <div class="hidden md:flex items-center gap-1 lg:gap-2">
-          <a href="index.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50/50">Home</a>
-          <a href="get-new-website.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50/50">Store</a>
-          <a href="fix-website.html" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50/50">Fix</a>
-          <a href="#" onclick="window.handleContactClick(event)" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50/50">Contact</a>
+        <div class="nav-desktop hidden md:flex items-center">
+          <a href="index.html" data-nav="home" class="nav-link text-sm">Home</a>
+          <a href="get-new-website.html" data-nav="store" class="nav-link text-sm">Store</a>
+          <a href="fix-website.html" data-nav="fix" class="nav-link text-sm">Fix</a>
+          <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link text-sm">Contact</a>
         </div>
 
         <div class="flex items-center gap-2 md:gap-3">
@@ -648,7 +667,7 @@ export function renderNavbar() {
           </div>
 
           <div id="profile-section" class="relative hidden">
-            <button class="profile-avatar w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm flex items-center justify-center hover:scale-105 transition-transform shadow-md shadow-blue-500/20" id="profileAvatar">U</button>
+            <button class="profile-avatar" id="profileAvatar" title="Account" aria-label="Account menu"><i class="fas fa-user"></i></button>
             <div class="dropdown-menu" id="dropdownMenu">
               <a href="my-profile.html" class="hover:bg-blue-50/50"><i class="fas fa-user mr-3 text-gray-400"></i> My Profile</a>
               <a href="my-orders.html" class="hover:bg-blue-50/50"><i class="fas fa-box mr-3 text-gray-400"></i> My Orders</a>
@@ -670,10 +689,10 @@ export function renderNavbar() {
 
     <div id="mobileMenu" class="fixed top-[72px] md:top-[80px] left-0 w-full bg-white/95 backdrop-blur-lg shadow-lg z-40 hidden md:hidden overflow-hidden transition-all duration-300 border-b border-gray-100/30" style="max-height:0; opacity:0;">
       <div class="flex flex-col p-4 gap-1">
-        <a href="index.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors">Home</a>
-        <a href="get-new-website.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors">Store</a>
-        <a href="fix-website.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors">Fix</a>
-        <a href="#" onclick="window.handleContactClick(event)" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors">Contact</a>
+        <a href="index.html" data-nav="home" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Home</a>
+        <a href="get-new-website.html" data-nav="store" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Store</a>
+        <a href="fix-website.html" data-nav="fix" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Fix</a>
+        <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Contact</a>
         <hr class="my-2 border-gray-100" />
         <a href="my-profile.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-user mr-3"></i> Profile</a>
         <a href="my-orders.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-box mr-3"></i> Orders</a>
@@ -691,6 +710,7 @@ export function renderNavbar() {
   }
 
   setupLandingNavbar();
+  setActiveNavLink();
 
   const avatar = document.getElementById('profileAvatar');
   const dropdown = document.getElementById('dropdownMenu');
@@ -1842,7 +1862,11 @@ export function updateNavbarAuth(user, displayName, role = null) {
   if (user) {
     if (authBtns) authBtns.classList.add('hidden');
     if (profileSection) profileSection.classList.remove('hidden');
-    if (avatar) avatar.textContent = (displayName || user.email).charAt(0).toUpperCase();
+    if (avatar) {
+      // Keep default profile icon (do not use first letter)
+      avatar.innerHTML = '<i class="fas fa-user"></i>';
+      avatar.title = displayName || user.email || 'Account';
+    }
     
     if (authRequiredActions) authRequiredActions.style.display = 'flex';
 
