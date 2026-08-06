@@ -8,6 +8,62 @@ import {
   signInWithPopup, googleProvider
 } from './firebase-config.js';
 
+
+// ================================================================
+// ✅ AUTH CACHE – Instant navbar (no flicker on page change)
+// ================================================================
+const AUTH_CACHE_KEY = 'ccbd_user_v1';
+const AUTH_CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
+
+export function getCachedUser() {
+  try {
+    const raw = localStorage.getItem(AUTH_CACHE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data || !data.uid) return null;
+    if (data.ts && (Date.now() - data.ts > AUTH_CACHE_TTL)) {
+      localStorage.removeItem(AUTH_CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+export function setCachedUser(user, displayName, role = 'user') {
+  if (!user) {
+    localStorage.removeItem(AUTH_CACHE_KEY);
+    return;
+  }
+  try {
+    localStorage.setItem(AUTH_CACHE_KEY, JSON.stringify({
+      uid: user.uid,
+      email: user.email || '',
+      displayName: displayName || (user.email ? user.email.split('@')[0] : 'User'),
+      role: role || 'user',
+      photoURL: user.photoURL || '',
+      ts: Date.now()
+    }));
+  } catch (e) {
+    console.warn('Auth cache write failed', e);
+  }
+}
+
+export function clearCachedUser() {
+  try { localStorage.removeItem(AUTH_CACHE_KEY); } catch {}
+}
+
+/** Apply cached auth to navbar immediately (before Firebase responds) */
+export function applyCachedNavbarAuth() {
+  const cached = getCachedUser();
+  if (!cached) return false;
+  // Fake user-like object for UI only
+  updateNavbarAuth({ uid: cached.uid, email: cached.email }, cached.displayName, cached.role);
+  return true;
+}
+
+
 // ================================================================
 // ✅ নোটিফিকেশন: অ্যাডমিনের পাঠানো আনরিড মেসেজ ট্র্যাক করা (Realtime)
 // ================================================================
@@ -674,13 +730,38 @@ export function renderNavbar() {
 
   updateCartBadge();
 
-  onAuthStateChanged(auth, (user) => {
+  // Instant navbar from cache (no flicker)
+  applyCachedNavbarAuth();
+
+  // Single auth listener for navbar + cache + cart
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       syncCart(user.uid);
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const data = userDoc.exists() ? userDoc.data() : {};
+        const name = data.displayName || user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+        const role = data.role || 'user';
+        setCachedUser(user, name, role);
+        updateNavbarAuth(user, name, role);
+      } catch (err) {
+        console.warn('User profile fetch failed', err);
+        const name = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+        setCachedUser(user, name, 'user');
+        updateNavbarAuth(user, name, 'user');
+      }
+    } else {
+      clearCachedUser();
+      updateNavbarAuth(null, null);
     }
   });
   
-  renderCartPopup();
+  // Defer cart popup slightly for faster first paint
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => renderCartPopup(), { timeout: 800 });
+  } else {
+    setTimeout(() => renderCartPopup(), 50);
+  }
 
   window.toggleSearchDropdown = toggleSearchDropdown;
 
@@ -1749,6 +1830,15 @@ export function updateNavbarAuth(user, displayName, role = null) {
 
   if (loadingEl) loadingEl.style.display = 'none';
 
+  // Keep role from cache if caller did not pass it (avoids flicker / admin link loss)
+  if (user && (role === null || role === undefined)) {
+    const cached = getCachedUser();
+    if (cached && cached.uid === user.uid) {
+      role = cached.role || 'user';
+      if (!displayName) displayName = cached.displayName;
+    }
+  }
+
   if (user) {
     if (authBtns) authBtns.classList.add('hidden');
     if (profileSection) profileSection.classList.remove('hidden');
@@ -2214,11 +2304,13 @@ window.socialLogin = async function(provider) {
 
 window.handleLogout = async function() {
   try {
+    clearCachedUser();
     await signOut(auth);
     showToast('✅ Logged out', 'success');
-    // Stay on page or redirect if needed - pages can override
     if (window.location.pathname.includes('my-') || window.location.pathname.includes('messages') || window.location.pathname.includes('settings')) {
       window.location.href = 'index.html';
+    } else {
+      updateNavbarAuth(null, null);
     }
   } catch (err) {
     showToast('⚠️ ' + err.message, 'error');
@@ -2235,4 +2327,4 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-console.log('✅ components.js: Common Auth Modal system loaded (Sign In / Sign Up / Forgot Password / Google).');
+console.log('✅ components.js: Auth Modal + Auth Cache + Performance tweaks loaded.');

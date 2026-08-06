@@ -923,3 +923,36 @@ select.form-input {
   .btn-primary, .btn-outline, .btn-danger, .no-print { display: none !important; }
   body { background: #fff !important; }
 }
+
+/* ================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ================================================================ */
+html {
+  scroll-behavior: smooth;
+}
+img, iframe {
+  content-visibility: auto;
+}
+/* Faster font rendering */
+body {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+}
+/* Reduce layout shift for auth area */
+#auth-loading, #auth-buttons, #profile-section {
+  min-height: 40px;
+  min-width: 40px;
+}
+/* GPU accelerate common transitions */
+.btn-primary, .btn-outline, .glass-card, .nav-link {
+  will-change: transform;
+  transform: translateZ(0);
+}
+/* Skeleton pulse lighter */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse {
+  animation: pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
