@@ -759,6 +759,9 @@ onAuthStateChanged(auth, async (user) => {
 
         let allProducts = [];
         let allDiscounts = [];
+        let productsReady = false;
+        let discountsReady = false;
+        let lastRenderKey = '';
         const grid = document.getElementById('productGrid');
         const searchInput = document.getElementById('productSearchInput');
         const categoryFilter = document.getElementById('categoryFilter');
@@ -780,6 +783,43 @@ onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
         }
         renderSkeletons();
+
+        // Debounce snapshot-driven renders so products + discounts + rate
+        // don't cause double/triple full grid rebuild (flicker)
+        function debounce(fn, wait) {
+            let t;
+            return (...args) => {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, args), wait);
+            };
+        }
+
+        function getRenderKey() {
+            const search = (searchInput?.value || '').toLowerCase();
+            const cat = categoryFilter?.value || 'all';
+            const sort = sortFilter?.value || 'price-asc';
+            return [
+                allProducts.length,
+                allDiscounts.length,
+                usdRate,
+                search,
+                cat,
+                sort,
+                allProducts.map(p => p.id + ':' + (p.price || 0)).join(',')
+            ].join('|');
+        }
+
+        const scheduleProductRender = debounce(() => {
+            // Wait until products arrived at least once (keep skeleton)
+            if (!productsReady) return;
+            const key = getRenderKey();
+            // Skip identical re-render (stops flicker when discounts/settings fire right after products)
+            if (key === lastRenderKey && grid.children.length > 0 && !grid.querySelector('.skeleton-card')) {
+                return;
+            }
+            lastRenderKey = key;
+            renderProducts();
+        }, 80);
 
         // ── get best discount for a product ──
         function getDiscountForProduct(product) {
@@ -927,17 +967,25 @@ onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
         }
 
-        // ── listen to products & discounts ──
+        // ── listen to products & discounts (single coordinated render) ──
         await loadPaymentSettings();
 
-        // Real‑time listener for settings update (admin changes rate)
+        // Real-time rate updates (skip first paint if rate unchanged)
+        let lastUsdRate = usdRate;
         onSnapshot(doc(db, 'settings', 'payment'), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 if (data.usdRate && Number(data.usdRate) > 0) {
-                    usdRate = Number(data.usdRate);
-                    updateRateBanner();
-                    renderProducts(); // re-render with new rate
+                    const next = Number(data.usdRate);
+                    if (next !== lastUsdRate) {
+                        lastUsdRate = next;
+                        usdRate = next;
+                        updateRateBanner();
+                        scheduleProductRender();
+                    } else {
+                        usdRate = next;
+                        updateRateBanner();
+                    }
                 }
             }
         });
@@ -945,30 +993,31 @@ onAuthStateChanged(auth, async (user) => {
         onSnapshot(collection(db, 'products'), (snapshot) => {
             allProducts = [];
             snapshot.forEach(doc => { allProducts.push({ id: doc.id, ...doc.data() }); });
-            renderProducts();
+            productsReady = true;
+            scheduleProductRender();
         });
 
         onSnapshot(collection(db, 'discounts'), (snapshot) => {
             allDiscounts = [];
             snapshot.forEach(doc => { allDiscounts.push({ id: doc.id, ...doc.data() }); });
-            renderProducts();
+            discountsReady = true;
+            scheduleProductRender();
         });
 
-        function debounce(fn, wait) {
-            let t;
-            return (...args) => { clearTimeout(t);
-                t = setTimeout(() => fn.apply(this, args), wait); };
-        }
-        const debouncedRender = debounce(renderProducts, 300);
-        searchInput.addEventListener('input', debouncedRender);
-        categoryFilter.addEventListener('change', renderProducts);
-        sortFilter.addEventListener('change', renderProducts);
+        const debouncedSearchRender = debounce(() => {
+            lastRenderKey = ''; // force render on user filter change
+            scheduleProductRender();
+        }, 250);
+        searchInput.addEventListener('input', debouncedSearchRender);
+        categoryFilter.addEventListener('change', () => { lastRenderKey = ''; scheduleProductRender(); });
+        sortFilter.addEventListener('change', () => { lastRenderKey = ''; scheduleProductRender(); });
 
         window.resetFilters = () => {
             searchInput.value = '';
             categoryFilter.value = 'all';
             sortFilter.value = 'price-asc';
-            renderProducts();
+            lastRenderKey = '';
+            scheduleProductRender();
         };
 
         // ─── CART ───────────────────────────────────────────────────────
