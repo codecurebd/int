@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>My Fix Requests – CodeCureBD</title>
+  
+  <!-- ✅ Preconnect & Preload for faster font loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  
+  <style>
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; }
+    body {
+      background: #f2f4f7;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* ===== FONT DISPLAY SWAP ===== */
+    @font-face {
+      font-family: 'Inter';
+      font-display: swap;
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+    }
+
+    /* ===== REQUEST CARD ===== */
+    .request-card {
+      transition: all 0.3s ease;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-badge {
+      padding: 4px 14px;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      display: inline-block;
+    }
+    .status-badge.pending { background: #fef3c7; color: #d97706; }
+    .status-badge.resolved { background: #d1fae5; color: #059669; }
+    .status-badge.closed { background: #e5e7eb; color: #6b7280; }
+
+    /* ===== PRIORITY BADGE ===== */
+    .priority-badge {
+      padding: 2px 12px;
+      border-radius: 60px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .priority-badge.high { background: #fee2e2; color: #dc2626; }
+    .priority-badge.medium { background: #fef3c7; color: #d97706; }
+    .priority-badge.low { background: #d1fae5; color: #059669; }
+
+    /* ===== TICKET NUMBER ===== */
+    .ticket-code {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.04);
+      padding: 2px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    /* ===== REPLY BOX ===== */
+    .reply-box {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin-top: 12px;
+      animation: fadeSlideUp 0.4s ease forwards;
+    }
+    .reply-box .reply-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .reply-box .reply-text {
+      font-size: 0.95rem;
+      color: #1c1c1e;
+    }
+    .reply-box .reply-time {
+      font-size: 0.7rem;
+      color: #8e8e93;
+      margin-top: 6px;
+    }
+
+    .no-reply-box {
+      background: #f9fafb;
+      border-left: 4px solid #d1d5db;
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+    .no-reply-box .no-reply-text {
+      font-size: 0.85rem;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ===== STATS CARDS ===== */
+    .stat-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 14px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    }
+    .stat-card .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1c1c1e;
+    }
+    .stat-card .stat-label {
+      font-size: 0.75rem;
+      color: #8e8e93;
+      margin-top: 2px;
+    }
+    .stat-card .stat-number.pending { color: #d97706; }
+    .stat-card .stat-number.resolved { color: #059669; }
+    .stat-card .stat-number.closed { color: #6b7280; }
+
+    /* ===== FORM INPUTS ===== */
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(60, 60, 67, 0.08);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: rgba(255,255,255,0.8);
+      transition: all 0.3s ease;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      color: #1c1c1e;
+    }
+    .form-input:focus {
+      border-color: #007AFF;
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.08);
+      background: #ffffff;
+    }
+    .form-input::placeholder {
+      color: #8e8e93;
+      opacity: 0.7;
+    }
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 122, 255, 0.35);
+    }
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #1c1c1e;
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(60,60,67,0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.5);
+      min-height: 48px;
+      text-decoration: none;
+    }
+    .btn-outline:hover {
+      background: rgba(0,122,255,0.04);
+      border-color: #007AFF;
+      color: #007AFF;
+      transform: translateY(-2px);
+    }
+
+    /* ===== SKELETON ===== */
+    .skeleton-card {
+      background: #f3f4f6;
+      border-radius: 16px;
+      padding: 1.25rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-card .skeleton-line {
+      height: 16px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+    .skeleton-card .skeleton-line.short { width: 40%; }
+    .skeleton-card .skeleton-line.medium { width: 70%; }
+    .skeleton-card .skeleton-line.long { width: 90%; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+    .empty-state i {
+      font-size: 4rem;
+      opacity: 0.3;
+      color: #8e8e93;
+    }
+    .empty-state h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1c1c1e;
+      margin-top: 1rem;
+    }
+    .empty-state p {
+      color: #8e8e93;
+      margin-top: 0.5rem;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== FADE-UP ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(0,122,255,0.35);
+      z-index: 999;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .scroll-top-btn.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+    .scroll-top-btn:hover { transform: scale(1.05); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .glass-card { padding: 1rem; border-radius: 12px; }
+      .stat-card .stat-number { font-size: 1.5rem; }
+      .btn-primary, .btn-outline { font-size: 0.85rem; min-height: 42px; padding: 8px 16px; }
+      .ticket-code { font-size: 0.75rem; }
+      .reply-box { padding: 12px; }
+    }
+    @media (max-width: 480px) {
+      .stat-card { padding: 0.75rem; }
+      .stat-card .stat-number { font-size: 1.2rem; }
+    }
+
+    /* ===== TOAST (ওভাররাইড) ===== */
+    .toast {
+      border-left: 4px solid #007AFF;
+    }
+    .toast.success { border-left-color: #34C759; }
+    .toast.error { border-left-color: #FF3B30; }
+    .toast.warning { border-left-color: #FF9500; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+      <section class="pt-4 pb-16 px-6 max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-2 fade-up">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <i class="fas fa-tools text-xl text-white"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">My Fix Requests</h1>
+        </div>
+        <p class="text-gray-500 mb-6 fade-up">Track all your website fix requests and replies from admin.</p>
+
+        <!-- ===== FILTERS ===== -->
+        <div class="flex flex-wrap gap-3 items-center mb-6 fade-up">
+          <div class="relative flex-1 min-w-[200px]">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="searchRequests" placeholder="Search by ticket number..." class="form-input pl-10" />
+          </div>
+          <select id="statusFilter" class="form-input max-w-xs">
+            <option value="all">All Status</option>
+            <option value="pending">🟡 Pending</option>
+            <option value="resolved">🟢 Resolved</option>
+            <option value="closed">⚪ Closed</option>
+          </select>
+          <select id="priorityFilter" class="form-input max-w-xs">
+            <option value="all">All Priority</option>
+            <option value="high">🔴 High</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="low">🟢 Low</option>
+          </select>
+          <button onclick="resetFilters()" class="btn-outline text-sm py-2 px-4">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+          <a href="fix-website.html" class="btn-primary text-sm py-2 px-4">
+            <i class="fas fa-plus"></i> New Request
+          </a>
+        </div>
+
+        <!-- ===== STATS ===== -->
+        <div id="statsContainer" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 fade-up">
+          <div class="stat-card">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number pending" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number resolved" id="resolvedCount">0</div>
+            <div class="stat-label">Resolved</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number closed" id="closedCount">0</div>
+            <div class="stat-label">Closed</div>
+          </div>
+        </div>
+
+        <!-- ===== REQUEST LIST ===== -->
+        <div id="requestList" class="space-y-4">
+          <!-- Skeleton will be rendered by JS -->
+        </div>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
+
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script type="module">
+    // ================================================================
+    // ইমপোর্ট
+    // ================================================================
+    import {
+renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderCartSidebar, setLoading, renderPaymentModal,
+  renderAuthModal
+} from './components.js';
+    import { 
+      auth, db, collection, doc, getDoc, setDoc, addDoc, getDocs,
+      query, where, serverTimestamp, signOut, onAuthStateChanged,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, updateDoc,
+      signInWithPopup, googleProvider, onSnapshot
+    } from './firebase-config.js';
+
+    // ===== রেন্ডার =====
+    renderNavbar();
+    renderAuthModal();
+    renderPaymentModal();
+    renderFooter();
+    renderCartSidebar();
+    updateCartBadge();
+
+    // ===== টোস্ট =====
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+    };
+
+    // ===== SCROLL ANIMATION =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    });
+
+    // ===== BACK TO TOP =====
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        scrollBtn.classList.add('show');
+      } else {
+        scrollBtn.classList.remove('show');
+      }
+    });
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== DEBOUNCE =====
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    // ================================================================
+    // AUTH MODAL (আগের মতো)
+    // ================================================================
+    // Auth handled by components.js (renderAuthModal / openAuthModal)
+// togglePasswordVisibility moved to components.js as toggleAuthPassword
+// socialLogin handled by components.js
+// Auth form handled by components.js
+// handleLogout handled by components.js
+// ================================================================
+    // ✅ রিকোয়েস্ট লজিক (onSnapshot দিয়ে রিয়েল-টাইম, orderBy বাদ)
+    // ================================================================
+
+    const requestList = document.getElementById('requestList');
+    const searchInput = document.getElementById('searchRequests');
+    const statusFilter = document.getElementById('statusFilter');
+    const priorityFilter = document.getElementById('priorityFilter');
+
+    let allRequests = [];
+    let filteredRequests = [];
+    let currentUser = null;
+    let unsubRequests = null;
+
+    // ===== SKELETON RENDER =====
+    function renderSkeletons(count = 3) {
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        html += `
+          <div class="skeleton-card fade-up">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line" style="width:60%;"></div>
+          </div>
+        `;
+      }
+      requestList.innerHTML = html;
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }
+
+    // ===== UPDATE STATS =====
+    function updateStats(requests) {
+      const total = requests.length;
+      const pending = requests.filter(r => r.status === 'pending').length;
+      const resolved = requests.filter(r => r.status === 'resolved').length;
+      const closed = requests.filter(r => r.status === 'closed').length;
+
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('pendingCount').textContent = pending;
+      document.getElementById('resolvedCount').textContent = resolved;
+      document.getElementById('closedCount').textContent = closed;
+    }
+
+    // ===== RENDER REQUESTS =====
+    function renderRequests(requests) {
+      if (!requests || requests.length === 0) {
+        requestList.innerHTML = `
+          <div class="empty-state fade-up">
+            <i class="fas fa-inbox"></i>
+            <h3>No fix requests found</h3>
+            <p>Submit a fix request to get help from our team.</p>
+            <a href="fix-website.html" class="btn-primary mt-4 inline-block">
+              <i class="fas fa-plus"></i> Submit Request
+            </a>
+          </div>
+        `;
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        updateStats([]);
+        return;
+      }
+
+      let html = '';
+      requests.forEach((r, index) => {
+        const status = r.status || 'pending';
+        const priority = r.priority || 'medium';
+        const date = r.timestamp?.toDate?.() || new Date(r.timestamp);
+        const dateStr = date.toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'short', day: 'numeric' 
+        });
+        const timeStr = date.toLocaleTimeString('en-US', { 
+          hour: '2-digit', minute: '2-digit' 
+        });
+
+        // ✅ ফিক্স: reply timestamp সঠিকভাবে দেখানো
+        let replyHtml = '';
+        if (r.reply && r.reply.trim()) {
+          let replyTimeStr = '';
+          if (r.replyTimestamp) {
+            const replyDate = r.replyTimestamp.toDate ? r.replyTimestamp.toDate() : new Date(r.replyTimestamp);
+            replyTimeStr = replyDate.toLocaleString('en-US', { 
+              year: 'numeric', month: 'short', day: 'numeric', 
+              hour: '2-digit', minute: '2-digit' 
+            });
+          }
+          replyHtml = `
+            <div class="reply-box">
+              <div class="reply-label"><i class="fas fa-reply"></i> Admin Reply</div>
+              <div class="reply-text">${r.reply}</div>
+              <div class="reply-time">${replyTimeStr}</div>
+            </div>
+          `;
+        } else if (status === 'pending') {
+          replyHtml = `
+            <div class="no-reply-box">
+              <div class="no-reply-text">
+                <i class="fas fa-clock"></i> No reply yet. Our team is reviewing your request.
+              </div>
+            </div>
+          `;
+        }
+
+        const categoryIcons = {
+          speed: '🚀', error: '🐛', design: '🎨',
+          hacking: '🔒', hosting: '☁️', other: '📌'
+        };
+        const categoryIcon = categoryIcons[r.category] || '📌';
+
+        html += `
+          <div class="glass-card request-card fade-up" style="transition-delay: ${(index % 6) * 0.05}s">
+            <div class="flex flex-wrap justify-between items-start gap-3">
+              <div class="flex-1 min-w-[150px]">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <span class="ticket-code text-sm">${r.ticketNumber || 'N/A'}</span>
+                  <span class="status-badge ${status}">${status}</span>
+                  <span class="priority-badge ${priority}">${priority}</span>
+                </div>
+                <p class="text-sm font-medium text-gray-900 mt-2">
+                  <span class="text-gray-500">${categoryIcon}</span>
+                  ${r.problem?.substring(0, 80) || 'No description'}${r.problem?.length > 80 ? '...' : ''}
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                  <i class="far fa-calendar-alt mr-1"></i> ${dateStr} at ${timeStr}
+                </p>
+                ${r.category ? `<p class="text-xs text-gray-400">Category: ${r.category}</p>` : ''}
+              </div>
+              <div class="text-right flex flex-col items-end gap-1">
+                <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                  ${r.imageLink ? `<a href="${r.imageLink}" target="_blank" class="text-blue-500 hover:underline"><i class="fas fa-image"></i> Image</a>` : 'No image'}
+                </span>
+              </div>
+            </div>
+            ${replyHtml}
+          </div>
+        `;
+      });
+
+      requestList.innerHTML = html;
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      updateStats(requests);
+    }
+
+    // ===== APPLY FILTERS =====
+    function applyFilters() {
+      const search = searchInput.value.toLowerCase().trim();
+      const status = statusFilter.value;
+      const priority = priorityFilter.value;
+
+      filteredRequests = allRequests.filter(r => {
+        if (search) {
+          const ticket = r.ticketNumber?.toLowerCase() || '';
+          const problem = r.problem?.toLowerCase() || '';
+          if (!ticket.includes(search) && !problem.includes(search)) return false;
+        }
+        if (status !== 'all' && r.status !== status) return false;
+        if (priority !== 'all' && r.priority !== priority) return false;
+        return true;
+      });
+
+      renderRequests(filteredRequests);
+    }
+
+    const debouncedApplyFilters = debounce(applyFilters, 300);
+
+    // ===== RESET FILTERS =====
+    window.resetFilters = () => {
+      searchInput.value = '';
+      statusFilter.value = 'all';
+      priorityFilter.value = 'all';
+      applyFilters();
+    };
+
+    // ===== LOAD REQUESTS (onSnapshot) =====
+    function loadRequests(userId) {
+      if (!userId) {
+        requestList.innerHTML = `
+          <div class="empty-state fade-up">
+            <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+            <h3>Please sign in</h3>
+            <p>Sign in to view your fix requests.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Show skeletons initially
+      renderSkeletons(3);
+
+      // Unsubscribe previous listener
+      if (unsubRequests) unsubRequests();
+
+      // ✅ Real-time listener without orderBy (manual sort in JS)
+      const q = query(
+        collection(db, 'fixRequests'),
+        where('userId', '==', userId)
+      );
+
+      unsubRequests = onSnapshot(q, (snapshot) => {
+        allRequests = [];
+        snapshot.forEach(doc => {
+          allRequests.push({ id: doc.id, ...doc.data() });
+        });
+
+        // ✅ Manual sorting (newest first)
+        allRequests.sort((a, b) => {
+          const ta = a.timestamp?.toDate?.()?.getTime() || new Date(a.timestamp).getTime() || 0;
+          const tb = b.timestamp?.toDate?.()?.getTime() || new Date(b.timestamp).getTime() || 0;
+          return tb - ta;
+        });
+
+        applyFilters();
+
+      }, (error) => {
+        console.error('🔥 Error loading fix requests:', error);
+        requestList.innerHTML = `
+          <div class="empty-state fade-up">
+            <i class="fas fa-exclamation-circle text-red-500"></i>
+            <h3>Error loading requests</h3>
+            <p class="text-sm text-gray-400">${error.message}</p>
+            <button onclick="window.location.reload()" class="btn-primary mt-4 inline-block">
+              <i class="fas fa-sync"></i> Retry
+            </button>
+          </div>
+        `;
+        showToast('⚠️ Error loading fix requests: ' + error.message, 'error');
+      });
+    }
+
+    // ===== FILTER EVENT LISTENERS =====
+    searchInput.addEventListener('input', debouncedApplyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+    priorityFilter.addEventListener('change', applyFilters);
+
+    // ================================================================
+    // AUTH STATE
+    // ================================================================
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentUser = user;
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const displayName = userDoc.exists() ? userDoc.data().displayName : user.email.split('@')[0];
+      updateNavbarAuth(user, displayName);
+
+      // Load fix requests
+      loadRequests(user.uid);
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (unsubRequests) unsubRequests();
+    });
+
+    console.log('🔧 My Fix Requests page loaded successfully!');
+  </script>
+</body>
+</html>

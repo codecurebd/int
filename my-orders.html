@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>My Orders – CodeCureBD</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  
+  <style>
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; }
+    body {
+      background: #f2f4f7;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    @font-face { font-family: 'Inter'; font-display: swap; }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+    }
+
+    .status-badge {
+      padding: 4px 14px;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      display: inline-block;
+    }
+    .status-badge.pending { background: #fef3c7; color: #d97706; }
+    .status-badge.processing { background: #dbeafe; color: #2563eb; }
+    .status-badge.completed { background: #d1fae5; color: #059669; }
+    .status-badge.cancelled { background: #fee2e2; color: #dc2626; }
+
+    .payment-badge {
+      padding: 3px 12px;
+      border-radius: 30px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .payment-badge.full { background: #d1fae5; color: #059669; }
+    .payment-badge.advance { background: #fef3c7; color: #d97706; }
+
+    .stat-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 14px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    }
+    .stat-card .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1c1c1e;
+    }
+    .stat-card .stat-label {
+      font-size: 0.75rem;
+      color: #8e8e93;
+      margin-top: 2px;
+    }
+    .stat-card .stat-number.pending { color: #d97706; }
+    .stat-card .stat-number.processing { color: #2563eb; }
+    .stat-card .stat-number.completed { color: #059669; }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(60, 60, 67, 0.08);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: rgba(255,255,255,0.8);
+      transition: all 0.3s ease;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      color: #1c1c1e;
+    }
+    .form-input:focus {
+      border-color: #007AFF;
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.08);
+      background: #ffffff;
+    }
+    .form-input::placeholder { color: #8e8e93; opacity: 0.7; }
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 122, 255, 0.35);
+    }
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #1c1c1e;
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(60,60,67,0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.5);
+      min-height: 48px;
+      text-decoration: none;
+    }
+    .btn-outline:hover {
+      background: rgba(0,122,255,0.04);
+      border-color: #007AFF;
+      color: #007AFF;
+      transform: translateY(-2px);
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-delete:hover { background: #fecaca; }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+    }
+    .btn-danger:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .cancel-checkbox-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      text-align: left;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cancel-checkbox-wrap input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: #dc2626;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .cancel-checkbox-wrap span {
+      font-size: 0.85rem;
+      color: #7f1d1d;
+      line-height: 1.4;
+    }
+
+    .pay-due-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pay-due-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    }
+
+    .skeleton-card {
+      background: #f3f4f6;
+      border-radius: 16px;
+      padding: 1.25rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-card .skeleton-line {
+      height: 16px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+    .skeleton-card .skeleton-line.short { width: 40%; }
+    .skeleton-card .skeleton-line.medium { width: 70%; }
+    .skeleton-card .skeleton-line.long { width: 90%; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+    .empty-state i {
+      font-size: 4rem;
+      opacity: 0.3;
+      color: #8e8e93;
+    }
+    .empty-state h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1c1c1e;
+      margin-top: 1rem;
+    }
+    .empty-state p {
+      color: #8e8e93;
+      margin-top: 0.5rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: scaleIn 0.3s ease forwards;
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-box .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .modal-box .modal-header h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #8e8e93;
+      transition: 0.2s;
+    }
+    .modal-close:hover { color: #1c1c1e; }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .detail-item:last-child { border-bottom: none; }
+
+    .due-info-box {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 0.75rem;
+    }
+    .due-info-box .due-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.9rem;
+    }
+    .due-info-box .due-row .label { color: #92400e; }
+    .due-info-box .due-row .value { font-weight: 700; color: #92400e; }
+    .due-info-box .due-row .value.due-amount { color: #dc2626; }
+    .due-info-box .due-row .value.paid-amount { color: #059669; }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(0,122,255,0.35);
+      z-index: 999;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .scroll-top-btn.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+    .scroll-top-btn:hover { transform: scale(1.05); }
+
+    .toast {
+      border-left: 4px solid #007AFF;
+    }
+    .toast.success { border-left-color: #34C759; }
+    .toast.error { border-left-color: #FF3B30; }
+    .toast.warning { border-left-color: #FF9500; }
+
+    @media (max-width: 768px) {
+      .glass-card { padding: 1rem; border-radius: 12px; }
+      .stat-card .stat-number { font-size: 1.5rem; }
+      .btn-primary, .btn-outline { font-size: 0.85rem; min-height: 42px; padding: 8px 16px; }
+      .modal-box { padding: 1rem; border-radius: 16px; }
+      .detail-item { font-size: 0.9rem; }
+    }
+    @media (max-width: 480px) {
+      .stat-card { padding: 0.75rem; }
+      .stat-card .stat-number { font-size: 1.2rem; }
+      .modal-box { padding: 0.75rem; }
+    }
+
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      width: 90%;
+      max-width: 400px;
+    }
+    .toast {
+      pointer-events: auto;
+      background: #1c1c1e;
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 0.3s ease forwards;
+      width: 100%;
+      backdrop-filter: blur(4px);
+    }
+    .toast.success { background: #28A745; }
+    .toast.error { background: #dc3545; }
+    .toast.warning { background: #ffc107; color: #1c1c1e; }
+    .toast.hide { animation: slideDown 0.3s ease forwards; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(30px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+      <section class="pt-4 pb-16 px-6 max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-2 fade-up">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <i class="fas fa-shopping-bag text-xl text-white"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">My Orders</h1>
+        </div>
+        <p class="text-gray-500 mb-6 fade-up">View all your orders and their status</p>
+
+        <!-- ===== FILTERS ===== -->
+        <div class="flex flex-wrap gap-3 items-center mb-6 fade-up">
+          <div class="relative flex-1 min-w-[200px]">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="searchOrders" placeholder="Search by order ID..." class="form-input pl-10" />
+          </div>
+          <select id="statusFilter" class="form-input max-w-xs">
+            <option value="all">All Status</option>
+            <option value="pending">🟡 Pending</option>
+            <option value="processing">🔵 Processing</option>
+            <option value="completed">🟢 Completed</option>
+            <option value="cancelled">🔴 Cancelled</option>
+          </select>
+          <button onclick="resetFilters()" class="btn-outline text-sm py-2 px-4">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+          <button onclick="window.location.reload()" class="btn-outline text-sm py-2 px-4">
+            <i class="fas fa-sync"></i> Refresh
+          </button>
+          <!-- 🔥 NEW: Force reload orders button -->
+          <button onclick="forceReloadOrders()" class="btn-primary text-sm py-2 px-4">
+            <i class="fas fa-download"></i> Reload Orders
+          </button>
+        </div>
+
+        <!-- ===== STATS ===== -->
+        <div id="statsContainer" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 fade-up">
+          <div class="stat-card">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number pending" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number processing" id="processingCount">0</div>
+            <div class="stat-label">Processing</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number completed" id="completedCount">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+        </div>
+
+        <!-- ===== ORDER LIST ===== -->
+        <div id="orderList" class="space-y-4">
+          <!-- Skeleton will be rendered by JS -->
+        </div>
+
+        <!-- ===== ERROR / DEBUG INFO ===== -->
+        <div id="debugInfo" class="mt-4 text-sm text-gray-400 hidden"></div>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+
+  <!-- ===== ORDER DETAIL MODAL ===== -->
+  <div id="orderDetailModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="detailOrderTitle" class="text-2xl font-bold text-gray-900">Order Details</h3>
+        <button onclick="closeOrderDetail()" class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div id="orderDetailContent" class="space-y-4"></div>
+      <div class="mt-6 flex flex-wrap gap-3 border-t border-gray-200 pt-4">
+        <button onclick="downloadInvoice()" class="btn-primary text-sm py-2 px-4">
+          <i class="fas fa-file-download"></i> Invoice (TXT)
+        </button>
+        <button onclick="printOrder()" class="btn-outline text-sm py-2 px-4">
+          <i class="fas fa-print"></i> Print
+        </button>
+        <button onclick="closeOrderDetail()" class="btn-outline text-sm py-2 px-4">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CUSTOM CONFIRM MODAL ===== -->
+  <div id="confirmModal" class="modal-overlay confirm-modal">
+    <div class="modal-box">
+      <div class="confirm-icon" style="width:56px;height:56px;border-radius:50%;background:#fef2f2;color:#dc2626;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem;">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="modal-header" style="justify-content:center; margin-bottom:0.5rem;">
+        <h3 id="confirmModalTitle" class="text-xl font-bold text-gray-900 text-center">Confirm</h3>
+      </div>
+      <div id="confirmModalBody" class="text-center text-gray-600 text-sm leading-relaxed mb-2"></div>
+      <div id="confirmModalCheckboxArea" class="hidden"></div>
+      <div class="mt-4 flex gap-3">
+        <button type="button" id="confirmModalYes" class="btn-danger flex-1 justify-center">Yes, Cancel</button>
+        <button type="button" id="confirmModalNo" class="btn-outline flex-1 justify-center">Keep Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CUSTOM PASSWORD MODAL ===== -->
+  <div id="passwordModal" class="modal-overlay password-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="passwordModalTitle" class="text-xl font-bold text-gray-900">Enter Password</h3>
+        <button type="button" onclick="closePasswordModal()" class="modal-close">&times;</button>
+      </div>
+      <p id="passwordModalDesc" class="text-sm text-gray-500 mb-4">Please enter your password to confirm this action.</p>
+      <div class="relative">
+        <input type="password" id="passwordInput" placeholder="Your account password" class="form-input pr-12" autocomplete="current-password" />
+        <button type="button" onclick="togglePasswordVisibility('passwordInput')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      <div id="passwordError" class="text-red-500 text-sm mt-2 hidden">Incorrect password. Please try again.</div>
+      <div class="mt-4 flex gap-3">
+        <button type="button" onclick="confirmPassword()" id="passwordConfirmBtn" class="btn-primary flex-1 justify-center">Confirm</button>
+        <button type="button" onclick="closePasswordModal()" class="btn-outline flex-1 justify-center">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
+
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script type="module">
+    // ================================================================
+    // ইমপোর্ট
+    // ================================================================
+    import {
+renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderCartSidebar, setLoading, renderPaymentModal,
+  renderAuthModal
+} from './components.js';
+    import {
+      auth, db, collection, doc, getDoc, setDoc, addDoc, onSnapshot,
+      query, where, serverTimestamp, signOut, onAuthStateChanged,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword,
+      updateDoc, deleteDoc, getDocs,  // 🔥 getDocs যোগ করলাম
+      signInWithPopup, googleProvider,
+      EmailAuthProvider, reauthenticateWithCredential
+    } from './firebase-config.js';
+
+    console.log('✅ my-orders.html loaded');
+
+    // ===== রেন্ডার =====
+    renderNavbar();
+    renderAuthModal();
+    renderPaymentModal();
+    renderFooter();
+    renderCartSidebar();
+    updateCartBadge();
+
+    // ===== টোস্ট =====
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+    };
+
+    // ===== SCROLL ANIMATION =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    });
+
+    // ===== BACK TO TOP =====
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      scrollBtn.classList.toggle('show', window.scrollY > 400);
+    });
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== DEBOUNCE =====
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    // ================================================================
+    // CUSTOM CONFIRM MODAL (supports optional required checkbox)
+    // ================================================================
+    let confirmModalResolve = null;
+    let confirmRequiresCheckbox = false;
+
+    window.showConfirmModal = function(title, bodyHtml, yesText, noText, options = {}) {
+      return new Promise((resolve) => {
+        confirmRequiresCheckbox = !!options.requireCheckbox;
+        document.getElementById('confirmModalTitle').textContent = title || 'Confirm';
+        document.getElementById('confirmModalBody').innerHTML = bodyHtml || '';
+        document.getElementById('confirmModalYes').textContent = yesText || 'Yes';
+        document.getElementById('confirmModalNo').textContent = noText || 'Cancel';
+
+        const checkboxArea = document.getElementById('confirmModalCheckboxArea');
+        const yesBtn = document.getElementById('confirmModalYes');
+
+        if (confirmRequiresCheckbox) {
+          const checkboxLabel = options.checkboxLabel || 'I understand and want to cancel this order';
+          checkboxArea.innerHTML = `
+            <label class="cancel-checkbox-wrap">
+              <input type="checkbox" id="confirmCancelCheckbox" />
+              <span>${checkboxLabel}</span>
+            </label>
+          `;
+          checkboxArea.classList.remove('hidden');
+          yesBtn.disabled = true;
+
+          const cb = document.getElementById('confirmCancelCheckbox');
+          if (cb) {
+            cb.addEventListener('change', () => {
+              yesBtn.disabled = !cb.checked;
+            });
+          }
+        } else {
+          checkboxArea.innerHTML = '';
+          checkboxArea.classList.add('hidden');
+          yesBtn.disabled = false;
+        }
+
+        document.getElementById('confirmModal').classList.add('open');
+        confirmModalResolve = resolve;
+      });
+    };
+
+    function finishConfirmModal(result) {
+      if (result && confirmRequiresCheckbox) {
+        const cb = document.getElementById('confirmCancelCheckbox');
+        if (!cb || !cb.checked) {
+          showToast('Please check the confirmation box to proceed.', 'warning');
+          return;
+        }
+      }
+      document.getElementById('confirmModal').classList.remove('open');
+      const checkboxArea = document.getElementById('confirmModalCheckboxArea');
+      if (checkboxArea) {
+        checkboxArea.innerHTML = '';
+        checkboxArea.classList.add('hidden');
+      }
+      confirmRequiresCheckbox = false;
+      const yesBtn = document.getElementById('confirmModalYes');
+      if (yesBtn) yesBtn.disabled = false;
+      if (confirmModalResolve) {
+        confirmModalResolve(result);
+        confirmModalResolve = null;
+      }
+    }
+
+    document.getElementById('confirmModalYes').addEventListener('click', () => finishConfirmModal(true));
+    document.getElementById('confirmModalNo').addEventListener('click', () => finishConfirmModal(false));
+    document.getElementById('confirmModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) finishConfirmModal(false);
+    });
+
+    // ================================================================
+    // CUSTOM PASSWORD MODAL
+    // ================================================================
+    let passwordModalResolve = null;
+
+    window.showPasswordModal = function(title, description) {
+      return new Promise((resolve) => {
+        document.getElementById('passwordModalTitle').textContent = title || 'Enter Password';
+        document.getElementById('passwordModalDesc').textContent = description || 'Please enter your password to confirm this action.';
+        const input = document.getElementById('passwordInput');
+        input.value = '';
+        input.type = 'password';
+        document.getElementById('passwordError').classList.add('hidden');
+        document.getElementById('passwordModal').classList.add('open');
+        passwordModalResolve = resolve;
+        setTimeout(() => input.focus(), 50);
+      });
+    };
+
+    window.closePasswordModal = function() {
+      document.getElementById('passwordModal').classList.remove('open');
+      if (passwordModalResolve) {
+        passwordModalResolve(null);
+        passwordModalResolve = null;
+      }
+    };
+
+    window.confirmPassword = function() {
+      const input = document.getElementById('passwordInput');
+      const password = (input.value || '').trim();
+      const err = document.getElementById('passwordError');
+
+      if (!password) {
+        err.textContent = 'Please enter your password.';
+        err.classList.remove('hidden');
+        input.focus();
+        return;
+      }
+      if (password.length < 6) {
+        err.textContent = 'Password must be at least 6 characters.';
+        err.classList.remove('hidden');
+        input.focus();
+        return;
+      }
+
+      err.classList.add('hidden');
+      if (passwordModalResolve) {
+        passwordModalResolve(password);
+        passwordModalResolve = null;
+      }
+      document.getElementById('passwordModal').classList.remove('open');
+    };
+
+    window.togglePasswordVisibility = function(id) {
+      const input = document.getElementById(id);
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
+    };
+
+    document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        window.confirmPassword();
+      }
+    });
+    document.getElementById('passwordModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) window.closePasswordModal();
+    });
+
+    // ================================================================
+    // AUTH MODAL
+    // ================================================================
+    // Auth handled by components.js (renderAuthModal / openAuthModal)
+// socialLogin handled by components.js
+// Auth form handled by components.js
+// handleLogout handled by components.js
+// ================================================================
+    // ✅ অর্ডার লজিক (onSnapshot + getDocs fallback)
+    // ================================================================
+
+    const orderList = document.getElementById('orderList');
+    const searchInput = document.getElementById('searchOrders');
+    const statusFilter = document.getElementById('statusFilter');
+    const debugInfo = document.getElementById('debugInfo');
+
+    let allOrders = [];
+    let filteredOrders = [];
+    let currentUser = null;
+    let unsubOrders = null;
+    let isLoading = false;
+    let loadAttempts = 0;
+    const MAX_LOAD_ATTEMPTS = 3;
+
+    // ===== SKELETON RENDER =====
+    function renderSkeletons(count = 3) {
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        html += `
+          <div class="skeleton-card fade-up">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line" style="width:50%;"></div>
+          </div>
+        `;
+      }
+      orderList.innerHTML = html;
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }
+
+    // ===== UPDATE STATS =====
+    function updateStats(orders) {
+      const total = orders.length;
+      const pending = orders.filter(o => o.status === 'pending').length;
+      const processing = orders.filter(o => o.status === 'processing').length;
+      const completed = orders.filter(o => o.status === 'completed').length;
+
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('pendingCount').textContent = pending;
+      document.getElementById('processingCount').textContent = processing;
+      document.getElementById('completedCount').textContent = completed;
+    }
+
+    // ===== RENDER ORDERS =====
+    function renderOrders(orders) {
+      if (!orders || orders.length === 0) {
+        orderList.innerHTML = `
+          <div class="empty-state fade-up">
+            <i class="fas fa-inbox"></i>
+            <h3>No orders found</h3>
+            <p>Start shopping to see your orders here.</p>
+            <a href="get-new-website.html" class="btn-primary mt-4 inline-block">
+              <i class="fas fa-shopping-cart"></i> Browse Store
+            </a>
+            <div class="mt-3">
+              <button onclick="forceReloadOrders()" class="btn-outline text-sm py-2 px-4">
+                <i class="fas fa-sync"></i> Check for orders
+              </button>
+            </div>
+          </div>
+        `;
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        updateStats([]);
+        return;
+      }
+
+      let html = '';
+      orders.forEach((o, index) => {
+        const status = o.status || 'pending';
+        const date = o.createdAt?.toDate?.() || new Date(o.createdAt);
+        const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        const paymentType = o.paymentType || 'full';
+        const paymentBadgeClass = paymentType === 'full' ? 'full' : 'advance';
+        const paymentLabel = paymentType === 'full' ? '💳 Full' : '⏳ Pay Later';
+        const dueBDT = Number(o.dueAmountBDT) || 0;
+        const hasDue = dueBDT > 0;
+
+        html += `
+          <div class="glass-card order-card fade-up" style="transition-delay: ${(index % 6) * 0.05}s">
+            <div class="flex flex-wrap justify-between items-start gap-3">
+              <div class="flex-1 min-w-[150px]">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <p class="font-bold text-gray-900 text-lg">
+                    #${o.id?.slice(0, 8)?.toUpperCase() || 'N/A'}
+                  </p>
+                  <span class="status-badge ${status}">${status}</span>
+                  <span class="payment-badge ${paymentBadgeClass}">${paymentLabel}</span>
+                  ${hasDue ? `<span class="text-xs font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">⚠️ Due: ৳${dueBDT.toFixed(0)}</span>` : ''}
+                </div>
+                <p class="text-sm text-gray-500 mt-1">
+                  <i class="far fa-calendar-alt mr-1"></i> ${dateStr} at ${timeStr}
+                </p>
+                <p class="text-sm text-gray-500">
+                  <i class="fas fa-box mr-1"></i> ${o.items?.length || 0} items
+                </p>
+                ${o.transactionId ? `<p class="text-xs text-gray-400">Txn: ${o.transactionId}</p>` : '<p class="text-xs text-yellow-500">⚠️ Payment pending</p>'}
+              </div>
+              <div class="text-right">
+                <p class="text-2xl font-bold text-blue-600">$${o.total?.toFixed(2) || '0.00'}</p>
+                <div class="flex flex-wrap justify-end gap-1 mt-1">
+                  <button onclick="viewOrderDetail('${o.id}')" class="text-blue-600 text-sm hover:underline font-medium">
+                    <i class="fas fa-eye"></i> Details
+                  </button>
+                  ${status === 'pending' ? `
+                  <button onclick="deleteOrder('${o.id}')" class="btn-delete text-xs">
+                    <i class="fas fa-trash"></i> Cancel
+                  </button>` : ''}
+                  ${hasDue && status !== 'cancelled' && status !== 'completed' ? `
+                  <button onclick="payDue('${o.id}')" class="pay-due-btn text-xs">
+                    <i class="fas fa-credit-card"></i> Pay Due
+                  </button>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      orderList.innerHTML = html;
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      updateStats(orders);
+    }
+
+    // ===== APPLY FILTERS =====
+    function applyFilters() {
+      const search = searchInput.value.toLowerCase().trim();
+      const status = statusFilter.value;
+
+      filteredOrders = allOrders.filter(o => {
+        if (search) {
+          const id = o.id?.toLowerCase() || '';
+          if (!id.includes(search)) return false;
+        }
+        if (status !== 'all' && o.status !== status) return false;
+        return true;
+      });
+
+      renderOrders(filteredOrders);
+    }
+
+    const debouncedApplyFilters = debounce(applyFilters, 300);
+
+    window.resetFilters = () => {
+      searchInput.value = '';
+      statusFilter.value = 'all';
+      applyFilters();
+    };
+
+    searchInput.addEventListener('input', debouncedApplyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+
+    // ================================================================
+    // 🔥 FORCE RELOAD ORDERS (getDocs fallback)
+    // ================================================================
+    window.forceReloadOrders = async function() {
+      if (!currentUser) {
+        showToast('Not logged in', 'error');
+        return;
+      }
+
+      const btn = document.querySelector('[onclick="forceReloadOrders()"]');
+      if (btn) setLoading(btn, true, 'Loading...');
+
+      try {
+        debugInfo.classList.remove('hidden');
+        debugInfo.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching orders directly from Firestore...';
+
+        const q = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
+        const snapshot = await getDocs(q);
+        
+        const orders = [];
+        snapshot.forEach(doc => {
+          orders.push({ id: doc.id, ...doc.data() });
+        });
+        orders.sort((a, b) => {
+          const ta = a.createdAt?.toDate?.()?.getTime() || new Date(a.createdAt).getTime() || 0;
+          const tb = b.createdAt?.toDate?.()?.getTime() || new Date(b.createdAt).getTime() || 0;
+          return tb - ta;
+        });
+
+        debugInfo.innerHTML = `✅ Found ${orders.length} order(s) in Firestore. Last updated: ${new Date().toLocaleString()}`;
+
+        if (orders.length > 0) {
+          allOrders = orders;
+          applyFilters();
+          showToast(`✅ ${orders.length} order(s) loaded successfully!`, 'success');
+        } else {
+          // Still no orders, check if the user has any orders at all
+          const allOrdersSnapshot = await getDocs(collection(db, 'orders'));
+          const allOrdersCount = allOrdersSnapshot.size;
+          debugInfo.innerHTML += ` (Total orders in DB: ${allOrdersCount})`;
+          
+          if (allOrdersCount > 0) {
+            // There are orders but none for this user
+            debugInfo.innerHTML += ` ⚠️ No orders found for this user. Check if userId matches: ${currentUser.uid}`;
+          } else {
+            debugInfo.innerHTML += ` ℹ️ No orders in the database yet. Place an order to see it here.`;
+          }
+          
+          showToast('No orders found. Try placing an order.', 'warning');
+          allOrders = [];
+          applyFilters();
+        }
+      } catch (err) {
+        console.error('❌ Force reload error:', err);
+        debugInfo.innerHTML = `❌ Error: ${err.message}`;
+        showToast('⚠️ Error loading orders: ' + err.message, 'error');
+      } finally {
+        if (btn) setLoading(btn, false);
+        setTimeout(() => {
+          debugInfo.classList.add('hidden');
+        }, 15000);
+      }
+    };
+
+    // ================================================================
+    // ✅ অর্ডার ডিটেইল
+    // ================================================================
+
+    let currentOrderId = null;
+    let currentOrderData = null;
+
+    window.viewOrderDetail = async (orderId) => {
+      currentOrderId = orderId;
+      try {
+        const docSnap = await getDoc(doc(db, 'orders', orderId));
+        if (!docSnap.exists()) {
+          showToast('Order not found', 'error');
+          return;
+        }
+        currentOrderData = { id: docSnap.id, ...docSnap.data() };
+        renderOrderDetail(currentOrderData);
+        document.getElementById('orderDetailModal').classList.add('open');
+      } catch (err) {
+        showToast('⚠️ Error loading order: ' + err.message, 'error');
+      }
+    };
+
+    function renderOrderDetail(o) {
+      const content = document.getElementById('orderDetailContent');
+      const date = o.createdAt?.toDate?.() || new Date(o.createdAt);
+      const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      let itemsHtml = '';
+      if (o.items && o.items.length > 0) {
+        o.items.forEach(item => {
+          const qty = item.quantity || 1;
+          itemsHtml += `
+            <div class="detail-item">
+              <span class="text-gray-800">${item.name} × ${qty}</span>
+              <span class="font-medium text-gray-900">$${(item.price * qty).toFixed(2)}</span>
+            </div>
+          `;
+        });
+      } else {
+        itemsHtml = '<p class="text-gray-400">No items found.</p>';
+      }
+
+      const statusClass = o.status || 'pending';
+      const statusDisplay = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+
+      const paymentType = o.paymentType || 'full';
+      const amountPaidBDT = Number(o.amountBDT) || 0;
+      const amountPaidUSD = Number(o.amountUSD) || 0;
+      const dueBDT = Number(o.dueAmountBDT) || 0;
+      const dueUSD = Number(o.dueAmountUSD) || 0;
+      const hasDue = dueBDT > 0;
+
+      let dueHtml = '';
+      if (paymentType === 'advance') {
+        dueHtml = `
+          <div class="due-info-box">
+            <div class="due-row">
+              <span class="label">Payment Type</span>
+              <span class="value"><span class="payment-badge advance">Pay Later</span></span>
+            </div>
+            <div class="due-row">
+              <span class="label">Advance Paid (BDT)</span>
+              <span class="value paid-amount">৳${amountPaidBDT.toFixed(0)}</span>
+            </div>
+            <div class="due-row">
+              <span class="label">Advance Paid (USD)</span>
+              <span class="value paid-amount">$${amountPaidUSD.toFixed(2)}</span>
+            </div>
+            ${hasDue ? `
+            <div class="due-row">
+              <span class="label">Remaining Due (BDT)</span>
+              <span class="value due-amount">৳${dueBDT.toFixed(0)}</span>
+            </div>
+            <div class="due-row">
+              <span class="label">Remaining Due (USD)</span>
+              <span class="value due-amount">$${dueUSD.toFixed(2)}</span>
+            </div>
+            <div class="mt-3">
+              <button onclick="payDue('${o.id}')" class="pay-due-btn w-full justify-center">
+                <i class="fas fa-credit-card"></i> Pay Due Now
+              </button>
+            </div>
+            ` : `
+            <div class="due-row">
+              <span class="label">Status</span>
+              <span class="value text-green-600">✅ Fully Paid</span>
+            </div>
+            `}
+          </div>
+        `;
+      } else {
+        dueHtml = `
+          <div class="p-3 bg-green-50 rounded-xl text-sm text-green-700 flex items-center gap-2">
+            <i class="fas fa-check-circle"></i> Full payment completed.
+            ${o.transactionId ? `Transaction: ${o.transactionId}` : ''}
+          </div>
+        `;
+      }
+
+      content.innerHTML = `
+        <div class="flex flex-wrap justify-between items-start gap-3">
+          <div>
+            <p class="text-sm text-gray-500">Order ID</p>
+            <p class="font-mono font-bold text-gray-900 text-lg">#${o.id}</p>
+          </div>
+          <span class="status-badge ${statusClass} text-sm px-4 py-1.5">${statusDisplay}</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Date</p>
+            <p class="text-gray-900 font-medium">${dateStr}</p>
+            <p class="text-sm text-gray-400">${timeStr}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Total</p>
+            <p class="text-2xl font-bold text-blue-600">$${o.total?.toFixed(2) || '0.00'}</p>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-sm text-gray-500">Payment</p>
+          <p class="text-gray-900">${o.paymentMethod || 'N/A'}</p>
+          ${o.transactionId ? `<p class="text-sm text-gray-400">Transaction: ${o.transactionId}</p>` : '<p class="text-sm text-yellow-500">⚠️ Payment pending</p>'}
+          ${o.senderNumber ? `<p class="text-sm text-gray-400">Sender: ${o.senderNumber}</p>` : ''}
+        </div>
+
+        ${dueHtml}
+
+        <div>
+          <p class="text-sm text-gray-500 mb-2">Items (${o.items?.length || 0})</p>
+          <div class="bg-gray-50 rounded-xl p-3 space-y-1">
+            ${itemsHtml}
+          </div>
+        </div>
+
+        ${o.status !== 'completed' && o.status !== 'cancelled' ? `
+          <div class="p-3 bg-yellow-50 rounded-xl text-sm text-yellow-700 flex items-center gap-2">
+            <i class="fas fa-clock"></i> Your order is ${statusDisplay.toLowerCase()}. You'll be notified when it's completed.
+          </div>
+        ` : o.status === 'completed' ? `
+          <div class="p-3 bg-green-50 rounded-xl text-sm text-green-700 flex items-center gap-2">
+            <i class="fas fa-check-circle"></i> Order completed! Thank you for shopping.
+          </div>
+        ` : o.status === 'cancelled' ? `
+          <div class="p-3 bg-red-50 rounded-xl text-sm text-red-700 flex items-center gap-2">
+            <i class="fas fa-times-circle"></i> This order has been cancelled.
+          </div>
+        ` : ''}
+      `;
+
+      document.getElementById('detailOrderTitle').textContent = `Order #${o.id.slice(0, 8).toUpperCase()}`;
+    }
+
+    window.closeOrderDetail = () => {
+      document.getElementById('orderDetailModal').classList.remove('open');
+      currentOrderId = null;
+      currentOrderData = null;
+    };
+
+    document.getElementById('orderDetailModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeOrderDetail();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeOrderDetail();
+    });
+
+    // ================================================================
+    // ✅ PAY DUE
+    // ================================================================
+
+    window.payDue = async (orderId) => {
+      const order = allOrders.find(o => o.id === orderId);
+      if (!order) { showToast('Order not found', 'error'); return; }
+
+      const dueBDT = Number(order.dueAmountBDT) || 0;
+      const dueUSD = Number(order.dueAmountUSD) || 0;
+
+      if (dueBDT <= 0) {
+        showToast('✅ This order has no due amount.', 'success');
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) {
+        showToast('⚠️ Please sign in to pay due.', 'error');
+        if (typeof window.openAuthModal === 'function') window.openAuthModal('signin');
+        return;
+      }
+
+      closeOrderDetail();
+
+      try {
+        const settingsSnap = await getDoc(doc(db, 'settings', 'payment'));
+        const settings = settingsSnap.exists() ? settingsSnap.data() : {};
+        if (!settings.usdRate || Number(settings.usdRate) <= 0) settings.usdRate = 125;
+        if (!settings.usdt) settings.usdt = '0x0e24bd75c45be9d0e43bddff6553dbd046a12840';
+
+        if (typeof window.openDuePaymentModal === 'function') {
+          window.openDuePaymentModal(orderId, dueUSD, dueBDT, settings, order);
+        } else {
+          showToast('⚠️ Due payment system is loading. Please refresh.', 'error');
+        }
+      } catch (err) {
+        showToast('⚠️ ' + err.message, 'error');
+      }
+    };
+
+    // ================================================================
+    // ✅ ORDER CANCEL (simple description + checkbox, no re-auth)
+    // ================================================================
+
+    window.deleteOrder = async (orderId) => {
+      const order = allOrders.find(o => o.id === orderId);
+      if (!order) { showToast('Order not found', 'error'); return; }
+      if ((order.status || 'pending') !== 'pending') {
+        showToast('Only pending orders can be cancelled. No refund during processing/development.', 'warning');
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) { showToast('Not logged in', 'error'); return; }
+
+      const shortId = (orderId || '').slice(0, 8).toUpperCase();
+      const paymentType = order.paymentType || 'full';
+      const isAdvance = paymentType === 'advance';
+
+      const bodyHtml = `
+        <p class="text-left">You are about to cancel order <strong>#${shortId}</strong>.</p>
+        <ul class="text-left mt-3 space-y-2 text-sm text-gray-600 list-disc list-inside">
+          <li>If you have already made a <strong>full payment</strong>, you will receive a refund according to our rules after admin verification (usually within 3–7 business days).</li>
+          <li>If you selected the <strong>Pay Later</strong> (advance) option, you will receive a <strong>৳300 refund</strong>, and the remaining <strong>৳200</strong> will be retained as a maintenance fee for the order.</li>
+        </ul>
+        <p class="mt-3 text-red-600 font-semibold text-left">This action cannot be undone.</p>
+        ${isAdvance ? '<p class="mt-2 text-amber-700 text-sm text-left bg-amber-50 rounded-lg px-3 py-2">This order used <strong>Pay Later</strong> — the ৳300 refund / ৳200 fee rule above applies.</p>' : ''}
+      `;
+
+      const confirmed = await window.showConfirmModal(
+        'Cancel this order?',
+        bodyHtml,
+        'Confirm Cancel',
+        'Keep Order',
+        {
+          requireCheckbox: true,
+          checkboxLabel: 'I understand the refund policy and want to cancel this order'
+        }
+      );
+
+      if (!confirmed) {
+        showToast('Order kept — nothing was cancelled', 'warning');
+        return;
+      }
+
+      try {
+        await deleteDoc(doc(db, 'orders', orderId));
+        showToast('✅ Order cancelled. Admin will process the refund according to the policy.', 'success');
+      } catch (err) {
+        console.error('Cancel order error:', err);
+        showToast('⚠️ ' + (err.message || 'Cancellation failed'), 'error');
+      }
+    };
+
+    // ================================================================
+    // ✅ INVOICE & PRINT
+    // ================================================================
+
+    window.downloadInvoice = () => {
+      const o = currentOrderData;
+      if (!o) { showToast('No order selected', 'error'); return; }
+
+      const date = o.createdAt?.toDate?.() || new Date(o.createdAt);
+      const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      let itemsText = '';
+      if (o.items && o.items.length > 0) {
+        o.items.forEach(item => {
+          const qty = item.quantity || 1;
+          itemsText += `  ${item.name} × ${qty} = $${(item.price * qty).toFixed(2)}\n`;
+        });
+      }
+
+      const paymentType = o.paymentType || 'full';
+      const paymentLabel = paymentType === 'full' ? 'Full Payment' : 'Pay Later (Advance)';
+      const amountPaidBDT = Number(o.amountBDT) || 0;
+      const dueBDT = Number(o.dueAmountBDT) || 0;
+      const dueInfo = paymentType === 'advance' ?
+        `\nAmount Paid (BDT): ৳${amountPaidBDT.toFixed(0)}\nDue (BDT): ৳${dueBDT.toFixed(0)}` :
+        '\nPayment: Full amount paid';
+
+      const invoiceContent = `
+========================================
+      CODECUREBD - INVOICE
+========================================
+
+Order ID: #${o.id}
+Date: ${dateStr}
+Status: ${(o.status || 'PENDING').toUpperCase()}
+Payment Type: ${paymentLabel}
+${dueInfo}
+
+----------------------------------------
+ITEMS:
+${itemsText}
+----------------------------------------
+
+Total: $${o.total?.toFixed(2) || '0.00'}
+Payment Method: ${o.paymentMethod || 'N/A'}
+Transaction: ${o.transactionId || 'Not provided'}
+
+----------------------------------------
+Thank you for shopping with CodeCureBD!
+========================================
+      `.trim();
+
+      const blob = new Blob([invoiceContent], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `invoice-${o.id}-${dateStr.replace(/\s/g, '-')}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      showToast('✅ Invoice downloaded!', 'success');
+    };
+
+    window.printOrder = () => {
+      const content = document.getElementById('orderDetailContent');
+      const title = document.getElementById('detailOrderTitle');
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      if (!printWindow) {
+        showToast('Please allow popups for printing.', 'warning');
+        return;
+      }
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Order Invoice</title>
+            <style>
+              body { font-family: 'Inter', sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+              h1 { text-align: center; color: #1c1c1e; }
+              hr { border: 1px solid #e5e7eb; margin: 20px 0; }
+              .detail-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f3f4f6; }
+              .status-badge { padding: 2px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
+              .status-badge.pending { background: #fef3c7; color: #d97706; }
+              .status-badge.processing { background: #dbeafe; color: #2563eb; }
+              .status-badge.completed { background: #d1fae5; color: #059669; }
+              .status-badge.cancelled { background: #fee2e2; color: #dc2626; }
+              .payment-badge { padding: 2px 10px; border-radius: 30px; font-size: 0.65rem; font-weight: 600; }
+              .payment-badge.full { background: #d1fae5; color: #059669; }
+              .payment-badge.advance { background: #fef3c7; color: #d97706; }
+            </style>
+          </head>
+          <body>
+            <h1>CodeCureBD - Invoice</h1>
+            <hr />
+            <div style="font-size:1.2rem; font-weight:600; margin-bottom:10px;">${title.textContent}</div>
+            <div>${content.innerHTML}</div>
+            <hr />
+            <p style="text-align:center; color:#9ca3af; font-size:0.85rem;">Thank you for shopping with CodeCureBD!</p>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    };
+
+    // ================================================================
+    // 🔥 LOAD ORDERS (onSnapshot with error handling + fallback)
+    // ================================================================
+
+    function loadOrders(userId) {
+      if (!userId) {
+        orderList.innerHTML = `
+          <div class="empty-state fade-up">
+            <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+            <h3>Please sign in</h3>
+            <p>Sign in to view your orders.</p>
+          </div>
+        `;
+        return;
+      }
+
+      renderSkeletons(3);
+
+      if (unsubOrders) {
+        unsubOrders();
+        unsubOrders = null;
+      }
+
+      console.log('🔍 Loading orders for userId:', userId);
+
+      const q = query(
+        collection(db, 'orders'),
+        where('userId', '==', userId)
+      );
+
+      // 🔥 First, try onSnapshot
+      unsubOrders = onSnapshot(q, (snapshot) => {
+        console.log('📦 onSnapshot received, size:', snapshot.size);
+        allOrders = [];
+        snapshot.forEach(doc => {
+          allOrders.push({ id: doc.id, ...doc.data() });
+        });
+        allOrders.sort((a, b) => {
+          const ta = a.createdAt?.toDate?.()?.getTime() || new Date(a.createdAt).getTime() || 0;
+          const tb = b.createdAt?.toDate?.()?.getTime() || new Date(b.createdAt).getTime() || 0;
+          return tb - ta;
+        });
+
+        console.log('📋 Orders loaded:', allOrders.length);
+        applyFilters();
+
+        // Hide debug after successful load
+        debugInfo.classList.add('hidden');
+
+      }, (error) => {
+        console.error('🔥 Snapshot error:', error);
+        // Try fallback with getDocs
+        debugInfo.classList.remove('hidden');
+        debugInfo.innerHTML = `⚠️ Real-time listener error: ${error.message}. Trying fallback...`;
+        showToast('⚠️ Error loading orders. Retrying...', 'warning');
+        
+        // Fallback: use getDocs
+        fallbackLoadOrders(userId);
+      });
+
+      // Also set a timeout to check if onSnapshot is stuck
+      setTimeout(() => {
+        if (allOrders.length === 0 && !isLoading) {
+          console.log('⏳ onSnapshot seems stuck, trying fallback...');
+          debugInfo.classList.remove('hidden');
+          debugInfo.innerHTML = '⏳ No orders yet. Checking database...';
+          fallbackLoadOrders(userId);
+        }
+      }, 5000);
+    }
+
+    // 🔥 FALLBACK: getDocs
+    async function fallbackLoadOrders(userId) {
+      if (isLoading) return;
+      isLoading = true;
+      loadAttempts++;
+
+      try {
+        console.log('🔄 Fallback: fetching orders with getDocs');
+        const q = query(collection(db, 'orders'), where('userId', '==', userId));
+        const snapshot = await getDocs(q);
+        
+        const orders = [];
+        snapshot.forEach(doc => {
+          orders.push({ id: doc.id, ...doc.data() });
+        });
+        orders.sort((a, b) => {
+          const ta = a.createdAt?.toDate?.()?.getTime() || new Date(a.createdAt).getTime() || 0;
+          const tb = b.createdAt?.toDate?.()?.getTime() || new Date(b.createdAt).getTime() || 0;
+          return tb - ta;
+        });
+
+        console.log('📦 Fallback loaded:', orders.length, 'orders');
+        
+        if (orders.length > 0) {
+          allOrders = orders;
+          applyFilters();
+          debugInfo.innerHTML = `✅ Found ${orders.length} order(s) in database.`;
+          setTimeout(() => debugInfo.classList.add('hidden'), 5000);
+          showToast(`✅ ${orders.length} order(s) loaded`, 'success');
+        } else {
+          // Check if there are any orders in the entire collection
+          const allOrdersSnap = await getDocs(collection(db, 'orders'));
+          const totalOrders = allOrdersSnap.size;
+          if (totalOrders > 0) {
+            debugInfo.innerHTML = `ℹ️ ${totalOrders} order(s) in database, but none for this user.`;
+          } else {
+            debugInfo.innerHTML = 'ℹ️ No orders in the database yet. Place an order to see it here.';
+          }
+          allOrders = [];
+          applyFilters();
+        }
+      } catch (err) {
+        console.error('❌ Fallback error:', err);
+        debugInfo.innerHTML = `❌ Error: ${err.message}. Check your Firestore permissions.`;
+        showToast('⚠️ Could not load orders. Check console.', 'error');
+      } finally {
+        isLoading = false;
+      }
+    }
+
+    // ================================================================
+    // ✅ SYNC CART - OVERRIDE to prevent restoring cart on this page
+    // ================================================================
+
+    // We override the syncCart behavior on this page to prevent
+    // the cart from being restored from Firestore after payment.
+    // The cart should remain empty after payment.
+
+    // The original syncCart in components.js restores the server cart
+    // if local cart is empty. We prevent that by not calling syncCart
+    // on this page, or by clearing the server cart after payment.
+
+    // In the auth state change, we don't call syncCart for my-orders page.
+    // Instead, we just load the orders.
+
+    // ================================================================
+    // AUTH STATE
+    // ================================================================
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentUser = user;
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const displayName = userDoc.exists() ? userDoc.data().displayName : user.email.split('@')[0];
+      const role = userDoc.exists() ? userDoc.data().role : 'user';
+      updateNavbarAuth(user, displayName, role);
+
+      // 🔥 IMPORTANT: Don't call syncCart here - it would restore the cart
+      // Instead, just load orders
+      loadOrders(user.uid);
+
+      // Also check if cart is empty, if not, clear it (should be empty after payment)
+      const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (localCart.length > 0) {
+        console.log('⚠️ Cart has items on my-orders page. Clearing...');
+        // This might happen if the user navigates to my-orders without clearing cart
+        // We'll clear it to keep the UI consistent
+        localStorage.removeItem('cart');
+        updateCartBadge();
+        if (typeof window.updateCartUI === 'function') window.updateCartUI();
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (unsubOrders) unsubOrders();
+    });
+
+    console.log('📦 My Orders page ready with fallback loading and cart fix.');
+  </script>
+</body>
+</html>

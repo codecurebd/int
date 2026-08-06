@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Website Fix & Repair Service Bangladesh | CodeCureBD</title>
+  
+  <!-- ✅ Preconnect for faster font loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  
+  <style>
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; }
+    body {
+      background: #f2f4f7;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* ===== TICKET BADGE ===== */
+    .ticket-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    /* ===== PRIORITY BADGE ===== */
+    .priority-badge {
+      padding: 4px 14px;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .priority-high { background: #fee2e2; color: #dc2626; }
+    .priority-medium { background: #fef3c7; color: #d97706; }
+    .priority-low { background: #d1fae5; color: #059669; }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.06);
+    }
+
+    /* ===== FORM INPUT ===== */
+    .form-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1.5px solid rgba(60, 60, 67, 0.08);
+      border-radius: 14px;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.8);
+      transition: all 0.3s ease;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      color: #1c1c1e;
+    }
+    .form-input:focus {
+      border-color: #007AFF;
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.08);
+      background: #ffffff;
+    }
+    .form-input::placeholder {
+      color: #8e8e93;
+      opacity: 0.7;
+    }
+    .form-input.error {
+      border-color: #FF3B30;
+      box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.08);
+    }
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+    textarea.form-input {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    /* ===== BUTTON ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 54px;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 122, 255, 0.35);
+    }
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ===== SUCCESS / TICKET BOX ===== */
+    .feedback-box {
+      padding: 16px 20px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeSlideUp 0.4s ease forwards;
+    }
+    .feedback-box.success {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .feedback-box.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .feedback-box.ticket {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    .feedback-box i { font-size: 1.3rem; flex-shrink: 0; }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .glass-card { padding: 1.5rem; border-radius: 16px; }
+      .form-input { padding: 12px 16px; font-size: 0.95rem; border-radius: 12px; }
+      .btn-primary { font-size: 0.95rem; min-height: 48px; padding: 12px 20px; }
+      .ticket-badge { font-size: 0.7rem; padding: 4px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+      <section class="pt-4 pb-16 px-6 max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <i class="fas fa-wrench text-xl text-white"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">Fix My Website</h1>
+        </div>
+        <p class="text-gray-500 mt-1 text-lg">
+          Describe your issue in detail. We'll get back to you within 24 hours.
+        </p>
+        <div class="mt-3 flex flex-wrap items-center gap-3 text-sm">
+          <span class="ticket-badge"><i class="fas fa-ticket-alt"></i> Get Ticket Number</span>
+          <span class="text-gray-400 flex items-center gap-1"><i class="fas fa-clock"></i> Response: 24h</span>
+          <span class="text-gray-400 flex items-center gap-1"><i class="fas fa-lock"></i> 100% Secure</span>
+        </div>
+
+        <!-- ===== FORM ===== -->
+        <div class="glass-card mt-8">
+          <form id="fixForm" class="space-y-5">
+            <!-- Name -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                Your Name <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="fixName" required class="form-input" placeholder="e.g. John Doe" autocomplete="name" />
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input type="email" id="fixEmail" required class="form-input" placeholder="your@email.com" autocomplete="email" />
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Phone</label>
+              <input type="tel" id="fixPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" autocomplete="tel" />
+            </div>
+
+            <!-- Website URL -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Website URL (if any)</label>
+              <input type="url" id="fixUrl" class="form-input" placeholder="https://example.com" autocomplete="url" />
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Problem Category</label>
+              <select id="fixCategory" class="form-input">
+                <option value="speed">🚀 Speed Issue</option>
+                <option value="error">🐛 Error / Bug</option>
+                <option value="design">🎨 Design Issue</option>
+                <option value="hacking">🔒 Security / Hacking</option>
+                <option value="hosting">☁️ Hosting / Domain</option>
+                <option value="other">📌 Other</option>
+              </select>
+            </div>
+
+            <!-- Priority -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Priority</label>
+              <select id="fixPriority" class="form-input">
+                <option value="low">🟢 Low</option>
+                <option value="medium" selected>🟡 Medium</option>
+                <option value="high">🔴 High</option>
+              </select>
+            </div>
+
+            <!-- Problem Description -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                Describe the problem <span class="text-red-500">*</span>
+              </label>
+              <textarea id="fixProblem" rows="5" required class="form-input resize-y" 
+                        placeholder="What's broken? Slow speed? Error messages? Please be as detailed as possible."></textarea>
+            </div>
+
+            <!-- ===== Cloudinary Image Upload (Updated) ===== -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                Screenshot / Image (Upload)
+              </label>
+              <img id="fixImagePreview" class="hidden w-full h-40 object-cover rounded-xl mb-2 border border-gray-200" alt="Screenshot Preview" />
+              <input type="file" id="fixImageFile" accept="image/*" class="form-input" onchange="window.handleFixImageUpload(event)" />
+              <input type="text" id="fixImageLink" class="form-input mt-2" placeholder="Image URL will appear here automatically" readonly />
+              <p class="text-xs text-gray-400 mt-1.5 flex items-center gap-1">
+                <i class="fas fa-cloud-upload-alt text-blue-500"></i> 
+                Select a screenshot to upload directly to Cloudinary.
+              </p>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-paper-plane"></i> Submit Fix Request
+            </button>
+
+            <!-- Feedback & Ticket -->
+            <div id="fixFeedback" class="hidden feedback-box"></div>
+            <div id="ticketNumber" class="hidden feedback-box ticket"></div>
+          </form>
+        </div>
+
+        <!-- ===== TRACKING INFO ===== -->
+        <div class="mt-6 p-4 bg-blue-50/70 backdrop-blur-sm rounded-xl border border-blue-200/50 flex items-start gap-3">
+          <i class="fas fa-info-circle text-blue-500 text-xl mt-0.5"></i>
+          <p class="text-sm text-blue-700">
+            After submitting, you'll receive a <strong>Ticket Number</strong>. 
+            Use it to track your request in 
+            <a href="my-fix-requests.html" class="font-semibold underline hover:text-blue-900 transition-colors">My Fix Requests</a>.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
+
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script type="module">
+    // ================================================================
+    // ইমপোর্ট
+    // ================================================================
+    import {
+renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderCartSidebar, setLoading, renderPaymentModal,
+  renderAuthModal
+} from './components.js';
+    import { uploadImage } from './components.js'; // ✅ যোগ করেছি
+    import { 
+      auth, db, collection, addDoc, serverTimestamp, 
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+      onAuthStateChanged, signOut, doc, setDoc, getDoc,
+      signInWithPopup, googleProvider
+    } from './firebase-config.js';
+
+    // ===== রেন্ডার =====
+    renderNavbar();
+    renderAuthModal();
+    renderFooter();
+    renderCartSidebar();
+    renderPaymentModal();
+    updateCartBadge();
+
+    // ===== টোস্ট =====
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+    };
+
+    // ===== Auth Modal =====
+    // Auth handled by components.js (renderAuthModal / openAuthModal)
+// togglePasswordVisibility moved to components.js as toggleAuthPassword
+// socialLogin handled by components.js
+// Auth form handled by components.js
+onAuthStateChanged(auth, async (user) => {
+      let name = null;
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        name = userDoc.exists() ? userDoc.data().displayName : user.email.split('@')[0];
+      }
+      updateNavbarAuth(user, name);
+    });
+
+    // handleLogout handled by components.js
+// ================================================================
+    // ===== Cloudinary Upload Handler for Fix Request =====
+    // ================================================================
+    window.handleFixImageUpload = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const input = document.getElementById('fixImageLink');
+      const preview = document.getElementById('fixImagePreview');
+      const btn = e.target;
+
+      btn.disabled = true;
+
+      try {
+        const url = await uploadImage(file);
+        input.value = url;
+        preview.src = url;
+        preview.classList.remove('hidden');
+        showToast('✅ Screenshot uploaded successfully!', 'success');
+      } catch (err) {
+        showToast('⚠️ Upload failed: ' + err.message, 'error');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.value = '';
+      }
+    };
+
+    // ================================================================
+    // ✅ ফিক্স ফর্ম লজিক (UI ইমপ্রুভ সহ)
+    // ================================================================
+    const fixForm = document.getElementById('fixForm');
+    const fixBtn = fixForm.querySelector('button[type="submit"]');
+    const feedback = document.getElementById('fixFeedback');
+    const ticketDiv = document.getElementById('ticketNumber');
+
+    // Remove error state on focus
+    document.querySelectorAll('.form-input').forEach(el => {
+      el.addEventListener('focus', () => el.classList.remove('error'));
+    });
+
+    fixForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('fixName').value.trim();
+      const email = document.getElementById('fixEmail').value.trim();
+      const phone = document.getElementById('fixPhone').value.trim();
+      const url = document.getElementById('fixUrl').value.trim();
+      const category = document.getElementById('fixCategory').value;
+      const priority = document.getElementById('fixPriority').value;
+      const problem = document.getElementById('fixProblem').value.trim();
+      const imageLink = document.getElementById('fixImageLink').value.trim();
+
+      // Reset errors
+      document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+      feedback.className = 'hidden feedback-box';
+      ticketDiv.className = 'hidden feedback-box ticket';
+
+      // Validation
+      let hasError = false;
+      if (!name) {
+        document.getElementById('fixName').classList.add('error');
+        hasError = true;
+      }
+      if (!email) {
+        document.getElementById('fixEmail').classList.add('error');
+        hasError = true;
+      } else if (!email.includes('@')) {
+        document.getElementById('fixEmail').classList.add('error');
+        hasError = true;
+      }
+      if (!problem) {
+        document.getElementById('fixProblem').classList.add('error');
+        hasError = true;
+      }
+
+      if (hasError) {
+        feedback.className = 'feedback-box error';
+        feedback.innerHTML = `<i class="fas fa-exclamation-circle"></i> Please fill in all required fields correctly.`;
+        showToast('Please fill in all required fields.', 'error');
+        return;
+      }
+
+      setLoading(fixBtn, true, 'Submitting...');
+
+      try {
+        const userId = auth.currentUser ? auth.currentUser.uid : null;
+        const userEmail = auth.currentUser ? auth.currentUser.email : email;
+
+        const ticketNumber = `FIX-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+        await addDoc(collection(db, 'fixRequests'), {
+          name,
+          email,
+          phone,
+          url,
+          category,
+          priority,
+          problem,
+          imageLink,
+          userId,
+          userEmail,
+          ticketNumber,
+          status: 'pending',
+          timestamp: serverTimestamp(),
+          read: false,
+          reply: '',
+          replyTimestamp: null
+        });
+
+        // Success feedback
+        feedback.className = 'feedback-box success';
+        feedback.innerHTML = `<i class="fas fa-check-circle"></i> Your request has been submitted successfully! We will contact you within 24 hours.`;
+
+        ticketDiv.className = 'feedback-box ticket';
+        ticketDiv.innerHTML = `
+          <i class="fas fa-ticket-alt"></i>
+          <div>
+            <strong>Your Ticket Number:</strong>
+            <span class="font-mono font-bold text-base">${ticketNumber}</span>
+            <br />
+            <span class="text-xs opacity-75">Please save this number to track your request.</span>
+          </div>
+        `;
+
+        showToast('✅ Request submitted! Ticket: ' + ticketNumber, 'success');
+        fixForm.reset();
+
+        // Auto hide after 10s
+        setTimeout(() => {
+          feedback.className = 'hidden feedback-box';
+          ticketDiv.className = 'hidden feedback-box ticket';
+        }, 12000);
+
+      } catch (error) {
+        console.error('Fix request error:', error);
+        feedback.className = 'feedback-box error';
+        feedback.innerHTML = `<i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.`;
+        showToast('⚠️ ' + error.message, 'error');
+      } finally {
+        setLoading(fixBtn, false);
+      }
+    });
+
+    // ===== Auto-fill user data =====
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const nameInput = document.getElementById('fixName');
+        const emailInput = document.getElementById('fixEmail');
+        if (!nameInput.value) {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            if (data.displayName) nameInput.value = data.displayName;
+            if (data.phone) document.getElementById('fixPhone').value = data.phone;
+          }
+          if (!emailInput.value) emailInput.value = user.email;
+        }
+      }
+    });
+
+    console.log('🔧 Fix Website page loaded successfully!');
+  </script>
+</body>
+</html>

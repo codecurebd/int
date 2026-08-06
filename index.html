@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Website Development Bangladesh | Custom Website & Fix Service | CodeCureBD</title>
+<meta name="description" content="Professional website development, fixing & e-commerce solutions in Bangladesh. Fast delivery within 24-48 hours. BKash, Nagad & USDT payment accepted. 100+ projects delivered.">
+<meta name="keywords" content="website development bangladesh, website design dhaka, website fix bangladesh, buy website in bd, website purchase bd, e-commerce website bkash, e-commerce website nagad, e-commerce website bd, ecommerce website bangladesh, custom website bangladesh">
+  
+  <!-- ✅ Preconnect & Preload for faster font loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  
+  <style>
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; }
+    body {
+      background: #f2f4f7;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* ✅ Fix: remove main-content top gap so hero goes under transparent navbar */
+    body.landing-page .main-content {
+      padding-top: 0 !important;
+    }
+
+    /* ===== FONT DISPLAY SWAP ===== */
+    @font-face {
+      font-family: 'Inter';
+      font-display: swap;
+    }
+
+    /* ===== SCROLL ANIMATION ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(0,122,255,0.35);
+      z-index: 999;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .scroll-top-btn.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+    .scroll-top-btn:hover { transform: scale(1.05); }
+
+    /* ===== HERO (full-bleed under transparent nav) ===== */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      /* nav height space for content only — background still covers top */
+      padding: 6.5rem 1.5rem 4rem;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 102, 255, 0.12), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 90% 20%, rgba(139, 92, 246, 0.08), transparent 50%),
+        radial-gradient(ellipse 40% 35% at 10% 60%, rgba(52, 199, 89, 0.06), transparent 50%),
+        linear-gradient(180deg, #eef4ff 0%, #f2f4f7 45%, #f2f4f7 100%);
+    }
+    .hero-section .hero-orbs {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .hero-section .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.45;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .hero-section .hero-orb.o1 {
+      width: 320px; height: 320px;
+      background: rgba(0, 102, 255, 0.25);
+      top: -80px; left: -60px;
+      animation-delay: 0s;
+    }
+    .hero-section .hero-orb.o2 {
+      width: 260px; height: 260px;
+      background: rgba(139, 92, 246, 0.22);
+      top: 10%; right: -40px;
+      animation-delay: -4s;
+    }
+    .hero-section .hero-orb.o3 {
+      width: 200px; height: 200px;
+      background: rgba(245, 158, 11, 0.15);
+      bottom: 15%; left: 20%;
+      animation-delay: -7s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(18px, -22px) scale(1.05); }
+      66% { transform: translate(-14px, 12px) scale(0.97); }
+    }
+    .hero-section .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero-section .hero-title {
+      font-size: clamp(2.25rem, 5vw, 4.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      color: #0f172a;
+    }
+    .hero-section .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: #64748b;
+      margin-top: 1.25rem;
+      max-width: 36rem;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    .hero-section .hero-cta {
+      margin-top: 2.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.85rem;
+    }
+    /* subtle grid pattern overlay */
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 102, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 102, 255, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== TRUST BADGE ===== */
+    .trust-badge {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 0.55rem 1.25rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255,255,255,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #374151;
+      box-shadow: 0 4px 16px rgba(0, 102, 255, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .trust-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 102, 255, 0.1);
+    }
+    .trust-badge i { font-size: 1.15rem; }
+
+    /* floating label animation */
+    @keyframes softPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.15); }
+      50% { box-shadow: 0 0 0 8px rgba(0, 102, 255, 0); }
+    }
+    .trust-badge.pulse {
+      animation: softPulse 2.8s ease-in-out infinite;
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-4px);
+    }
+
+    /* ===== FEATURED PRODUCT CARD ===== */
+    .featured-card {
+      overflow: hidden;
+      padding: 0;
+    }
+    .featured-card .img-wrapper {
+      position: relative;
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+      background: #f0f2f5;
+      height: 180px;
+      pointer-events: none;
+    }
+    .featured-card .img-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #ffffff;
+    }
+    .featured-card .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .featured-card .card-body {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+
+    /* ✅ এক লাইনে টাইটেল */
+    .product-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+      max-height: 1.2em;
+    }
+
+    /* ✅ এক লাইনে ডেসক্রিপশন */
+    .product-desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.5;
+      max-height: 1.5em;
+    }
+
+    /* ===== SERVICE CARD ===== */
+    .service-card {
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+    }
+    .service-icon {
+      font-size: 2.8rem;
+      color: #007AFF;
+      margin-bottom: 1rem;
+    }
+
+    /* ===== STATS ===== */
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #1c1c1e;
+    }
+    .stat-label {
+      font-size: 1rem;
+      color: #8e8e93;
+    }
+
+    /* ===== HOW IT WORKS STEP ===== */
+    .step-number {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin: 0 auto;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e7eb;
+      margin: 0 1rem;
+    }
+    @media (max-width: 768px) {
+      .step-line { display: none; }
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      min-height: 50px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,122,255,0.35);
+    }
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #1c1c1e;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(60,60,67,0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      background: rgba(255,255,255,0.5);
+      min-height: 50px;
+    }
+    .btn-outline:hover {
+      background: rgba(0,122,255,0.04);
+      border-color: #007AFF;
+      color: #007AFF;
+      transform: translateY(-2px);
+    }
+
+    .btn-details {
+      background: rgba(0, 122, 255, 0.06);
+      color: #007AFF;
+      border: 1.5px solid rgba(0, 122, 255, 0.15);
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 8px 18px;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+    }
+    .btn-details i {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    .btn-details:hover {
+      background: rgba(0, 122, 255, 0.12);
+      border-color: #007AFF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 122, 255, 0.10);
+    }
+
+    /* ===== SKELETON ===== */
+    .skeleton-card {
+      background: #f3f4f6;
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-card .skeleton-img {
+      width: 100%;
+      height: 180px;
+      background: #e5e7eb;
+    }
+    .skeleton-card .skeleton-body {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+    .skeleton-card .skeleton-line {
+      height: 16px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+    .skeleton-card .skeleton-line.short { width: 40%; }
+    .skeleton-card .skeleton-line.medium { width: 70%; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .glass-card { padding: 1rem; border-radius: 12px; }
+      .stat-number { font-size: 2rem; }
+      .btn-primary, .btn-outline, .btn-details { font-size: 0.85rem; min-height: 44px; padding: 10px 20px; }
+      .trust-badge { font-size: 0.75rem; padding: 0.3rem 1rem; }
+      .featured-card .img-wrapper { height: 140px; }
+    }
+    @media (max-width: 480px) {
+      .stat-number { font-size: 1.6rem; }
+      .featured-card .img-wrapper { height: 120px; }
+      .btn-details { font-size: 0.78rem; padding: 6px 14px; min-height: 36px; }
+    }
+
+    /* ===== FAQ Show More Button ===== */
+    .faq-show-more-btn {
+      background: transparent;
+      border: 1.5px solid rgba(60,60,67,0.08);
+      padding: 10px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1c1c1e;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.5);
+      margin-top: 1rem;
+    }
+    .faq-show-more-btn:hover {
+      background: rgba(0,122,255,0.04);
+      border-color: #007AFF;
+      color: #007AFF;
+      transform: translateY(-2px);
+    }
+    .faq-show-more-btn i {
+      transition: transform 0.3s ease;
+    }
+    .faq-show-more-btn.rotated i {
+      transform: rotate(180deg);
+    }
+
+    /* ===== CONTACT FORM ===== */
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(60,60,67,0.06);
+      border-radius: 14px;
+      font-size: 0.95rem;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      transition: all 0.25s ease;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-input:focus {
+      border-color: #007AFF;
+      box-shadow: 0 0 0 4px rgba(0,122,255,0.06);
+      background: #fff;
+    }
+
+    /* ===== TOAST ===== */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      width: 90%;
+      max-width: 400px;
+    }
+    .toast {
+      pointer-events: auto;
+      background: #1c1c1e;
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 0.3s ease forwards;
+      width: 100%;
+      backdrop-filter: blur(4px);
+    }
+    .toast.success { background: #28A745; }
+    .toast.error { background: #dc3545; }
+    .toast.warning { background: #ffc107; color: #1c1c1e; }
+    .toast.hide { animation: slideDown 0.3s ease forwards; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(30px); }
+    }
+
+    /* ===== PRICE STYLES (for featured cards) ===== */
+    .price-wrapper {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 0.5rem;
+    }
+    .original-price {
+      text-decoration: line-through;
+      color: #9ca3af;
+      font-size: 0.95rem;
+    }
+    .discount-price {
+      color: #16a34a;
+      font-weight: 700;
+      font-size: 1.4rem;
+    }
+    .discount-percent-tag {
+      background: rgba(220, 38, 38, 0.10);
+      color: #dc2626;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 2px 12px;
+      border-radius: 40px;
+      border: 1px solid rgba(220, 38, 38, 0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .discount-percent-tag i {
+      font-size: 0.6rem;
+    }
+    .price-bdt {
+      font-size: 0.9rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .price-bdt span {
+      font-weight: 600;
+      color: #1c1c1e;
+    }
+
+    /* ===== HERO responsive ===== */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 5.5rem 1rem 3rem;
+        min-height: auto;
+      }
+      .hero-section .hero-orb.o1 { width: 200px; height: 200px; }
+      .hero-section .hero-orb.o2 { width: 160px; height: 160px; }
+      .hero-section .hero-orb.o3 { width: 120px; height: 120px; }
+    }
+    @media (max-width: 480px) {
+      .hero-section { padding: 5rem 0.85rem 2.5rem; }
+      .trust-badge { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+    }
+
+    /* section soft entrance */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #0066FF;
+      background: rgba(0, 102, 255, 0.08);
+      padding: 4px 14px;
+      border-radius: 40px;
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body class="landing-page">
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- ===== HERO (full-bleed under transparent nav) ===== -->
+      <section class="hero-section">
+        <div class="hero-orbs" aria-hidden="true">
+          <div class="hero-orb o1"></div>
+          <div class="hero-orb o2"></div>
+          <div class="hero-orb o3"></div>
+        </div>
+        <div class="hero-inner">
+          <div class="flex flex-wrap justify-center gap-3 mb-7 fade-up">
+            <span class="trust-badge pulse"><i class="fas fa-shield-alt text-blue-500"></i> 100% Secure</span>
+            <span class="trust-badge"><i class="fas fa-clock text-green-500"></i> 24/7 Support</span>
+            <span class="trust-badge"><i class="fas fa-check-circle text-emerald-500"></i> 150+ Projects</span>
+          </div>
+
+          <h1 class="hero-title fade-up">
+            Build Your <span class="gradient-text">Dream Website</span> Today
+          </h1>
+          <p class="hero-sub fade-up" style="transition-delay:0.1s;">
+            Professional website development, fixing, and maintenance – tailored for your business.
+          </p>
+          <div class="hero-cta fade-up" style="transition-delay:0.2s;">
+            <a href="get-new-website.html" class="btn-primary"><i class="fas fa-shopping-cart"></i> Explore Store</a>
+            <a href="fix-website.html" class="btn-outline"><i class="fas fa-wrench"></i> Fix My Site</a>
+            <a href="#services" class="btn-outline"><i class="fas fa-info-circle"></i> Learn More</a>
+          </div>
+
+          <!-- ===== FEATURED PACKAGES (max 6) ===== -->
+          <div id="featuredPackages" class="mt-16 grid md:grid-cols-3 gap-6 text-left">
+            <!-- Skeleton will be rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SERVICES ===== -->
+      <section id="services" class="py-16 md:py-20 px-6 bg-gray-50/50">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-12">
+            <span class="section-label fade-up"><i class="fas fa-sparkles"></i> Services</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 fade-up">What We Offer</h2>
+            <p class="text-gray-500 mt-2 max-w-2xl mx-auto fade-up">Complete web solutions from development to maintenance.</p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+            <div class="glass-card service-card fade-up">
+              <div class="service-icon"><i class="fas fa-code"></i></div>
+              <h3 class="text-xl font-bold text-gray-900">Custom Website Development</h3>
+              <p class="text-gray-500 mt-2">Fully responsive, fast, and SEO‑friendly websites built with modern technologies.</p>
+            </div>
+            <div class="glass-card service-card fade-up" style="transition-delay:0.1s;">
+              <div class="service-icon"><i class="fas fa-tools"></i></div>
+              <h3 class="text-xl font-bold text-gray-900">Website Fix & Repair</h3>
+              <p class="text-gray-500 mt-2">Bug fixes, speed optimization, security patches, and error resolution.</p>
+            </div>
+            <div class="glass-card service-card fade-up" style="transition-delay:0.2s;">
+              <div class="service-icon"><i class="fas fa-mobile-alt"></i></div>
+              <h3 class="text-xl font-bold text-gray-900">Responsive Design</h3>
+              <p class="text-gray-500 mt-2">Pixel‑perfect design that works flawlessly on all devices – mobile, tablet, desktop.</p>
+            </div>
+            <div class="glass-card service-card fade-up" style="transition-delay:0.3s;">
+              <div class="service-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+              <h3 class="text-xl font-bold text-gray-900">Hosting & Maintenance</h3>
+              <p class="text-gray-500 mt-2">Reliable hosting, regular backups, updates, and performance monitoring.</p>
+            </div>
+            <div class="glass-card service-card fade-up" style="transition-delay:0.4s;">
+              <div class="service-icon"><i class="fas fa-shopping-cart"></i></div>
+              <h3 class="text-xl font-bold text-gray-900">E‑Commerce Solutions</h3>
+              <p class="text-gray-500 mt-2">Online stores with secure payment integration and inventory management.</p>
+            </div>
+            <div class="glass-card service-card fade-up" style="transition-delay:0.5s;">
+              <div class="service-icon"><i class="fas fa-headset"></i></div>
+              <h3 class="text-xl font-bold text-gray-900">24/7 Support</h3>
+              <p class="text-gray-500 mt-2">Dedicated support team available round the clock for any queries or issues.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HOW IT WORKS ===== -->
+      <section id="how-it-works" class="py-16 md:py-20 px-6">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center mb-12">
+            <span class="section-label fade-up"><i class="fas fa-route"></i> Process</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 fade-up">How It Works</h2>
+            <p class="text-gray-500 mt-2 fade-up">Simple steps to get your website or fix your existing one.</p>
+          </div>
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex-1 text-center fade-up">
+              <div class="step-number">1</div>
+              <h4 class="font-bold text-gray-900 mt-3">Choose a Package</h4>
+              <p class="text-sm text-gray-500">Browse our store and select the website package that fits your needs.</p>
+            </div>
+            <div class="step-line"></div>
+            <div class="flex-1 text-center fade-up" style="transition-delay:0.1s;">
+              <div class="step-number">2</div>
+              <h4 class="font-bold text-gray-900 mt-3">Place Order or Request Fix</h4>
+              <p class="text-sm text-gray-500">Add to cart and checkout, or submit a fix request with details.</p>
+            </div>
+            <div class="step-line"></div>
+            <div class="flex-1 text-center fade-up" style="transition-delay:0.2s;">
+              <div class="step-number">3</div>
+              <h4 class="font-bold text-gray-900 mt-3">Payment & Confirmation</h4>
+              <p class="text-sm text-gray-500">Complete payment via BKash, Nagad, or USDT. We'll start working immediately.</p>
+            </div>
+            <div class="step-line"></div>
+            <div class="flex-1 text-center fade-up" style="transition-delay:0.3s;">
+              <div class="step-number">4</div>
+              <h4 class="font-bold text-gray-900 mt-3">Delivery & Support</h4>
+              <p class="text-sm text-gray-500">Get your website delivered or issue resolved within 24 hours. Ongoing support.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== WHY CHOOSE US ===== -->
+      <section id="why-us" class="py-16 md:py-20 px-6 bg-gray-50/50">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 fade-up">Why Choose CodeCureBD?</h2>
+            <p class="text-gray-500 mt-2 fade-up">We are committed to delivering quality and building trust.</p>
+          </div>
+          <div class="grid md:grid-cols-4 gap-6">
+            <div class="glass-card text-center fade-up">
+              <i class="fas fa-medal text-4xl text-yellow-500 mb-3"></i>
+              <h4 class="font-bold text-gray-900">Quality Assurance</h4>
+              <p class="text-sm text-gray-500">Every project passes strict quality checks before delivery.</p>
+            </div>
+            <div class="glass-card text-center fade-up" style="transition-delay:0.1s;">
+              <i class="fas fa-clock text-4xl text-blue-500 mb-3"></i>
+              <h4 class="font-bold text-gray-900">Fast Turnaround</h4>
+              <p class="text-sm text-gray-500">Most projects are completed within 24–48 hours.</p>
+            </div>
+            <div class="glass-card text-center fade-up" style="transition-delay:0.2s;">
+              <i class="fas fa-handshake text-4xl text-green-500 mb-3"></i>
+              <h4 class="font-bold text-gray-900">Client-Centric</h4>
+              <p class="text-sm text-gray-500">We listen, adapt, and deliver exactly what you need.</p>
+            </div>
+            <div class="glass-card text-center fade-up" style="transition-delay:0.3s;">
+              <i class="fas fa-lock text-4xl text-purple-500 mb-3"></i>
+              <h4 class="font-bold text-gray-900">Secure & Reliable</h4>
+              <p class="text-sm text-gray-500">Your data and payments are always safe with us.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STATISTICS ===== -->
+      <section id="stats" class="py-16 px-6">
+        <div class="max-w-6xl mx-auto">
+          <div class="grid md:grid-cols-4 gap-8 text-center">
+            <div class="fade-up">
+              <div class="stat-number">100+</div>
+              <div class="stat-label">Projects Delivered</div>
+            </div>
+            <div class="fade-up" style="transition-delay:0.1s;">
+              <div class="stat-number">100+</div>
+              <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="fade-up" style="transition-delay:0.2s;">
+              <div class="stat-number">6+</div>
+              <div class="stat-label">Years of Experience</div>
+            </div>
+            <div class="fade-up" style="transition-delay:0.3s;">
+              <div class="stat-number">98%</div>
+              <div class="stat-label">Client Satisfaction</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TESTIMONIALS ===== -->
+      <section id="testimonials" class="py-16 px-6 bg-gray-50/50">
+        <div class="max-w-6xl mx-auto">
+          <h2 class="text-3xl font-bold text-center fade-up">What Our Clients Say</h2>
+          <div id="testimonialList" class="mt-8 grid md:grid-cols-3 gap-6">
+            <!-- Skeleton will be rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FAQ (with Show More) ===== -->
+      <section id="faq" class="py-16 px-6">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-3xl font-bold text-center fade-up">Frequently Asked Questions</h2>
+          <div id="faqList" class="mt-8 space-y-4">
+            <!-- FAQ items injected by JS -->
+          </div>
+          <div class="text-center">
+            <button id="faqToggleBtn" class="faq-show-more-btn" style="display:none;">
+              <span id="faqToggleText">Show More</span>
+              <i class="fas fa-chevron-down" id="faqToggleIcon"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CONTACT FORM (NEW) ===== -->
+      <section id="contact" class="py-16 px-6 bg-gray-50/50">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-3xl font-bold text-center fade-up">Contact Us</h2>
+          <p class="text-gray-500 text-center mt-2 fade-up">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+          <form id="contactForm" class="mt-8 space-y-4 glass-card">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Your Name *</label>
+              <input type="text" id="contactName" required class="form-input" placeholder="John Doe" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email Address *</label>
+              <input type="email" id="contactEmail" required class="form-input" placeholder="john@example.com" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Message *</label>
+              <textarea id="contactMessage" rows="5" required class="form-input" placeholder="Write your message..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center" id="contactSubmitBtn">
+              <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+            <div id="contactError" class="text-red-500 text-sm hidden text-center"></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===== CTA ===== -->
+      <section id="cta" class="py-16 md:py-20 px-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 fade-up">Ready to Get Started?</h2>
+          <p class="text-gray-600 mt-3 text-lg fade-up">Contact us today or explore our store to find the perfect solution for your business.</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-4 fade-up">
+            <a href="get-new-website.html" class="btn-primary"><i class="fas fa-store"></i> Visit Store</a>
+            <a href="fix-website.html" class="btn-outline"><i class="fas fa-wrench"></i> Fix My Website</a>
+            <a href="messages.html" class="btn-outline"><i class="fas fa-comment"></i> Chat with Us</a>
+          </div>
+          <div class="mt-6 text-sm text-gray-500 fade-up">
+            <a href="mailto:nopqrshov337@gmail.com" class="hover:text-blue-600 transition-colors"><i class="fas fa-envelope mr-1"></i> nopqrshov337@gmail.com</a>
+            &nbsp;|&nbsp;
+            <a href="tel:+8801350141762" class="hover:text-blue-600 transition-colors"><i class="fas fa-phone mr-1"></i> +880 1350-141762</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
+
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script type="module">
+    // ================================================================
+    // ইমপোর্ট
+    // ================================================================
+    import { 
+      auth, db, collection, doc, getDoc, getDocs, onSnapshot, query, where,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+      onAuthStateChanged, signOut, setDoc, 
+      signInWithPopup, googleProvider, serverTimestamp, addDoc
+    } from './firebase-config.js';
+    import {
+renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderCartSidebar, setLoading, renderPaymentModal, syncCart, updateCartInFirestore,
+  renderAuthModal
+} from './components.js';
+
+    // ===== রেন্ডার =====
+    renderNavbar();
+    renderAuthModal();
+    renderFooter();
+    renderCartSidebar();
+    renderPaymentModal();
+    updateCartBadge();
+
+    // ===== টোস্ট =====
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+    };
+
+    // ===== SCROLL ANIMATION =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    });
+
+    // ===== BACK TO TOP =====
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        scrollBtn.classList.add('show');
+      } else {
+        scrollBtn.classList.remove('show');
+      }
+    });
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== AUTH MODAL =====
+    // Auth handled by components.js (renderAuthModal / openAuthModal)
+// togglePasswordVisibility moved to components.js as toggleAuthPassword
+// socialLogin handled by components.js
+// Auth form handled by components.js
+onAuthStateChanged(auth, async (user) => {
+      let name = null;
+      if (user) {
+        await syncCart(user.uid);
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        name = userDoc.exists() ? userDoc.data().displayName : user.email.split('@')[0];
+      }
+      updateNavbarAuth(user, name);
+    });
+
+    // handleLogout handled by components.js
+// ================================================================
+    // ✅ PRICE & DISCOUNT HELPERS (for featured products)
+    // ================================================================
+
+    let usdRate = 125;
+    let allDiscounts = [];
+
+    function formatBDT(amountBDT) {
+      return '৳' + Math.round(amountBDT).toLocaleString('en-BD');
+    }
+
+    function getBDT(priceUSD) {
+      return priceUSD * usdRate;
+    }
+
+    function getDiscountForProduct(product) {
+      if (!allDiscounts || allDiscounts.length === 0) return null;
+      const specific = allDiscounts.filter(d => d.type === 'specific' && d.productId === product.id);
+      if (specific.length > 0) {
+        return specific.reduce((max, d) => d.discountPercent > max.discountPercent ? d : max, specific[0]);
+      }
+      if (product.category) {
+        const catDiscounts = allDiscounts.filter(d => d.type === 'category' && d.category === product.category);
+        if (catDiscounts.length > 0) {
+          return catDiscounts.reduce((max, d) => d.discountPercent > max.discountPercent ? d : max, catDiscounts[0]);
+        }
+      }
+      const all = allDiscounts.filter(d => d.type === 'all');
+      if (all.length > 0) {
+        return all.reduce((max, d) => d.discountPercent > max.discountPercent ? d : max, all[0]);
+      }
+      return null;
+    }
+
+    // ================================================================
+    // ✅ ফিচার্ড প্রোডাক্ট (HTML preview + DISCOUNT + BDT + SINGLE-LINE TITLE)
+    // ================================================================
+    const packagesContainer = document.getElementById('featuredPackages');
+
+    function renderSkeletons(count = 6) {
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        html += `
+          <div class="skeleton-card fade-up">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line medium"></div>
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line" style="width:30%;"></div>
+            </div>
+          </div>
+        `;
+      }
+      packagesContainer.innerHTML = html;
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }
+    renderSkeletons();
+
+    function escapeHtmlAttr(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    async function loadFeaturedProducts() {
+      try {
+        // Load discounts
+        const discountSnap = await getDocs(collection(db, 'discounts'));
+        allDiscounts = [];
+        discountSnap.forEach(doc => allDiscounts.push({ id: doc.id, ...doc.data() }));
+
+        // Load settings for USD rate
+        const settingsSnap = await getDoc(doc(db, 'settings', 'payment'));
+        if (settingsSnap.exists()) {
+          const data = settingsSnap.data();
+          if (data.usdRate && Number(data.usdRate) > 0) {
+            usdRate = Number(data.usdRate);
+          }
+        }
+
+        const qFeatured = query(collection(db, 'products'), where('featured', '==', true));
+        const snapFeatured = await getDocs(qFeatured);
+        let products = [];
+        snapFeatured.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+
+        if (products.length === 0) {
+          const qAll = query(collection(db, 'products'));
+          const snapAll = await getDocs(qAll);
+          snapAll.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+        }
+
+        products = products.slice(0, 6);
+
+        if (products.length === 0) {
+          packagesContainer.innerHTML = `<p class="text-gray-500 col-span-3 text-center">No packages available.</p>`;
+          return;
+        }
+
+        let html = '';
+        products.forEach(p => {
+          const hasHtml = p.htmlContent && p.htmlContent.length > 0;
+          let previewHtml = '';
+          if (hasHtml) {
+            const escaped = escapeHtmlAttr(p.htmlContent);
+            previewHtml = `
+              <iframe 
+                srcdoc="${escaped}" 
+                scrolling="no" 
+                loading="lazy" 
+                sandbox="allow-scripts allow-same-origin"
+                style="width:100%; height:100%; border:none; display:block; background:#ffffff;"
+              ></iframe>
+            `;
+          } else {
+            const fallbackImg = p.imageUrl || 'https://via.placeholder.com/300x180?text=No+Image';
+            previewHtml = `
+              <img src="${fallbackImg}" alt="${p.name}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;" />
+            `;
+          }
+
+          // ---- DISCOUNT & PRICE ----
+          const discount = getDiscountForProduct(p);
+          let priceHtml = '';
+          if (discount) {
+            const percent = Math.round(discount.discountPercent);
+            const discounted = p.price * (1 - discount.discountPercent / 100);
+            const origFormatted = '$' + p.price.toFixed(2);
+            const discFormatted = '$' + discounted.toFixed(2);
+            const origBDT = getBDT(p.price);
+            const discBDT = getBDT(discounted);
+            priceHtml = `
+              <div class="price-wrapper">
+                <span class="original-price">${origFormatted}</span>
+                <span class="discount-price">${discFormatted}</span>
+                <span class="discount-percent-tag"><i class="fas fa-tag"></i> -${percent}%</span>
+                <span class="price-bdt">(BDT <span>${formatBDT(discBDT)}</span>)</span>
+              </div>
+            `;
+          } else {
+            const priceFormatted = '$' + p.price.toFixed(2);
+            const bdtAmount = getBDT(p.price);
+            priceHtml = `
+              <div class="price-wrapper">
+                <span class="discount-price" style="font-size:1.4rem;">${priceFormatted}</span>
+                <span class="price-bdt">(BDT <span>${formatBDT(bdtAmount)}</span>)</span>
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="glass-card featured-card fade-up">
+              <div class="img-wrapper">
+                ${previewHtml}
+              </div>
+              <div class="card-body">
+                <h3 class="font-bold text-lg text-gray-900 product-title">${p.name}</h3>
+                <p class="text-sm text-gray-500 product-desc">${p.desc || p.description || ''}</p>
+                ${priceHtml}
+                <a href="product-detail.html?id=${p.id}" class="btn-details text-sm py-2 px-4 mt-3 inline-block">
+                  <i class="fas fa-eye"></i> View
+                </a>
+              </div>
+            </div>
+          `;
+        });
+        packagesContainer.innerHTML = html;
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      } catch (err) {
+        console.error('Error loading featured products:', err);
+        packagesContainer.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error loading products.</p>`;
+      }
+    }
+
+    loadFeaturedProducts();
+
+    // ================================================================
+    // ✅ টেস্টিমোনিয়াল
+    // ================================================================
+    const testimonialContainer = document.getElementById('testimonialList');
+
+    async function loadTestimonials() {
+      try {
+        const snap = await getDocs(collection(db, 'testimonials'));
+        if (snap.empty) {
+          testimonialContainer.innerHTML = `<p class="text-gray-500 col-span-3 text-center">No testimonials yet.</p>`;
+          return;
+        }
+        let html = '';
+        snap.forEach(doc => {
+          const t = doc.data();
+          html += `
+            <div class="glass-card text-center fade-up">
+              <p class="text-gray-600 italic">“${t.text}”</p>
+              <p class="font-bold mt-2">- ${t.name}</p>
+              <p class="text-sm text-gray-400">${t.role || ''}</p>
+            </div>
+          `;
+        });
+        testimonialContainer.innerHTML = html;
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      } catch (err) {
+        console.error('Error loading testimonials:', err);
+        testimonialContainer.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error loading testimonials.</p>`;
+      }
+    }
+    loadTestimonials();
+
+    // ================================================================
+    // ✅ FAQ
+    // ================================================================
+    const faqContainer = document.getElementById('faqList');
+    const toggleBtn = document.getElementById('faqToggleBtn');
+    const toggleText = document.getElementById('faqToggleText');
+    const toggleIcon = document.getElementById('faqToggleIcon');
+    let allFaqs = [];
+    let showAll = false;
+    const initialLimit = 5;
+
+    async function loadFaqs() {
+      try {
+        const snap = await getDocs(collection(db, 'faqs'));
+        if (snap.empty) {
+          faqContainer.innerHTML = `<p class="text-gray-500 text-center">No FAQs yet.</p>`;
+          toggleBtn.style.display = 'none';
+          return;
+        }
+        allFaqs = [];
+        snap.forEach(doc => {
+          const f = doc.data();
+          allFaqs.push({ id: doc.id, ...f });
+        });
+
+        renderFaqs(showAll);
+        toggleBtn.style.display = 'inline-flex';
+      } catch (err) {
+        console.error('Error loading FAQs:', err);
+        faqContainer.innerHTML = `<p class="text-red-500 text-center">Error loading FAQs.</p>`;
+        toggleBtn.style.display = 'none';
+      }
+    }
+
+    function renderFaqs(showAll) {
+      const total = allFaqs.length;
+      const itemsToShow = showAll ? allFaqs : allFaqs.slice(0, initialLimit);
+
+      if (itemsToShow.length === 0) {
+        faqContainer.innerHTML = `<p class="text-gray-500 text-center">No FAQs to display.</p>`;
+        toggleBtn.style.display = 'none';
+        return;
+      }
+
+      let html = '';
+      itemsToShow.forEach((faq, idx) => {
+        const globalIdx = allFaqs.indexOf(faq);
+        html += `
+          <div class="glass-card cursor-pointer fade-up" onclick="toggleFaq(${globalIdx})">
+            <div class="flex justify-between items-center">
+              <h3 class="font-semibold">${faq.question}</h3>
+              <i class="fas fa-chevron-down text-gray-400 transition-transform" id="faqIcon${globalIdx}"></i>
+            </div>
+            <div id="faqAnswer${globalIdx}" class="mt-2 text-gray-600 hidden">${faq.answer}</div>
+          </div>
+        `;
+      });
+
+      faqContainer.innerHTML = html;
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+      if (total > initialLimit) {
+        toggleBtn.style.display = 'inline-flex';
+        if (showAll) {
+          toggleText.textContent = 'Show Less';
+          toggleIcon.className = 'fas fa-chevron-up';
+        } else {
+          toggleText.textContent = 'Show More';
+          toggleIcon.className = 'fas fa-chevron-down';
+        }
+      } else {
+        toggleBtn.style.display = 'none';
+      }
+
+      window.toggleFaq = function(index) {
+        const answer = document.getElementById(`faqAnswer${index}`);
+        const icon = document.getElementById(`faqIcon${index}`);
+        if (answer) {
+          answer.classList.toggle('hidden');
+          if (icon) icon.classList.toggle('rotate-180');
+        }
+      };
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      showAll = !showAll;
+      renderFaqs(showAll);
+    });
+
+    loadFaqs();
+
+    // ================================================================
+    // ✅ CONTACT FORM
+    // ================================================================
+    const contactForm = document.getElementById('contactForm');
+    const contactSubmitBtn = document.getElementById('contactSubmitBtn');
+    const contactError = document.getElementById('contactError');
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const message = document.getElementById('contactMessage').value.trim();
+
+      if (!name || !email || !message) {
+        contactError.textContent = 'All fields are required.';
+        contactError.classList.remove('hidden');
+        return;
+      }
+      contactError.classList.add('hidden');
+      setLoading(contactSubmitBtn, true, 'Sending...');
+
+      try {
+        await addDoc(collection(db, 'contactMessages'), {
+          name,
+          email,
+          message,
+          timestamp: serverTimestamp(),
+        });
+        showToast('✅ Message sent! We\'ll get back to you soon.', 'success');
+        contactForm.reset();
+      } catch (err) {
+        contactError.textContent = err.message;
+        contactError.classList.remove('hidden');
+        showToast('⚠️ Failed to send message. Please try again.', 'error');
+      } finally {
+        setLoading(contactSubmitBtn, false);
+      }
+    });
+
+    console.log('🏠 Landing page loaded with HTML previews + DISCOUNT & BDT + single-line title in featured products!');
+  </script>
+</body>
+</html>

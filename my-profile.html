@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>My Profile – CodeCureBD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .profile-avatar-big {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem; font-weight: 700; color: white;
+      flex-shrink: 0; box-shadow: 0 8px 30px rgba(102,126,234,0.3);
+      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-avatar-big:hover { transform: scale(1.03); }
+    .profile-avatar-big img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+    .profile-avatar-big .change-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .profile-avatar-big:hover .change-photo-overlay {
+      opacity: 1;
+    }
+    .skeleton-avatar { width: 100px; height: 100px; border-radius: 50%; background: #e5e7eb; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+    .skeleton-line { height: 16px; background: #e5e7eb; border-radius: 8px; margin-bottom: 0.75rem; animation: pulse 1.5s ease-in-out infinite; }
+    .skeleton-line.short { width: 40%; }
+    .skeleton-line.medium { width: 70%; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+    .fade-up { opacity:0; transform:translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .fade-up.visible { opacity:1; transform:translateY(0); }
+    .scroll-top-btn { position:fixed; bottom:30px; right:30px; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; border:none; font-size:1.2rem; cursor:pointer; box-shadow:0 8px 30px rgba(0,122,255,0.35); z-index:999; opacity:0; transform:scale(0.8); transition: opacity 0.3s, transform 0.3s; pointer-events:none; }
+    .scroll-top-btn.show { opacity:1; transform:scale(1); pointer-events:auto; }
+    .scroll-top-btn:hover { transform:scale(1.05); }
+    .glass-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.7); border-radius: 16px; padding: 1.25rem; box-shadow: 0 4px 16px rgba(0,0,0,0.02); transition: all 0.3s ease; }
+    .glass-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.06); transform: translateY(-3px); }
+    .action-card { text-align: center; padding: 1rem; transition: 0.3s; cursor: pointer; }
+    .action-card .action-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    .action-card .action-label { font-size: 0.85rem; color: #374151; }
+    .btn-primary { background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; padding:10px 22px; border-radius:60px; font-weight:600; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none; }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,122,255,0.35); }
+    .btn-primary:disabled { opacity:0.7; cursor:not-allowed; transform:none !important; }
+    .btn-outline { background:transparent; color:#1c1c1e; padding:10px 22px; border-radius:60px; font-weight:600; border:1.5px solid rgba(60,60,67,0.08); cursor:pointer; display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.5); }
+    .btn-outline:hover { background:rgba(0,122,255,0.04); border-color:#007AFF; color:#007AFF; transform:translateY(-2px); }
+    .form-input { width:100%; padding:12px 16px; border:1.5px solid rgba(60,60,67,0.08); border-radius:12px; font-size:0.95rem; background:rgba(255,255,255,0.8); outline:none; }
+    .form-input:focus { border-color:#007AFF; background:#fff; box-shadow:0 0 0 4px rgba(0,122,255,0.08); }
+    .info-label { font-size:0.8rem; color:#8e8e93; margin-bottom:2px; }
+    .info-value { font-size:1rem; font-weight:500; color:#1c1c1e; }
+    .email-verify-btn { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .email-verify-btn:hover { background: #bfdbfe; }
+    .email-verify-btn.verified { background: #d1fae5; color: #059669; border-color: #6ee7b7; cursor: default; }
+
+    /* ===== Profile Picture Selection Modal ===== */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .photo-grid .photo-item {
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      background: #f3f4f6;
+    }
+    .photo-grid .photo-item:hover {
+      transform: scale(1.03);
+      border-color: #007AFF;
+    }
+    .photo-grid .photo-item.selected {
+      border-color: #34C759;
+      box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.3);
+    }
+    .photo-grid .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-grid .photo-item .delete-photo {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(220,38,38,0.85);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      opacity: 0;
+    }
+    .photo-grid .photo-item:hover .delete-photo {
+      opacity: 1;
+    }
+    .photo-grid .photo-item .delete-photo:hover {
+      background: #dc2626;
+      transform: scale(1.1);
+    }
+    .photo-upload-zone {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      background: rgba(255,255,255,0.5);
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .photo-upload-zone:hover {
+      border-color: #007AFF;
+      background: rgba(0,122,255,0.04);
+    }
+    .photo-upload-zone i {
+      font-size: 2rem;
+      color: #9ca3af;
+      margin-bottom: 0.25rem;
+    }
+    .photo-upload-zone .text {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    .photo-modal .modal-box {
+      max-width: 500px;
+    }
+    @media (max-width: 480px) {
+      .photo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+    <main class="main-content">
+      <section class="pt-4 pb-16 px-6 max-w-2xl mx-auto">
+        <div class="flex items-center gap-3 mb-6 fade-up">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <i class="fas fa-user-circle text-xl text-white"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="glass-card fade-up">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row items-center gap-6" id="profileHeader">
+            <!-- Avatar Skeleton -->
+            <div class="skeleton-avatar" id="avatarSkeleton"></div>
+            <!-- Actual Avatar -->
+            <div class="profile-avatar-big hidden" id="profileAvatarBig">
+              <span id="avatarLetter">U</span>
+              <div class="change-photo-overlay" onclick="window.openPhotoModal()">
+                <i class="fas fa-camera text-lg"></i> Change
+              </div>
+            </div>
+            <!-- Info -->
+            <div class="flex-1 text-center sm:text-left w-full" id="profileInfo">
+              <!-- Skeletons (hidden after load) -->
+              <div class="skeleton-line medium" id="nameSkeleton"></div>
+              <div class="skeleton-line short" id="emailSkeleton"></div>
+              <div class="skeleton-line" style="width:30%;" id="roleSkeleton"></div>
+              <!-- Actual data (hidden initially) -->
+              <div id="profileData" class="hidden">
+                <h2 id="profileDisplayName" class="text-2xl font-bold text-gray-900"></h2>
+                <p id="profileEmail" class="text-gray-500"></p>
+                <span id="profileRole" class="inline-block mt-1 text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full"></span>
+                <!-- Email Verification Status -->
+                <div class="mt-2 flex items-center gap-3 flex-wrap">
+                  <span id="emailVerifiedStatus" class="text-sm"></span>
+                  <button onclick="verifyEmail()" id="verifyEmailBtn" class="btn-primary text-sm py-1.5 px-4 email-verify-btn">
+                    <i class="fas fa-envelope"></i> Verify Email
+                  </button>
+                  <button onclick="checkEmailVerified()" id="checkVerifiedBtn" class="btn-outline text-sm py-1.5 px-4">
+                    <i class="fas fa-sync-alt"></i> I've verified
+                  </button>
+                </div>
+                <p id="verifyEmailHint" class="text-xs text-gray-400 mt-1 hidden">Check Inbox and Spam/Junk. Mark “Not spam” if found there.</p>
+              </div>
+            </div>
+            <button onclick="toggleEditForm()" class="btn-outline text-sm py-2 px-4 flex-shrink-0" id="editToggleBtn">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+          </div>
+
+          <hr class="my-6 border-gray-200" />
+
+          <!-- Info Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="infoGrid">
+            <div><p class="info-label"><i class="fas fa-envelope mr-2"></i>Email</p><p class="info-value" id="profileEmailDisplay">-</p></div>
+            <div><p class="info-label"><i class="fas fa-phone mr-2"></i>Phone</p><p class="info-value" id="profilePhoneDisplay">Not set</p></div>
+            <div><p class="info-label"><i class="fas fa-user-tag mr-2"></i>Role</p><p class="info-value" id="profileRoleDisplay">User</p></div>
+            <div><p class="info-label"><i class="fas fa-calendar-alt mr-2"></i>Joined</p><p class="info-value" id="profileJoinedDisplay">-</p></div>
+          </div>
+
+          <!-- Edit Form (removed photo URL field) -->
+          <div id="editForm" class="hidden mt-6 pt-6 border-t border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-pen text-blue-500 mr-2"></i> Edit Profile</h3>
+            <form id="profileEditForm" class="space-y-4">
+              <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Display Name</label><input type="text" id="editDisplayName" class="form-input" placeholder="Your name" required /></div>
+              <div><label class="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label><input type="tel" id="editPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" /></div>
+              <div class="flex flex-wrap gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Changes</button><button type="button" onclick="toggleEditForm()" class="btn-outline">Cancel</button></div>
+              <div id="editFeedback" class="text-sm hidden"></div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 fade-up">
+          <a href="my-orders.html" class="glass-card action-card text-center"><span class="action-icon"><i class="fas fa-box text-blue-500"></i></span><span class="action-label">My Orders</span></a>
+          <a href="my-fix-requests.html" class="glass-card action-card text-center"><span class="action-icon"><i class="fas fa-tools text-orange-500"></i></span><span class="action-label">Fix Requests</span></a>
+          <a href="messages.html" class="glass-card action-card text-center"><span class="action-icon"><i class="fas fa-comments text-green-500"></i></span><span class="action-label">Support Chat</span></a>
+          <a href="settings.html" class="glass-card action-card text-center"><span class="action-icon"><i class="fas fa-cog text-gray-500"></i></span><span class="action-label">Settings</span></a>
+        </div>
+
+        <!-- Admin Panel Link -->
+        <div id="adminPanelSection" class="mt-6 hidden fade-up">
+          <div class="glass-card action-card text-center" style="border: 2px solid #8B5CF6; background: rgba(139,92,246,0.05);">
+            <span class="action-icon"><i class="fas fa-shield-alt text-purple-600"></i></span>
+            <span class="action-label font-bold text-purple-700">Admin Panel</span>
+            <p class="text-sm text-gray-500 mt-1">Manage products, orders, users, and more.</p>
+            <a href="admin-panel.html" class="btn-primary mt-3 text-sm py-2 px-6">
+              <i class="fas fa-arrow-right"></i> Go to Admin Panel
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+
+  <!-- ===== PROFILE PICTURE SELECTION MODAL ===== -->
+  <div id="photoModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[600] hidden p-4 photo-modal">
+    <div class="modal-box bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scaleIn">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-900">Change Profile Picture</h3>
+        <button onclick="closePhotoModal()" class="text-gray-400 hover:text-gray-600 text-2xl transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Uploaded Photos Grid -->
+      <div id="photoGridContainer">
+        <div class="photo-grid" id="photoGrid">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+
+      <!-- Upload New Photo -->
+      <div class="mt-4">
+        <div class="photo-upload-zone" id="photoUploadZone" onclick="document.getElementById('photoFileInput').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span class="text">Click to upload a new photo</span>
+          <input type="file" id="photoFileInput" accept="image/*" style="display:none;" />
+        </div>
+        <div id="uploadProgress" class="hidden mt-2 text-sm text-blue-600"><i class="fas fa-spinner fa-spin"></i> Uploading...</div>
+      </div>
+
+      <div class="mt-4 text-xs text-gray-400">
+        <i class="fas fa-info-circle"></i> Click on any photo to set as profile picture. New uploads will appear here.
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal (same as before) -->
+  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
+<div id="toast-container"></div>
+
+  <script type="module">
+    // ================================================================
+    // ইমপোর্ট
+    // ================================================================
+    import { renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge, renderCartSidebar, setLoading, renderPaymentModal, uploadImage, renderAuthModal } from './components.js';
+    import { 
+      auth, db, doc, getDoc, setDoc, updateDoc, signOut, onAuthStateChanged, 
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+      signInWithPopup, googleProvider,
+      sendEmailVerification, arrayUnion, arrayRemove
+    } from './firebase-config.js';
+
+    renderNavbar();
+    renderAuthModal(); renderPaymentModal(); renderFooter(); renderCartSidebar(); updateCartBadge();
+
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('.fade-up').forEach(el => observer.observe(el)); });
+
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => { scrollBtn.classList.toggle('show', window.scrollY > 400); });
+    scrollBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    // Auth Modal (same as before)
+    // Auth handled by components.js (renderAuthModal / openAuthModal)
+// togglePasswordVisibility moved to components.js as toggleAuthPassword
+// socialLogin handled by components.js
+// Auth form handled by components.js
+// handleLogout handled by components.js
+// ================================================================
+    // PROFILE LOGIC
+    // ================================================================
+    const profileDisplayName = document.getElementById('profileDisplayName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profileRole = document.getElementById('profileRole');
+    const profileEmailDisplay = document.getElementById('profileEmailDisplay');
+    const profilePhoneDisplay = document.getElementById('profilePhoneDisplay');
+    const profileRoleDisplay = document.getElementById('profileRoleDisplay');
+    const profileJoinedDisplay = document.getElementById('profileJoinedDisplay');
+    const profileAvatarBig = document.getElementById('profileAvatarBig');
+    const avatarLetter = document.getElementById('avatarLetter');
+    const editForm = document.getElementById('editForm');
+    const editDisplayName = document.getElementById('editDisplayName');
+    const editPhone = document.getElementById('editPhone');
+    const editFeedback = document.getElementById('editFeedback');
+    const editToggleBtn = document.getElementById('editToggleBtn');
+    const profileData = document.getElementById('profileData');
+    const nameSkeleton = document.getElementById('nameSkeleton');
+    const emailSkeleton = document.getElementById('emailSkeleton');
+    const roleSkeleton = document.getElementById('roleSkeleton');
+    const avatarSkeleton = document.getElementById('avatarSkeleton');
+    const adminPanelSection = document.getElementById('adminPanelSection');
+    const emailVerifiedStatus = document.getElementById('emailVerifiedStatus');
+    const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+
+    // ===== Photo Modal Elements =====
+    const photoModal = document.getElementById('photoModal');
+    const photoGrid = document.getElementById('photoGrid');
+    const photoFileInput = document.getElementById('photoFileInput');
+    const uploadProgress = document.getElementById('uploadProgress');
+
+    // ===== Email Verification =====
+    window.verifyEmail = async () => {
+      const user = auth.currentUser;
+      if (!user) { showToast('Not logged in', 'error'); return; }
+      if (user.providerData?.some(p => p.providerId === 'google.com') && user.emailVerified) {
+        showToast('✅ Google email is already verified', 'success');
+        updateEmailVerificationUI(true);
+        return;
+      }
+      await user.reload();
+      if (user.emailVerified) {
+        showToast('✅ Email already verified', 'success');
+        updateEmailVerificationUI(true);
+        try { await updateDoc(doc(db, 'users', user.uid), { emailVerified: true }); } catch (_) {}
+        return;
+      }
+      if (!user.email) { showToast('⚠️ No email on this account', 'error'); return; }
+      const btn = document.getElementById('verifyEmailBtn');
+      const hint = document.getElementById('verifyEmailHint');
+      try {
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...'; }
+        const actionCodeSettings = { url: window.location.origin + window.location.pathname.replace(/[^/]*$/, 'my-profile.html'), handleCodeInApp: false };
+        await sendEmailVerification(user, actionCodeSettings);
+        showToast('📧 Verification email sent! Check Inbox and Spam/Junk.', 'success');
+        if (hint) hint.classList.remove('hidden');
+        let left = 60;
+        if (btn) {
+          const t = setInterval(() => {
+            left--;
+            btn.innerHTML = `<i class="fas fa-envelope"></i> Resend (${left}s)`;
+            if (left <= 0) { clearInterval(t); btn.disabled = false; btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email'; }
+          }, 1000);
+        }
+      } catch (err) {
+        console.error('verifyEmail error:', err);
+        let msg = err.message || 'Failed to send email';
+        if (err.code === 'auth/too-many-requests') msg = 'Too many requests. Wait a few minutes, then try again.';
+        showToast('⚠️ ' + msg, 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email'; }
+      }
+    };
+
+    window.checkEmailVerified = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      try {
+        await user.reload();
+        if (user.emailVerified) {
+          updateEmailVerificationUI(true);
+          try { await updateDoc(doc(db, 'users', user.uid), { emailVerified: true }); } catch (_) {}
+          showToast('✅ Email verified!', 'success');
+          const hint = document.getElementById('verifyEmailHint');
+          if (hint) hint.classList.add('hidden');
+        } else {
+          showToast('Still not verified. Open the link in the email (check Spam).', 'warning');
+        }
+      } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
+    };
+
+    function updateEmailVerificationUI(isVerified) {
+      const status = document.getElementById('emailVerifiedStatus');
+      const btn = document.getElementById('verifyEmailBtn');
+      const checkBtn = document.getElementById('checkVerifiedBtn');
+      const hint = document.getElementById('verifyEmailHint');
+      if (isVerified) {
+        status.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle"></i> Verified</span>';
+        btn.innerHTML = '<i class="fas fa-check"></i> Verified';
+        btn.className = 'btn-primary text-sm py-1.5 px-4 email-verify-btn verified';
+        btn.disabled = true;
+        if (checkBtn) checkBtn.classList.add('hidden');
+        if (hint) hint.classList.add('hidden');
+      } else {
+        status.innerHTML = '<span class="text-yellow-600"><i class="fas fa-exclamation-circle"></i> Not verified</span>';
+        btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email';
+        btn.className = 'btn-primary text-sm py-1.5 px-4 email-verify-btn';
+        btn.disabled = false;
+        if (checkBtn) checkBtn.classList.remove('hidden');
+      }
+    }
+
+    // ===== Load Profile =====
+    function setLoadingState(isLoading) {
+      if (isLoading) {
+        avatarSkeleton.classList.remove('hidden');
+        profileAvatarBig.classList.add('hidden');
+        nameSkeleton.classList.remove('hidden');
+        emailSkeleton.classList.remove('hidden');
+        roleSkeleton.classList.remove('hidden');
+        profileData.classList.add('hidden');
+      } else {
+        avatarSkeleton.classList.add('hidden');
+        profileAvatarBig.classList.remove('hidden');
+        nameSkeleton.classList.add('hidden');
+        emailSkeleton.classList.add('hidden');
+        roleSkeleton.classList.add('hidden');
+        profileData.classList.remove('hidden');
+      }
+    }
+
+    async function loadProfile(user) {
+      if (!user) { window.location.href = 'index.html'; return; }
+      setLoadingState(true);
+      try {
+        try { await user.reload(); } catch (_) {}
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          const name = data.displayName || user.email?.split('@')[0] || 'User';
+          const role = data.role || 'user';
+          const email = data.email || user.email || 'No email';
+
+          profileDisplayName.textContent = name;
+          profileEmail.textContent = email;
+          profileRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+          if (role !== 'admin') { profileRole.style.display = 'none'; } else { profileRole.style.display = 'inline-block'; }
+
+          profileEmailDisplay.textContent = email;
+          profilePhoneDisplay.textContent = data.phone || 'Not set';
+          profileRoleDisplay.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+          if (data.createdAt) {
+            const date = new Date(data.createdAt);
+            profileJoinedDisplay.textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          }
+
+          // Avatar
+          if (data.photoURL) {
+            profileAvatarBig.innerHTML = `<img src="${data.photoURL}" alt="${name}" loading="lazy" /><div class="change-photo-overlay" onclick="window.openPhotoModal()"><i class="fas fa-camera text-lg"></i> Change</div>`;
+          } else {
+            profileAvatarBig.innerHTML = `<span id="avatarLetter">${name.charAt(0).toUpperCase()}</span><div class="change-photo-overlay" onclick="window.openPhotoModal()"><i class="fas fa-camera text-lg"></i> Change</div>`;
+          }
+
+          editDisplayName.value = name;
+          editPhone.value = data.phone || '';
+
+          if (role === 'admin') {
+            adminPanelSection.classList.remove('hidden');
+            adminPanelSection.classList.add('fade-up');
+            observer.observe(adminPanelSection);
+          } else {
+            adminPanelSection.classList.add('hidden');
+          }
+
+          updateEmailVerificationUI(user.emailVerified);
+          updateNavbarAuth(user, name);
+          document.title = `${name} – Profile`;
+        } else {
+          await setDoc(doc(db, 'users', user.uid), {
+            email: user.email,
+            displayName: user.email?.split('@')[0] || 'User',
+            role: 'user',
+            createdAt: new Date().toISOString()
+          });
+          loadProfile(user);
+        }
+      } catch (err) {
+        console.error('Profile load error:', err);
+        showToast('⚠️ Error loading profile: ' + err.message, 'error');
+      } finally {
+        setLoadingState(false);
+      }
+    }
+
+    // ===== Edit Form =====
+    window.toggleEditForm = () => {
+      editForm.classList.toggle('hidden');
+      if (!editForm.classList.contains('hidden')) {
+        editFeedback.className = 'hidden';
+        editToggleBtn.innerHTML = '<i class="fas fa-times"></i> Close';
+      } else {
+        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+      }
+    };
+
+    const profileEditForm = document.getElementById('profileEditForm');
+    const profileEditBtn = profileEditForm.querySelector('button[type="submit"]');
+    profileEditForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newName = editDisplayName.value.trim();
+      const phone = editPhone.value.trim();
+      editFeedback.className = 'hidden';
+      if (!newName) {
+        editFeedback.className = 'block text-sm text-red-500 mt-2';
+        editFeedback.textContent = '⚠️ Please enter a display name.';
+        showToast('Please enter a display name', 'error');
+        return;
+      }
+      const user = auth.currentUser;
+      if (!user) { showToast('Not logged in', 'error'); return; }
+      setLoading(profileEditBtn, true, 'Saving...');
+      try {
+        await updateDoc(doc(db, 'users', user.uid), { displayName: newName, phone: phone || '' });
+        await loadProfile(user);
+        showToast('✅ Profile updated!', 'success');
+        editForm.classList.add('hidden');
+        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+      } catch (err) {
+        editFeedback.className = 'block text-sm text-red-500 mt-2';
+        editFeedback.textContent = '⚠️ ' + err.message;
+        showToast('⚠️ Error: ' + err.message, 'error');
+      } finally { setLoading(profileEditBtn, false); }
+    });
+
+    // ================================================================
+    // PROFILE PICTURE MODAL LOGIC
+    // ================================================================
+
+    // Open modal
+    window.openPhotoModal = function() {
+      if (!auth.currentUser) { showToast('Please sign in first', 'warning'); return; }
+      photoModal.classList.remove('hidden');
+      renderPhotoGrid();
+    };
+
+    window.closePhotoModal = function() {
+      photoModal.classList.add('hidden');
+      // Reset upload state
+      photoFileInput.value = '';
+      uploadProgress.classList.add('hidden');
+    };
+
+    // Render existing uploaded images
+    async function renderPhotoGrid() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (!userDoc.exists()) return;
+      const data = userDoc.data();
+      const uploadedImages = data.uploadedImages || [];
+      const currentPhoto = data.photoURL || '';
+
+      if (uploadedImages.length === 0) {
+        photoGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-400 text-sm">No uploaded photos yet. Upload a new one below.</div>`;
+        return;
+      }
+
+      let html = '';
+      uploadedImages.forEach(url => {
+        const isSelected = url === currentPhoto;
+        html += `
+          <div class="photo-item ${isSelected ? 'selected' : ''}" onclick="window.selectPhoto('${url}')" title="Click to set as profile picture">
+            <img src="${url}" alt="Profile photo" loading="lazy" />
+            <button class="delete-photo" onclick="event.stopPropagation(); window.deletePhoto('${url}')" title="Delete this photo">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `;
+      });
+      photoGrid.innerHTML = html;
+    }
+
+    // Select a photo (set as profile picture)
+    window.selectPhoto = async function(url) {
+      const user = auth.currentUser;
+      if (!user) { showToast('Not logged in', 'error'); return; }
+      try {
+        await updateDoc(doc(db, 'users', user.uid), { photoURL: url });
+        showToast('✅ Profile picture updated!', 'success');
+        closePhotoModal();
+        await loadProfile(user);
+      } catch (err) {
+        showToast('⚠️ ' + err.message, 'error');
+      }
+    };
+
+    // Delete a photo (only if not currently used)
+    window.deletePhoto = async function(url) {
+      const user = auth.currentUser;
+      if (!user) { showToast('Not logged in', 'error'); return; }
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (!userDoc.exists()) return;
+      const data = userDoc.data();
+      const uploadedImages = data.uploadedImages || [];
+      const currentPhoto = data.photoURL || '';
+
+      if (url === currentPhoto) {
+        showToast('⚠️ Cannot delete the photo currently set as profile picture. Choose another first.', 'warning');
+        return;
+      }
+
+      if (!confirm('Delete this photo?')) return;
+
+      try {
+        const newArray = uploadedImages.filter(img => img !== url);
+        await updateDoc(doc(db, 'users', user.uid), { uploadedImages: newArray });
+        showToast('✅ Photo deleted.', 'success');
+        renderPhotoGrid();
+      } catch (err) {
+        showToast('⚠️ ' + err.message, 'error');
+      }
+    };
+
+    // Upload new photo
+    photoFileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const user = auth.currentUser;
+      if (!user) { showToast('Not logged in', 'error'); return; }
+
+      uploadProgress.classList.remove('hidden');
+      uploadProgress.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+      try {
+        const url = await uploadImage(file);
+        // Add to uploadedImages array and set as current photo
+        await updateDoc(doc(db, 'users', user.uid), {
+          uploadedImages: arrayUnion(url),
+          photoURL: url
+        });
+        showToast('✅ Photo uploaded and set as profile picture!', 'success');
+        uploadProgress.classList.add('hidden');
+        photoFileInput.value = '';
+        closePhotoModal();
+        await loadProfile(user);
+      } catch (err) {
+        uploadProgress.classList.add('hidden');
+        showToast('⚠️ Upload failed: ' + err.message, 'error');
+        console.error(err);
+      }
+    });
+
+    // ================================================================
+    // AUTH STATE
+    // ================================================================
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = 'index.html'; return; }
+      await loadProfile(user);
+    });
+
+    console.log('👤 Profile page loaded with new photo upload system.');
+  </script>
+</body>
+</html>
