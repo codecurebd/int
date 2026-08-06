@@ -16,27 +16,28 @@
   <link rel="stylesheet" href="tailwind.css" />
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* ===== Page title ===== */
     .page-title-icon {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      border-radius: 50%;
+      width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+      border-radius: 14px;
       background: linear-gradient(135deg, #3b82f6, #9333ea);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
       flex-shrink: 0;
     }
-    .page-title-icon i {
-      color: #fff;
-      font-size: 1.1rem;
-      line-height: 1;
+    .page-title-icon i { color: #fff; font-size: 1.1rem; line-height: 1; }
+
+    /* ===== Profile card ===== */
+    .profile-card-wrap {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03);
     }
     .profile-cover {
-      height: 140px;
-      border-radius: 20px 20px 0 0;
+      height: 120px;
+      border-radius: 24px 24px 0 0;
       background: linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%);
       position: relative;
       overflow: hidden;
@@ -44,219 +45,286 @@
     }
     .profile-cover::after {
       content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.9;
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
       pointer-events: none;
     }
     .cover-change-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 2;
-      background: rgba(0,0,0,0.45);
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(6px);
-      transition: background 0.2s;
+      position: absolute; top: 12px; right: 12px; z-index: 2;
+      background: rgba(0,0,0,0.4); color: #fff; border: none;
+      border-radius: 999px; padding: 6px 14px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      backdrop-filter: blur(8px); transition: background 0.2s;
     }
-    .cover-change-btn:hover { background: rgba(0,0,0,0.65); }
-    .cover-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    @media (min-width: 480px) {
-      .cover-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-    .cover-option {
-      height: 64px;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 3px solid transparent;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .cover-option:hover { transform: scale(1.03); }
-    .cover-option.selected {
-      border-color: #fff;
-      box-shadow: 0 0 0 2px #0066FF;
-    }
-    .cover-option .check {
-      position: absolute;
-      bottom: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #0066FF;
-      color: #fff;
-      font-size: 0.65rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .cover-option.selected .check { display: flex; }
+    .cover-change-btn:hover { background: rgba(0,0,0,0.6); }
 
-    .profile-card-wrap {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-    }
+    /* Avatar — single slot, no double circle */
     .avatar-wrap {
-      width: 104px;
-      height: 104px;
-      min-width: 104px;
-      min-height: 104px;
-      flex-shrink: 0;
-      margin-top: -52px;
-      position: relative;
+      width: 100px; height: 100px; min-width: 100px; min-height: 100px;
+      flex-shrink: 0; margin-top: -50px; position: relative;
     }
     .profile-avatar-big {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
+      width: 100%; height: 100%; border-radius: 50%;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      color: white;
-      box-shadow: 0 8px 30px rgba(102,126,234,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: white;
+      box-shadow: 0 6px 24px rgba(102,126,234,0.3);
       transition: transform 0.3s ease, opacity 0.25s ease;
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      border: 4px solid #fff;
-      box-sizing: border-box;
-      z-index: 2;
-      margin-top: 0;
+      position: absolute; inset: 0; overflow: hidden;
+      border: 4px solid #fff; box-sizing: border-box; z-index: 2;
     }
-    .profile-avatar-big:hover { transform: scale(1.03); }
+    .profile-avatar-big:hover { transform: scale(1.04); }
     .profile-avatar-big img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
     .profile-avatar-big .change-photo-overlay {
       position: absolute; inset: 0;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.5);
       display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 0.75rem; font-weight: 600;
-      opacity: 0; transition: opacity 0.3s ease; cursor: pointer; border-radius: 50%;
-      flex-direction: column; gap: 2px;
+      color: white; font-size: 0.7rem; font-weight: 600;
+      opacity: 0; transition: opacity 0.25s ease; cursor: pointer;
+      border-radius: 50%; flex-direction: column; gap: 2px;
     }
     .profile-avatar-big:hover .change-photo-overlay { opacity: 1; }
-    .member-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,102,255,0.08); color: #0066FF;
-      font-size: 0.75rem; font-weight: 600;
-      padding: 4px 12px; border-radius: 999px;
+    .skeleton-avatar {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      border-radius: 50%; background: #e5e7eb;
+      animation: pulse 1.5s ease-in-out infinite;
+      border: 4px solid #fff; box-sizing: border-box; z-index: 1;
     }
-    .completion-wrap { margin-top: 1rem; }
+
+    /* Profile identity block */
+    .profile-identity {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 0;
+    }
+    @media (min-width: 640px) {
+      .profile-identity {
+        flex-direction: row; align-items: flex-end;
+        text-align: left; gap: 20px;
+      }
+    }
+    .profile-text-block { flex: 1; min-width: 0; width: 100%; }
+    .profile-name {
+      font-size: 1.35rem; font-weight: 800; color: #0f172a;
+      line-height: 1.25; letter-spacing: -0.02em;
+      margin: 0; word-break: break-word;
+    }
+    @media (min-width: 640px) {
+      .profile-name { font-size: 1.5rem; }
+    }
+    .profile-email-line {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; margin-top: 6px; flex-wrap: wrap;
+    }
+    @media (min-width: 640px) {
+      .profile-email-line { justify-content: flex-start; }
+    }
+    .profile-email-line .email-text {
+      font-size: 0.875rem; color: #64748b; word-break: break-all;
+    }
+    .profile-meta-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center; gap: 8px; margin-top: 12px;
+    }
+    @media (min-width: 640px) {
+      .profile-meta-row { justify-content: flex-start; }
+    }
+    .meta-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 600; padding: 4px 11px;
+      border-radius: 999px; line-height: 1.3;
+    }
+    .meta-pill.role { background: #eff6ff; color: #1d4ed8; }
+    .meta-pill.member { background: #f0f9ff; color: #0369a1; }
+    .meta-pill.verified { background: #ecfdf5; color: #059669; }
+    .meta-pill.unverified { background: #fffbeb; color: #b45309; }
+
+    .profile-actions-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center; gap: 8px; margin-top: 14px;
+    }
+    @media (min-width: 640px) {
+      .profile-actions-row { justify-content: flex-start; }
+    }
+
+    /* Completion */
+    .completion-wrap {
+      margin-top: 20px; padding: 14px 16px;
+      background: #f8fafc; border-radius: 14px;
+      border: 1px solid #f1f5f9;
+    }
     .completion-bar {
-      height: 8px; border-radius: 999px; background: #e5e7eb; overflow: hidden;
+      height: 7px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-top: 8px;
     }
     .completion-fill {
       height: 100%; border-radius: 999px;
       background: linear-gradient(90deg, #0066FF, #8B5CF6);
       transition: width 0.6s ease;
     }
+
+    /* Info grid cards */
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
+    }
+    .info-card {
+      background: #f8fafc; border: 1px solid #f1f5f9;
+      border-radius: 14px; padding: 14px 16px;
+      transition: background 0.2s;
+    }
+    .info-card:hover { background: #f1f5f9; }
+    .info-label {
+      font-size: 0.72rem; color: #94a3b8; margin-bottom: 4px;
+      font-weight: 500; display: flex; align-items: center; gap: 6px;
+    }
+    .info-value {
+      font-size: 0.92rem; font-weight: 600; color: #1e293b;
+      word-break: break-all; line-height: 1.35;
+    }
+
+    /* Stats */
     .stat-card {
-      background: rgba(255,255,255,0.75);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 16px;
-      padding: 1.1rem 1rem;
-      text-align: center;
-      transition: 0.25s;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      background: #fff; border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 16px; padding: 1.15rem 0.85rem;
+      text-align: center; transition: 0.25s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
     .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.06); }
-    .stat-value { font-size: 1.6rem; font-weight: 800; color: #111827; line-height: 1.2; }
-    .stat-label { font-size: 0.75rem; color: #6b7280; margin-top: 4px; font-weight: 500; }
+    .stat-value { font-size: 1.55rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
+    .stat-label { font-size: 0.72rem; color: #64748b; margin-top: 4px; font-weight: 500; }
     .stat-icon {
-      width: 36px; height: 36px; border-radius: 10px;
+      width: 36px; height: 36px; border-radius: 11px;
       display: inline-flex; align-items: center; justify-content: center;
-      margin-bottom: 8px; font-size: 0.95rem;
+      margin-bottom: 8px; font-size: 0.9rem;
     }
+
+    /* Activity */
     .activity-item {
       display: flex; gap: 12px; align-items: flex-start;
-      padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding: 12px 0; border-bottom: 1px solid #f1f5f9;
     }
     .activity-item:last-child { border-bottom: none; }
     .activity-icon {
       width: 40px; height: 40px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; font-size: 0.95rem;
+      flex-shrink: 0; font-size: 0.9rem;
     }
     .status-pill {
-      font-size: 0.7rem; font-weight: 600; padding: 2px 8px;
+      font-size: 0.68rem; font-weight: 600; padding: 2px 8px;
       border-radius: 999px; text-transform: capitalize;
     }
     .status-pending { background: #fef3c7; color: #b45309; }
     .status-processing { background: #dbeafe; color: #1d4ed8; }
     .status-completed, .status-delivered, .status-done, .status-resolved { background: #d1fae5; color: #059669; }
     .status-cancelled, .status-rejected { background: #fee2e2; color: #dc2626; }
-    .skeleton-avatar {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: #e5e7eb;
-      animation: pulse 1.5s ease-in-out infinite;
-      border: 4px solid #fff;
-      box-sizing: border-box;
-      z-index: 1;
+
+    /* Skeleton */
+    .skeleton-line {
+      height: 14px; background: #e5e7eb; border-radius: 8px;
+      margin-bottom: 0.6rem; animation: pulse 1.5s ease-in-out infinite;
     }
-    .skeleton-line { height: 16px; background: #e5e7eb; border-radius: 8px; margin-bottom: 0.75rem; animation: pulse 1.5s ease-in-out infinite; }
-    .skeleton-line.short { width: 40%; }
-    .skeleton-line.medium { width: 70%; }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-    .fade-up { opacity:0; transform:translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .skeleton-line.short { width: 45%; }
+    .skeleton-line.medium { width: 75%; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+
+    /* Misc UI */
+    .fade-up { opacity:0; transform:translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .fade-up.visible { opacity:1; transform:translateY(0); }
-    .scroll-top-btn { position:fixed; bottom:30px; right:30px; width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; border:none; font-size:1.2rem; cursor:pointer; box-shadow:0 8px 30px rgba(0,122,255,0.35); z-index:999; opacity:0; transform:scale(0.8); transition: opacity 0.3s, transform 0.3s; pointer-events:none; }
+    .scroll-top-btn {
+      position:fixed; bottom:28px; right:28px; width:48px; height:48px; border-radius:50%;
+      background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; border:none;
+      font-size:1.15rem; cursor:pointer; box-shadow:0 8px 28px rgba(0,122,255,0.35);
+      z-index:999; opacity:0; transform:scale(0.8); transition: opacity 0.3s, transform 0.3s;
+      pointer-events:none;
+    }
     .scroll-top-btn.show { opacity:1; transform:scale(1); pointer-events:auto; }
-    .glass-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.7); border-radius: 16px; padding: 1.25rem; box-shadow: 0 4px 16px rgba(0,0,0,0.02); transition: all 0.3s ease; }
-    .glass-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.06); transform: translateY(-3px); }
-    .action-card { text-align: center; padding: 1rem; transition: 0.3s; cursor: pointer; text-decoration: none; display: block; }
-    .action-card .action-icon { font-size: 1.6rem; display: block; margin-bottom: 0.4rem; }
-    .action-card .action-label { font-size: 0.85rem; color: #374151; font-weight: 500; }
-    .btn-primary { background:linear-gradient(135deg,#007AFF,#5856D6); color:#fff; padding:10px 22px; border-radius:60px; font-weight:600; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none; }
-    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,122,255,0.35); }
-    .btn-primary:disabled { opacity:0.7; cursor:not-allowed; transform:none !important; }
-    .btn-outline { background:rgba(255,255,255,0.5); color:#1c1c1e; padding:10px 22px; border-radius:60px; font-weight:600; border:1.5px solid rgba(60,60,67,0.08); cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
-    .btn-outline:hover { background:rgba(0,122,255,0.04); border-color:#007AFF; color:#007AFF; transform:translateY(-2px); }
-    .form-input { width:100%; padding:12px 16px; border:1.5px solid rgba(60,60,67,0.08); border-radius:12px; font-size:0.95rem; background:rgba(255,255,255,0.8); outline:none; }
-    .form-input:focus { border-color:#007AFF; background:#fff; box-shadow:0 0 0 4px rgba(0,122,255,0.08); }
-    .info-label { font-size:0.8rem; color:#8e8e93; margin-bottom:2px; }
-    .info-value { font-size:1rem; font-weight:500; color:#1c1c1e; }
+    .glass-card {
+      background: #fff; border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 18px; padding: 1.25rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;
+    }
+    .glass-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .action-card { text-align: center; padding: 1.1rem 0.75rem; transition: 0.25s; cursor: pointer; text-decoration: none; display: block; }
+    .action-card .action-icon { font-size: 1.5rem; display: block; margin-bottom: 0.35rem; }
+    .action-card .action-label { font-size: 0.82rem; color: #334155; font-weight: 600; }
+
+    .btn-primary {
+      background: linear-gradient(135deg,#007AFF,#5856D6); color:#fff;
+      padding: 9px 18px; border-radius: 999px; font-weight: 600; font-size: 0.875rem;
+      border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,122,255,0.3); }
+    .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; transform: none !important; }
+    .btn-outline {
+      background: #fff; color: #334155; padding: 9px 18px; border-radius: 999px;
+      font-weight: 600; font-size: 0.875rem;
+      border: 1.5px solid #e2e8f0; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s;
+    }
+    .btn-outline:hover { background: #f8fafc; border-color: #007AFF; color: #007AFF; }
+
+    .form-input {
+      width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0;
+      border-radius: 12px; font-size: 0.95rem; background: #fff; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus { border-color: #007AFF; box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
+
     .email-verify-btn { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
     .email-verify-btn:hover { background: #bfdbfe; }
     .email-verify-btn.verified { background: #d1fae5; color: #059669; border-color: #6ee7b7; cursor: default; }
-    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; max-height: 300px; overflow-y: auto; padding: 4px; }
-    .photo-grid .photo-item { aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; border: 3px solid transparent; cursor: pointer; transition: all 0.25s ease; position: relative; background: #f3f4f6; }
+
+    /* Cover picker */
+    .cover-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 480px) { .cover-grid { grid-template-columns: repeat(4, 1fr); } }
+    .cover-option {
+      height: 64px; border-radius: 12px; cursor: pointer;
+      border: 3px solid transparent; position: relative; overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .cover-option:hover { transform: scale(1.03); }
+    .cover-option.selected { border-color: #fff; box-shadow: 0 0 0 2px #0066FF; }
+    .cover-option .check {
+      position: absolute; bottom: 6px; right: 6px; width: 22px; height: 22px;
+      border-radius: 50%; background: #0066FF; color: #fff; font-size: 0.65rem;
+      display: none; align-items: center; justify-content: center;
+    }
+    .cover-option.selected .check { display: flex; }
+
+    /* Photo modal */
+    .photo-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px; max-height: 300px; overflow-y: auto; padding: 4px;
+    }
+    .photo-grid .photo-item {
+      aspect-ratio: 1/1; border-radius: 12px; overflow: hidden;
+      border: 3px solid transparent; cursor: pointer; transition: all 0.25s ease;
+      position: relative; background: #f3f4f6;
+    }
     .photo-grid .photo-item:hover { transform: scale(1.03); border-color: #007AFF; }
-    .photo-grid .photo-item.selected { border-color: #34C759; box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.3); }
+    .photo-grid .photo-item.selected { border-color: #34C759; box-shadow: 0 0 0 3px rgba(52,199,89,0.3); }
     .photo-grid .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .photo-grid .photo-item .delete-photo { position: absolute; top: 4px; right: 4px; background: rgba(220,38,38,0.85); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
+    .photo-grid .photo-item .delete-photo {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(220,38,38,0.85); color: white; border: none;
+      border-radius: 50%; width: 24px; height: 24px; font-size: 0.7rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: 0.2s;
+    }
     .photo-grid .photo-item:hover .delete-photo { opacity: 1; }
-    .photo-upload-zone { border: 2px dashed #d1d5db; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.5); min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .photo-upload-zone {
+      border: 2px dashed #d1d5db; border-radius: 12px; padding: 1.5rem;
+      text-align: center; cursor: pointer; transition: 0.3s;
+      background: #fafafa; min-height: 100px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
     .photo-upload-zone:hover { border-color: #007AFF; background: rgba(0,122,255,0.04); }
     .photo-upload-zone i { font-size: 2rem; color: #9ca3af; margin-bottom: 0.25rem; }
+
     @media (max-width: 480px) {
       .photo-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
-      .profile-cover { height: 110px; }
+      .profile-cover { height: 100px; }
+      .avatar-wrap { width: 88px; height: 88px; min-width: 88px; min-height: 88px; margin-top: -44px; }
+      .profile-name { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -267,26 +335,27 @@
       <section class="pt-4 pb-16 px-4 sm:px-6 max-w-3xl mx-auto">
 
         <!-- Page title -->
-        <div class="flex items-center gap-3 mb-5 fade-up">
+        <div class="flex items-center gap-3 mb-6 fade-up">
           <div class="page-title-icon" aria-hidden="true">
             <i class="fas fa-user"></i>
           </div>
           <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">My Profile</h1>
-            <p class="text-sm text-gray-500">Manage your account & activity</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">My Profile</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Manage your account & activity</p>
           </div>
         </div>
 
-        <!-- Profile card with cover -->
+        <!-- Profile card -->
         <div class="profile-card-wrap fade-up mb-6">
           <div class="profile-cover" id="profileCover">
             <button type="button" class="cover-change-btn" onclick="window.openCoverModal()" title="Change cover">
               <i class="fas fa-image"></i> Cover
             </button>
           </div>
+
           <div class="px-5 sm:px-6 pb-6">
-            <div class="flex flex-col sm:flex-row items-center sm:items-end gap-5 sm:gap-6" id="profileHeader">
-              <!-- Single slot: skeleton + real avatar stacked so only one circle is ever visible -->
+            <!-- Identity: avatar + name/email/meta -->
+            <div class="profile-identity" id="profileHeader">
               <div class="avatar-wrap" id="avatarWrap">
                 <div class="skeleton-avatar" id="avatarSkeleton"></div>
                 <div class="profile-avatar-big hidden" id="profileAvatarBig">
@@ -298,60 +367,86 @@
                 </div>
               </div>
 
-              <div class="flex-1 text-center sm:text-left w-full sm:pl-1" id="profileInfo">
-                <div class="skeleton-line medium" id="nameSkeleton"></div>
-                <div class="skeleton-line short" id="emailSkeleton"></div>
-                <div class="skeleton-line" style="width:30%;" id="roleSkeleton"></div>
+              <div class="profile-text-block" id="profileInfo">
+                <!-- Skeleton (loading) -->
+                <div id="profileSkeleton">
+                  <div class="skeleton-line medium" id="nameSkeleton" style="height:20px;margin-top:8px;"></div>
+                  <div class="skeleton-line short" id="emailSkeleton" style="height:14px;"></div>
+                  <div class="skeleton-line" id="roleSkeleton" style="width:35%;height:12px;"></div>
+                </div>
+
+                <!-- Real data -->
                 <div id="profileData" class="hidden">
-                  <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
-                    <h2 id="profileDisplayName" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
-                    <span id="profileRole" class="inline-block text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full"></span>
+                  <h2 id="profileDisplayName" class="profile-name"></h2>
+
+                  <div class="profile-email-line">
+                    <i class="fas fa-envelope text-gray-400" style="font-size:0.75rem;"></i>
+                    <span id="profileEmail" class="email-text"></span>
                   </div>
-                  <p id="profileEmail" class="text-gray-500 text-sm mt-0.5"></p>
-                  <div class="mt-2.5 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                    <span class="member-badge" id="memberSinceBadge"><i class="fas fa-calendar-check"></i> Member</span>
+
+                  <div class="profile-meta-row">
+                    <span id="profileRole" class="meta-pill role" style="display:none;"></span>
+                    <span class="meta-pill member" id="memberSinceBadge">
+                      <i class="fas fa-calendar-check"></i> Member
+                    </span>
+                    <span id="emailVerifiedStatus" class="meta-pill unverified"></span>
                   </div>
-                  <div class="mt-2.5 flex items-center gap-3 flex-wrap justify-center sm:justify-start">
-                    <span id="emailVerifiedStatus" class="text-sm"></span>
-                    <button onclick="verifyEmail()" id="verifyEmailBtn" class="btn-primary text-sm py-1.5 px-4 email-verify-btn">
+
+                  <div class="profile-actions-row">
+                    <button onclick="verifyEmail()" id="verifyEmailBtn" class="btn-primary email-verify-btn" style="padding:8px 16px;font-size:0.8rem;">
                       <i class="fas fa-envelope"></i> Verify Email
                     </button>
-                    <button onclick="checkEmailVerified()" id="checkVerifiedBtn" class="btn-outline text-sm py-1.5 px-4">
+                    <button onclick="checkEmailVerified()" id="checkVerifiedBtn" class="btn-outline" style="padding:8px 16px;font-size:0.8rem;">
                       <i class="fas fa-sync-alt"></i> I've verified
                     </button>
+                    <button onclick="toggleEditForm()" class="btn-outline" style="padding:8px 16px;font-size:0.8rem;" id="editToggleBtn">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
                   </div>
-                  <p id="verifyEmailHint" class="text-xs text-gray-400 mt-1 hidden">Check Inbox and Spam/Junk.</p>
+                  <p id="verifyEmailHint" class="text-xs text-gray-400 mt-2 hidden" style="text-align:inherit;">
+                    Check Inbox and Spam/Junk.
+                  </p>
                 </div>
               </div>
-
-              <button onclick="toggleEditForm()" class="btn-outline text-sm py-2 px-4 flex-shrink-0 mt-2 sm:mt-0" id="editToggleBtn">
-                <i class="fas fa-edit"></i> Edit
-              </button>
             </div>
 
-            <!-- Profile completion -->
-            <div class="completion-wrap fade-up" id="completionSection">
-              <div class="flex justify-between items-center mb-1.5">
-                <span class="text-sm font-medium text-gray-700">Profile completion</span>
+            <!-- Completion -->
+            <div class="completion-wrap" id="completionSection">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-gray-700">Profile completion</span>
                 <span class="text-sm font-bold text-blue-600" id="completionPercent">0%</span>
               </div>
               <div class="completion-bar">
                 <div class="completion-fill" id="completionFill" style="width:0%"></div>
               </div>
-              <p class="text-xs text-gray-400 mt-1.5" id="completionHint">Add missing info to complete your profile</p>
+              <p class="text-xs text-gray-400 mt-2" id="completionHint">Add missing info to complete your profile</p>
             </div>
 
-            <hr class="my-5 border-gray-100" />
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="infoGrid">
-              <div><p class="info-label"><i class="fas fa-envelope mr-2"></i>Email</p><p class="info-value" id="profileEmailDisplay">-</p></div>
-              <div><p class="info-label"><i class="fas fa-phone mr-2"></i>Phone</p><p class="info-value" id="profilePhoneDisplay">Not set</p></div>
-              <div><p class="info-label"><i class="fas fa-user-tag mr-2"></i>Role</p><p class="info-value" id="profileRoleDisplay">User</p></div>
-              <div><p class="info-label"><i class="fas fa-calendar-alt mr-2"></i>Joined</p><p class="info-value" id="profileJoinedDisplay">-</p></div>
+            <!-- Info cards -->
+            <div class="info-grid" id="infoGrid">
+              <div class="info-card">
+                <p class="info-label"><i class="fas fa-envelope"></i> Email</p>
+                <p class="info-value" id="profileEmailDisplay">–</p>
+              </div>
+              <div class="info-card">
+                <p class="info-label"><i class="fas fa-phone"></i> Phone</p>
+                <p class="info-value" id="profilePhoneDisplay">Not set</p>
+              </div>
+              <div class="info-card">
+                <p class="info-label"><i class="fas fa-user-tag"></i> Role</p>
+                <p class="info-value" id="profileRoleDisplay">User</p>
+              </div>
+              <div class="info-card">
+                <p class="info-label"><i class="fas fa-calendar-alt"></i> Joined</p>
+                <p class="info-value" id="profileJoinedDisplay">–</p>
+              </div>
             </div>
 
-            <div id="editForm" class="hidden mt-6 pt-6 border-t border-gray-100">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-pen text-blue-500 mr-2"></i>Edit Profile</h3>
+            <!-- Edit form -->
+            <div id="editForm" class="hidden mt-5 pt-5 border-t border-gray-100">
+              <h3 class="text-base font-bold text-gray-900 mb-4">
+                <i class="fas fa-pen text-blue-500 mr-2"></i>Edit Profile
+              </h3>
               <form id="profileEditForm" class="space-y-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1.5">Display Name</label>
@@ -527,6 +622,15 @@
     const editFeedback = document.getElementById('editFeedback');
     const editToggleBtn = document.getElementById('editToggleBtn');
     const profileData = document.getElementById('profileData');
+    const profileSkeleton = document.getElementById('profileSkeleton');
+
+    function setEditToggleLabel(isOpen) {
+      if (editToggleBtn) {
+        editToggleBtn.innerHTML = isOpen
+          ? '<i class="fas fa-times"></i> Close'
+          : '<i class="fas fa-edit"></i> Edit';
+      }
+    }
     const nameSkeleton = document.getElementById('nameSkeleton');
     const emailSkeleton = document.getElementById('emailSkeleton');
     const roleSkeleton = document.getElementById('roleSkeleton');
@@ -634,17 +738,29 @@
       const checkBtn = document.getElementById('checkVerifiedBtn');
       const hint = document.getElementById('verifyEmailHint');
       if (isVerified) {
-        status.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle"></i> Verified</span>';
-        btn.innerHTML = '<i class="fas fa-check"></i> Verified';
-        btn.className = 'btn-primary text-sm py-1.5 px-4 email-verify-btn verified';
-        btn.disabled = true;
+        if (status) {
+          status.className = 'meta-pill verified';
+          status.innerHTML = '<i class="fas fa-check-circle"></i> Verified';
+        }
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-check"></i> Verified';
+          btn.className = 'btn-primary email-verify-btn verified';
+          btn.style.cssText = 'padding:8px 16px;font-size:0.8rem;';
+          btn.disabled = true;
+        }
         checkBtn?.classList.add('hidden');
         hint?.classList.add('hidden');
       } else {
-        status.innerHTML = '<span class="text-yellow-600"><i class="fas fa-exclamation-circle"></i> Not verified</span>';
-        btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email';
-        btn.className = 'btn-primary text-sm py-1.5 px-4 email-verify-btn';
-        btn.disabled = false;
+        if (status) {
+          status.className = 'meta-pill unverified';
+          status.innerHTML = '<i class="fas fa-exclamation-circle"></i> Not verified';
+        }
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-envelope"></i> Verify Email';
+          btn.className = 'btn-primary email-verify-btn';
+          btn.style.cssText = 'padding:8px 16px;font-size:0.8rem;';
+          btn.disabled = false;
+        }
         checkBtn?.classList.remove('hidden');
       }
     }
@@ -654,17 +770,13 @@
         avatarSkeleton.classList.remove('hidden');
         profileAvatarBig.classList.add('hidden');
         profileAvatarBig.style.opacity = '0';
-        nameSkeleton.classList.remove('hidden');
-        emailSkeleton.classList.remove('hidden');
-        roleSkeleton.classList.remove('hidden');
+        if (profileSkeleton) profileSkeleton.classList.remove('hidden');
         profileData.classList.add('hidden');
       } else {
         avatarSkeleton.classList.add('hidden');
         profileAvatarBig.classList.remove('hidden');
         profileAvatarBig.style.opacity = '1';
-        nameSkeleton.classList.add('hidden');
-        emailSkeleton.classList.add('hidden');
-        roleSkeleton.classList.add('hidden');
+        if (profileSkeleton) profileSkeleton.classList.add('hidden');
         profileData.classList.remove('hidden');
       }
     }
@@ -776,20 +888,27 @@
 
           profileDisplayName.textContent = name;
           profileEmail.textContent = email;
-          profileRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
-          profileRole.style.display = role === 'admin' ? 'inline-block' : 'none';
+
+          const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+          if (role === 'admin') {
+            profileRole.innerHTML = '<i class="fas fa-shield-alt"></i> Admin';
+            profileRole.style.display = 'inline-flex';
+          } else {
+            profileRole.innerHTML = '<i class="fas fa-user"></i> ' + roleLabel;
+            profileRole.style.display = 'inline-flex';
+          }
 
           profileEmailDisplay.textContent = email;
           profilePhoneDisplay.textContent = data.phone || 'Not set';
-          profileRoleDisplay.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+          profileRoleDisplay.textContent = roleLabel;
 
-          let joinedStr = '-';
+          let joinedStr = '–';
           if (data.createdAt) {
             const date = toDate(data.createdAt) || new Date(data.createdAt);
             if (date && !isNaN(date.getTime())) {
               joinedStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
               document.getElementById('memberSinceBadge').innerHTML =
-                `<i class="fas fa-calendar-check"></i> Member since ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+                `<i class="fas fa-calendar-check"></i> Since ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
             }
           }
           profileJoinedDisplay.textContent = joinedStr;
@@ -837,12 +956,9 @@
 
     window.toggleEditForm = () => {
       editForm.classList.toggle('hidden');
-      if (!editForm.classList.contains('hidden')) {
-        editFeedback.className = 'hidden';
-        editToggleBtn.innerHTML = '<i class="fas fa-times"></i> Close';
-      } else {
-        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-      }
+      const isOpen = !editForm.classList.contains('hidden');
+      if (isOpen) editFeedback.className = 'hidden';
+      setEditToggleLabel(isOpen);
     };
 
     const profileEditForm = document.getElementById('profileEditForm');
@@ -866,7 +982,7 @@
         await loadProfile(user);
         showToast('✅ Profile updated!', 'success');
         editForm.classList.add('hidden');
-        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+        setEditToggleLabel(false);
       } catch (err) {
         editFeedback.className = 'block text-sm text-red-500 mt-2';
         editFeedback.textContent = '⚠️ ' + err.message;
