@@ -172,10 +172,12 @@ function startAdminMessageListener(user) {
     where('participants', 'array-contains', user.uid)
   );
 
+  console.log('[notif] starting listener for uid=', user.uid);
   adminMessageUnsubscribe = onSnapshot(q, (snapshot) => {
+    console.log('[notif] snapshot size=', snapshot.size);
     processNotifSnapshot(snapshot, user);
   }, (error) => {
-    console.error('Admin messages listener error (participants):', error);
+    console.error('[notif] participants listener error:', error);
     tryFallbackNotifListener(user);
   });
 }
@@ -219,15 +221,20 @@ function updateNotificationBadge(count) {
     if (count > 0) {
       badge.textContent = count > 99 ? '99+' : String(count);
       badge.classList.remove('hidden');
-      badge.style.display = 'flex';
+      // Inline styles beat Tailwind .hidden { display:none }
+      badge.style.cssText = 'display:flex !important; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; border-radius:9999px; min-width:18px; height:18px; align-items:center; justify-content:center; padding:0 4px; z-index:20;';
     } else {
       badge.classList.add('hidden');
-      badge.style.display = 'none';
+      badge.style.cssText = 'display:none !important;';
       badge.textContent = '0';
     }
   }
   if (label) {
     label.textContent = count > 0 ? `${count} new` : '0 new';
+  }
+  // Debug helper (remove later if noisy)
+  if (count > 0) {
+    console.log('[notif] badge count =', count);
   }
 }
 
@@ -300,8 +307,8 @@ window.toggleNotifications = function() {
     dropdown.classList.remove('hidden');
     document.body.classList.add('dropdown-open');
     dropdown.style.animation = 'dropdownFade 0.2s ease';
-    // Slight delay so list is visible before badge clears
-    setTimeout(() => { markAllAdminMessagesRead(); }, 400);
+    // Do NOT mark read on open — only when user opens messages.html
+    // (keeps badge until they actually read the chat)
   } else {
     notifDropdownOpen = false;
     displayMessages = [];
