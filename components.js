@@ -2860,12 +2860,8 @@ function _startSupportListener(user) {
   }
   if (!user) return;
   const convId = `conv_${user.uid}_admin`;
-  // Use participants query (rules-friendly). Filter to this conversation on client.
-  const q = query(
-    collection(db, 'messages'),
-    where('participants', 'array-contains', user.uid)
-  );
-  _supportUnsub = onSnapshot(q, (snapshot) => {
+
+  const applySnap = (snapshot) => {
     const msgs = [];
     snapshot.forEach((d) => {
       const data = d.data();
@@ -2880,22 +2876,27 @@ function _startSupportListener(user) {
     });
     _supportMsgs = msgs;
     if (_supportOpen) _renderSupportMsgs(msgs);
-  }, (err) => {
-    console.error('[support widget] listener error:', err?.code, err?.message);
-    // Fallback: conversationId only (needs matching rules)
-    const q2 = query(collection(db, 'messages'), where('conversationId', '==', convId));
-    _supportUnsub = onSnapshot(q2, (snapshot) => {
-      const msgs = [];
-      snapshot.forEach((d) => msgs.push({ id: d.id, ...d.data() }));
-      msgs.sort((a, b) => {
-        const ta = a.timestamp?.toDate?.()?.getTime() || 0;
-        const tb = b.timestamp?.toDate?.()?.getTime() || 0;
-        return ta - tb;
+  };
+
+  const start = async () => {
+    try { await user.getIdToken(true); } catch (_) {}
+    const q = query(
+      collection(db, 'messages'),
+      where('participants', 'array-contains', user.uid)
+    );
+    _supportUnsub = onSnapshot(q, applySnap, (err) => {
+      console.warn('[support] participants failed:', err?.code);
+      const q2 = query(collection(db, 'messages'), where('conversationId', '==', convId));
+      _supportUnsub = onSnapshot(q2, applySnap, (err2) => {
+        console.warn('[support] conversationId failed:', err2?.code);
+        const q3 = query(collection(db, 'messages'), where('toUserId', '==', user.uid));
+        _supportUnsub = onSnapshot(q3, applySnap, (err3) => {
+          console.error('[support] ALL queries failed:', err3?.code, err3?.message);
+        });
       });
-      _supportMsgs = msgs;
-      if (_supportOpen) _renderSupportMsgs(msgs);
-    }, (err2) => console.error('[support widget] fallback error:', err2?.code, err2?.message));
-  });
+    });
+  };
+  start();
 }
 
 window.__ccbdUpdateSupportBadge = function(count) {

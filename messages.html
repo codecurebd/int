@@ -1239,15 +1239,16 @@
       lastMsgCount = 0;
       pendingNewCount = 0;
 
-      // Rules-safe query: participants array-contains uid
-      // (conversationId-only queries fail under "uid in participants" rules)
-      // Filter this conversation on the client — no composite index needed
-      const q = query(
-        collection(db, 'messages'),
-        where('participants', 'array-contains', user.uid)
-      );
+      // Force fresh auth token so Firestore sees request.auth
+      try {
+        await user.getIdToken(true);
+      } catch (tokenErr) {
+        console.warn('Token refresh failed:', tokenErr);
+      }
 
-      unsubMessages = onSnapshot(q, (snapshot) => {
+      console.log('[messages] initChat uid=', user.uid, 'auth.currentUser=', auth.currentUser?.uid);
+
+      const handleSnapshot = (snapshot) => {
         const msgs = [];
         snapshot.forEach(d => {
           const data = d.data();
@@ -1275,11 +1276,36 @@
             }
           });
         }
-      }, (error) => {
-        console.error('🔥 Snapshot error in messages:', error);
-        const errorMsg = error.message || 'Unknown error loading messages.';
+      };
+
+      const handleError = (error) => {
+        console.error('🔥 Snapshot error in messages:', error?.code, error?.message);
+        const errorMsg = error?.message || 'Unknown error loading messages.';
         showErrorState(errorMsg);
         showToast('⚠️ ' + errorMsg, 'error');
+      };
+
+      // Primary: participants array-contains
+      const q1 = query(
+        collection(db, 'messages'),
+        where('participants', 'array-contains', user.uid)
+      );
+
+      unsubMessages = onSnapshot(q1, handleSnapshot, (error) => {
+        console.warn('[messages] participants query failed, trying conversationId…', error?.code);
+        // Fallback: conversationId (works when rules allow read: if isSignedIn())
+        const q2 = query(
+          collection(db, 'messages'),
+          where('conversationId', '==', conversationId)
+        );
+        unsubMessages = onSnapshot(q2, handleSnapshot, (error2) => {
+          console.warn('[messages] conversationId failed, trying toUserId…', error2?.code);
+          const q3 = query(
+            collection(db, 'messages'),
+            where('toUserId', '==', user.uid)
+          );
+          unsubMessages = onSnapshot(q3, handleSnapshot, handleError);
+        });
       });
     }
 
