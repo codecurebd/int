@@ -71,6 +71,7 @@ let unreadAdminMessages = [];
 let displayMessages = [];
 let adminMessageUnsubscribe = null;
 let notifDropdownOpen = false;
+let notifListenerReady = false;
 
 function isImageContent(str) {
   if (!str) return false;
@@ -101,11 +102,61 @@ function escapeNotifHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function isUnreadAdminMsg(data, userId) {
+  if (!data) return false;
+  // Accept fromUserId as 'admin' (string used by admin panel)
+  const fromAdmin = data.fromUserId === 'admin';
+  if (!fromAdmin) return false;
+  // Unread if read is not true (handles false, undefined, null, missing)
+  if (data.read === true || data.read === 'true') return false;
+  // Prefer messages addressed to this user when toUserId exists
+  if (data.toUserId && data.toUserId !== userId && data.toUserId !== 'admin') {
+    // still allow if conversationId matches this user
+    const cid = data.conversationId || '';
+    if (cid !== `conv_${userId}_admin`) return false;
+  }
+  return true;
+}
+
+function processNotifSnapshot(snapshot, user) {
+  const prevIds = new Set(unreadAdminMessages.map(m => m.id));
+  unreadAdminMessages = [];
+  snapshot.forEach((d) => {
+    const data = d.data();
+    if (isUnreadAdminMsg(data, user.uid)) {
+      unreadAdminMessages.push({ id: d.id, ...data });
+    }
+  });
+  unreadAdminMessages.sort((a, b) => {
+    const ta = a.timestamp?.toDate?.()?.getTime?.() || 0;
+    const tb = b.timestamp?.toDate?.()?.getTime?.() || 0;
+    return tb - ta;
+  });
+  updateNotificationBadge(unreadAdminMessages.length);
+  if (!notifDropdownOpen) {
+    updateNotificationList(unreadAdminMessages);
+  }
+  // Toast only after first snapshot is done (skip initial load)
+  if (notifListenerReady) {
+    const brandNew = unreadAdminMessages.filter(m => !prevIds.has(m.id));
+    if (brandNew.length > 0 && typeof window.showToast === 'function') {
+      const path = (window.location.pathname || '').toLowerCase();
+      if (!path.includes('messages')) {
+        const preview = getMessagePreview(brandNew[0].content);
+        window.showToast('💬 Admin: ' + preview, 'success');
+      }
+    }
+  }
+  notifListenerReady = true;
+}
+
 function startAdminMessageListener(user) {
   if (adminMessageUnsubscribe) {
     adminMessageUnsubscribe();
     adminMessageUnsubscribe = null;
   }
+
+  notifListenerReady = false;
 
   if (!user) {
     unreadAdminMessages = [];
@@ -114,33 +165,17 @@ function startAdminMessageListener(user) {
     return;
   }
 
-  // Single-field query — no composite index required
-  // Then filter: from admin + unread
-  const conversationId = `conv_${user.uid}_admin`;
+  // Use SAME query basis as messages.html (known working):
+  // participants array-contains user.uid  — matches security rules + indexes
   const q = query(
     collection(db, 'messages'),
-    where('conversationId', '==', conversationId)
+    where('participants', 'array-contains', user.uid)
   );
 
   adminMessageUnsubscribe = onSnapshot(q, (snapshot) => {
-    unreadAdminMessages = [];
-    snapshot.forEach((d) => {
-      const data = d.data();
-      if (data.fromUserId === 'admin' && data.read === false) {
-        unreadAdminMessages.push({ id: d.id, ...data });
-      }
-    });
-    unreadAdminMessages.sort((a, b) => {
-      const ta = a.timestamp?.toDate?.()?.getTime?.() || 0;
-      const tb = b.timestamp?.toDate?.()?.getTime?.() || 0;
-      return tb - ta;
-    });
-    updateNotificationBadge(unreadAdminMessages.length);
-    if (!notifDropdownOpen) {
-      updateNotificationList(unreadAdminMessages);
-    }
+    processNotifSnapshot(snapshot, user);
   }, (error) => {
-    console.error('Admin messages listener error:', error);
+    console.error('Admin messages listener error (participants):', error);
     tryFallbackNotifListener(user);
   });
 }
@@ -150,29 +185,30 @@ function tryFallbackNotifListener(user) {
     try { adminMessageUnsubscribe(); } catch (_) {}
     adminMessageUnsubscribe = null;
   }
-  const q = query(
+  // Fallback 1: conversationId
+  const conversationId = `conv_${user.uid}_admin`;
+  const q1 = query(
     collection(db, 'messages'),
-    where('toUserId', '==', user.uid)
+    where('conversationId', '==', conversationId)
   );
-  adminMessageUnsubscribe = onSnapshot(q, (snapshot) => {
-    unreadAdminMessages = [];
-    snapshot.forEach((d) => {
-      const data = d.data();
-      if (data.fromUserId === 'admin' && data.read === false) {
-        unreadAdminMessages.push({ id: d.id, ...data });
-      }
-    });
-    unreadAdminMessages.sort((a, b) => {
-      const ta = a.timestamp?.toDate?.()?.getTime?.() || 0;
-      const tb = b.timestamp?.toDate?.()?.getTime?.() || 0;
-      return tb - ta;
-    });
-    updateNotificationBadge(unreadAdminMessages.length);
-    if (!notifDropdownOpen) {
-      updateNotificationList(unreadAdminMessages);
+  adminMessageUnsubscribe = onSnapshot(q1, (snapshot) => {
+    processNotifSnapshot(snapshot, user);
+  }, (err1) => {
+    console.error('Fallback conversationId listener error:', err1);
+    // Fallback 2: toUserId
+    if (adminMessageUnsubscribe) {
+      try { adminMessageUnsubscribe(); } catch (_) {}
+      adminMessageUnsubscribe = null;
     }
-  }, (err) => {
-    console.error('Fallback admin messages listener error:', err);
+    const q2 = query(
+      collection(db, 'messages'),
+      where('toUserId', '==', user.uid)
+    );
+    adminMessageUnsubscribe = onSnapshot(q2, (snapshot) => {
+      processNotifSnapshot(snapshot, user);
+    }, (err2) => {
+      console.error('Fallback toUserId listener error:', err2);
+    });
   });
 }
 
@@ -183,8 +219,10 @@ function updateNotificationBadge(count) {
     if (count > 0) {
       badge.textContent = count > 99 ? '99+' : String(count);
       badge.classList.remove('hidden');
+      badge.style.display = 'flex';
     } else {
       badge.classList.add('hidden');
+      badge.style.display = 'none';
       badge.textContent = '0';
     }
   }

@@ -206,24 +206,33 @@
     .msg-row {
       display: flex;
       flex-direction: column;
-      max-width: 78%;
+      max-width: 82%;
       animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
       margin-bottom: 2px;
     }
-    .msg-row.sent { align-self: flex-end; align-items: flex-end; }
-    .msg-row.received { align-self: flex-start; align-items: flex-start; }
+    .msg-row.sent {
+      align-self: flex-end;
+      align-items: flex-end;
+      max-width: 82%;
+    }
+    .msg-row.received {
+      align-self: flex-start;
+      align-items: flex-start;
+      max-width: 90%;
+    }
 
-    /* Bubble: fits text tightly (messenger-style) */
+    /* Bubble: roomier for admin (received) messages */
     .chat-msg {
       display: inline-block;
       width: fit-content;
       max-width: 100%;
-      padding: 8px 12px;
+      min-width: 48px;
+      padding: 10px 14px;
       border-radius: 16px;
-      font-size: 0.94rem;
-      line-height: 1.4;
+      font-size: 0.95rem;
+      line-height: 1.45;
       word-wrap: break-word;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
       white-space: pre-wrap;
       position: relative;
     }
@@ -239,6 +248,8 @@
       border-bottom-left-radius: 4px;
       border: 1px solid rgba(0, 0, 0, 0.05);
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+      padding: 11px 16px;
+      font-size: 0.96rem;
     }
 
     /* Time BELOW bubble (outside) */
@@ -728,10 +739,14 @@
       .chat-header { padding: 12px 14px; }
       .chat-header .chat-avatar { width: 42px; height: 42px; font-size: 1rem; }
       .chat-messages { padding: 14px 12px 12px; }
-      .msg-row { max-width: 88%; }
+      .msg-row.sent { max-width: 88%; }
+      .msg-row.received { max-width: 92%; }
       .chat-msg {
-        font-size: 0.9rem;
-        padding: 7px 11px;
+        font-size: 0.92rem;
+        padding: 9px 13px;
+      }
+      .msg-row.received .chat-msg {
+        padding: 10px 15px;
       }
       .chat-msg .msg-img-wrap { max-width: 200px; }
       .chat-input-wrap { padding: 10px 12px 12px; gap: 8px; }
@@ -745,7 +760,8 @@
     @media (max-width: 480px) {
       .chat-header .chat-avatar { width: 38px; height: 38px; font-size: 0.9rem; }
       .chat-header .chat-info .name { font-size: 0.95rem; }
-      .msg-row { max-width: 92%; }
+      .msg-row.sent { max-width: 90%; }
+      .msg-row.received { max-width: 94%; }
       .chat-input-wrap .image-preview img { width: 30px; height: 30px; }
     }
   </style>
