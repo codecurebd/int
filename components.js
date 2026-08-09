@@ -216,9 +216,9 @@ function startAdminMessageListener(user) {
 
   const uid = user.uid;
   const conversationId = `conv_${uid}_admin`;
-  console.log('[notif] starting listeners for uid=', uid);
+  console.log('[notif] starting listeners for uid=', uid, 'email=', user.email || '');
 
-  // Run ALL queries in parallel (merge into one map) so badge works even if one path is blocked by rules
+  // Parallel queries — any one that succeeds is enough
   const queries = [
     { name: 'participants', q: query(collection(db, 'messages'), where('participants', 'array-contains', uid)) },
     { name: 'conversationId', q: query(collection(db, 'messages'), where('conversationId', '==', conversationId)) },
@@ -229,6 +229,11 @@ function startAdminMessageListener(user) {
     try {
       const unsub = onSnapshot(q, (snapshot) => {
         console.log(`[notif] ${name} snapshot size=`, snapshot.size);
+        // Log a sample doc shape (first unread candidate)
+        if (snapshot.size > 0) {
+          const sample = snapshot.docs[0].data();
+          console.log(`[notif] sample fromUserId=`, sample.fromUserId, 'read=', sample.read, 'toUserId=', sample.toUserId, 'participants=', sample.participants);
+        }
         processNotifSnapshot(snapshot, user);
       }, (error) => {
         console.warn(`[notif] ${name} listener error:`, error?.code, error?.message);
@@ -241,6 +246,40 @@ function startAdminMessageListener(user) {
 
   adminMessageUnsubscribe = () => stopAllNotifListeners();
 }
+
+// Console helper: window.debugNotif()
+window.debugNotif = function () {
+  const u = auth.currentUser;
+  console.log('=== NOTIF DEBUG ===');
+  console.log('currentUser:', u ? { uid: u.uid, email: u.email } : null);
+  console.log('unreadAdminMessages:', unreadAdminMessages.length, unreadAdminMessages);
+  console.log('_notifDocMap size:', _notifDocMap.size);
+  console.log('badge el:', document.getElementById('notificationBadge'));
+  console.log('authRequiredActions display:', document.getElementById('authRequiredActions')?.style?.display);
+  console.log('support badge el:', document.getElementById('ccbdSupportBtnBadge'));
+  if (!u) {
+    console.warn('Not logged in — login as a normal user, then run debugNotif() again');
+    return;
+  }
+  // One-shot fetch to prove rules + data
+  getDocs(query(collection(db, 'messages'), where('participants', 'array-contains', u.uid)))
+    .then((snap) => {
+      console.log('[debugNotif] participants getDocs size=', snap.size);
+      snap.forEach((d) => {
+        const data = d.data();
+        console.log('  msg', d.id, {
+          from: data.fromUserId,
+          to: data.toUserId,
+          read: data.read,
+          participants: data.participants,
+          isUnread: isUnreadAdminMsg(data, u.uid),
+        });
+      });
+      // Force rebuild badge from this result
+      processNotifSnapshot(snap, u);
+    })
+    .catch((err) => console.error('[debugNotif] getDocs FAILED — RULES ISSUE:', err.code, err.message));
+};
 
 function updateNotificationBadge(count) {
   const apply = () => {
@@ -2058,14 +2097,9 @@ export function updateNavbarAuth(user, displayName, role = null) {
       mobileAdminLink.classList.toggle('hidden', !isAdmin);
     }
 
-    // Notifications: only for normal users (admin uses admin-panel messenger)
-    if (!isAdmin) {
-      startAdminMessageListener(user);
-    } else {
-      stopAllNotifListeners();
-      updateNotificationBadge(0);
-      updateNotificationList([]);
-    }
+    // Notifications for ANY logged-in user (including admin on public pages).
+    // Previously skipped admins — that made testing impossible with the owner account.
+    startAdminMessageListener(user);
 
     // Support floating button: ALWAYS keep on public pages (guest + user + admin)
     // Only hidden on admin-panel.html / messages.html (handled inside mount)
