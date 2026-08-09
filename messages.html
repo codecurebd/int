@@ -1239,16 +1239,21 @@
       lastMsgCount = 0;
       pendingNewCount = 0;
 
+      // Rules-safe query: participants array-contains uid
+      // (conversationId-only queries fail under "uid in participants" rules)
+      // Filter this conversation on the client — no composite index needed
       const q = query(
         collection(db, 'messages'),
-        where('conversationId', '==', conversationId),
         where('participants', 'array-contains', user.uid)
       );
 
       unsubMessages = onSnapshot(q, (snapshot) => {
         const msgs = [];
         snapshot.forEach(d => {
-          msgs.push({ id: d.id, ...d.data() });
+          const data = d.data();
+          if (data.conversationId === conversationId || !data.conversationId) {
+            msgs.push({ id: d.id, ...data });
+          }
         });
         msgs.sort((a, b) => {
           const ta = a.timestamp?.toDate?.()?.getTime() || 0;

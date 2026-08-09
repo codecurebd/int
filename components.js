@@ -207,59 +207,52 @@ function startAdminMessageListener(user) {
   }
 
   const uid = user.uid;
-  const conversationId = `conv_${uid}_admin`;
-  console.log('[notif] starting dual listeners for uid=', uid, 'cid=', conversationId);
+  console.log('[notif] starting participants listener for uid=', uid);
 
-  // Primary: conversationId (exact match with admin send payload)
-  const qConv = query(
-    collection(db, 'messages'),
-    where('conversationId', '==', conversationId)
-  );
-  const unsub1 = onSnapshot(qConv, (snapshot) => {
-    console.log('[notif] conversationId snapshot size=', snapshot.size);
-    processNotifSnapshot(snapshot, user);
-  }, (error) => {
-    console.error('[notif] conversationId listener error:', error);
-  });
-  adminMessageUnsubs.push(unsub1);
-
-  // Secondary: participants array-contains (covers any edge cases)
+  // PRIMARY only: participants array-contains
+  // Typical Firestore rules require: request.auth.uid in resource.data.participants
+  // A conversationId-only query is often REJECTED with permission-denied.
   const qParts = query(
     collection(db, 'messages'),
     where('participants', 'array-contains', uid)
   );
-  const unsub2 = onSnapshot(qParts, (snapshot) => {
+  const unsub1 = onSnapshot(qParts, (snapshot) => {
     console.log('[notif] participants snapshot size=', snapshot.size);
     processNotifSnapshot(snapshot, user);
   }, (error) => {
-    console.error('[notif] participants listener error:', error);
+    console.error('[notif] participants listener error:', error?.code, error?.message);
+    tryFallbackNotifListener(user);
   });
-  adminMessageUnsubs.push(unsub2);
+  adminMessageUnsubs.push(unsub1);
 
-  // Keep legacy handle pointing at first unsub for old cleanup paths
   adminMessageUnsubscribe = () => stopAllNotifListeners();
 }
 
 function tryFallbackNotifListener(user) {
-  // Kept for compatibility — primary path already uses conversationId + participants
   if (!user) return;
   const conversationId = `conv_${user.uid}_admin`;
+  console.warn('[notif] trying fallback conversationId query…');
   const q1 = query(
     collection(db, 'messages'),
     where('conversationId', '==', conversationId)
   );
   const unsub = onSnapshot(q1, (snapshot) => {
+    console.log('[notif] fallback conversationId size=', snapshot.size);
     processNotifSnapshot(snapshot, user);
   }, (err1) => {
-    console.error('Fallback conversationId listener error:', err1);
+    console.error('[notif] fallback conversationId error:', err1?.code, err1?.message);
     const q2 = query(
       collection(db, 'messages'),
       where('toUserId', '==', user.uid)
     );
     const unsub2 = onSnapshot(q2, (snapshot) => {
+      console.log('[notif] fallback toUserId size=', snapshot.size);
       processNotifSnapshot(snapshot, user);
     }, (err2) => {
-      console.error('Fallback toUserId listener error:', err2);
+      console.error('[notif] ALL listeners failed — check Firestore rules for messages.', err2?.code, err2?.message);
+      if (typeof window.showToast === 'function') {
+        window.showToast('⚠️ Notification permission error. Check Firebase rules.', 'error');
+      }
     });
     adminMessageUnsubs.push(unsub2);
   });
@@ -2070,7 +2063,7 @@ export function updateNavbarAuth(user, displayName, role = null) {
 
     if (!isAdmin) {
       startAdminMessageListener(user);
-      // Floating support widget (all pages)
+      // Keep floating support launcher visible after auth settles
       if (typeof window.__ccbdMountSupportWidget === 'function') {
         window.__ccbdMountSupportWidget(user);
       }
@@ -2078,6 +2071,7 @@ export function updateNavbarAuth(user, displayName, role = null) {
       stopAllNotifListeners();
       updateNotificationBadge(0);
       updateNotificationList([]);
+      // Admins don't need the public support bubble
       if (typeof window.__ccbdHideSupportWidget === 'function') {
         window.__ccbdHideSupportWidget();
       }
@@ -2093,8 +2087,9 @@ export function updateNavbarAuth(user, displayName, role = null) {
     updateNotificationList([]);
 
     if (authRequiredActions) authRequiredActions.style.display = 'none';
-    if (typeof window.__ccbdHideSupportWidget === 'function') {
-      window.__ccbdHideSupportWidget();
+    // Guest: keep launcher visible (opens login prompt) — do NOT hide after auth load
+    if (typeof window.__ccbdMountSupportWidget === 'function') {
+      window.__ccbdMountSupportWidget(null);
     }
   }
 }
@@ -2807,10 +2802,19 @@ function _startSupportListener(user) {
   }
   if (!user) return;
   const convId = `conv_${user.uid}_admin`;
-  const q = query(collection(db, 'messages'), where('conversationId', '==', convId));
+  // Use participants query (rules-friendly). Filter to this conversation on client.
+  const q = query(
+    collection(db, 'messages'),
+    where('participants', 'array-contains', user.uid)
+  );
   _supportUnsub = onSnapshot(q, (snapshot) => {
     const msgs = [];
-    snapshot.forEach((d) => msgs.push({ id: d.id, ...d.data() }));
+    snapshot.forEach((d) => {
+      const data = d.data();
+      if (data.conversationId === convId || !data.conversationId) {
+        msgs.push({ id: d.id, ...data });
+      }
+    });
     msgs.sort((a, b) => {
       const ta = a.timestamp?.toDate?.()?.getTime() || 0;
       const tb = b.timestamp?.toDate?.()?.getTime() || 0;
@@ -2818,7 +2822,22 @@ function _startSupportListener(user) {
     });
     _supportMsgs = msgs;
     if (_supportOpen) _renderSupportMsgs(msgs);
-  }, (err) => console.error('[support widget] listener error:', err));
+  }, (err) => {
+    console.error('[support widget] listener error:', err?.code, err?.message);
+    // Fallback: conversationId only (needs matching rules)
+    const q2 = query(collection(db, 'messages'), where('conversationId', '==', convId));
+    _supportUnsub = onSnapshot(q2, (snapshot) => {
+      const msgs = [];
+      snapshot.forEach((d) => msgs.push({ id: d.id, ...d.data() }));
+      msgs.sort((a, b) => {
+        const ta = a.timestamp?.toDate?.()?.getTime() || 0;
+        const tb = b.timestamp?.toDate?.()?.getTime() || 0;
+        return ta - tb;
+      });
+      _supportMsgs = msgs;
+      if (_supportOpen) _renderSupportMsgs(msgs);
+    }, (err2) => console.error('[support widget] fallback error:', err2?.code, err2?.message));
+  });
 }
 
 window.__ccbdUpdateSupportBadge = function(count) {
