@@ -2606,9 +2606,12 @@ function _supportIsAdminPage() {
 }
 
 function _injectSupportStyles() {
-  if (document.getElementById('ccbd-support-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'ccbd-support-styles';
+  let style = document.getElementById('ccbd-support-styles');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'ccbd-support-styles';
+    document.head.appendChild(style);
+  }
   style.textContent = `
     #ccbdSupportRoot { position: fixed; bottom: 22px; left: 22px; right: auto; z-index: 9800; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; }
     #ccbdSupportBtn {
@@ -2654,13 +2657,25 @@ function _injectSupportStyles() {
       flex: 1; overflow-y: auto; padding: 14px 12px; background: #f8fafc;
       display: flex; flex-direction: column; gap: 6px;
     }
-    #ccbdSupportBody .s-msg {
-      max-width: 82%; padding: 8px 12px; border-radius: 14px; font-size: 0.88rem; line-height: 1.45;
-      white-space: pre-wrap; word-break: normal; overflow-wrap: break-word; width: auto; display: inline-block;
+    /* Row: fit-content so bubble can size to text (avoid % max-width shrink bug) */
+    #ccbdSupportBody .s-row {
+      display: flex; flex-direction: column;
+      width: fit-content; max-width: 92%; min-width: 0;
     }
-    #ccbdSupportBody .s-row { display: flex; flex-direction: column; }
-    #ccbdSupportBody .s-row.sent { align-self: flex-end; align-items: flex-end; }
-    #ccbdSupportBody .s-row.recv { align-self: flex-start; align-items: flex-start; }
+    #ccbdSupportBody .s-row.sent { align-self: flex-end; align-items: flex-end; margin-left: auto; }
+    #ccbdSupportBody .s-row.recv { align-self: flex-start; align-items: flex-start; margin-right: auto; }
+    /* Bubble: grow with text; no mid-word break like Ok/ye */
+    #ccbdSupportBody .s-msg {
+      display: block;
+      width: max-content;
+      max-width: min(280px, 78vw);
+      min-width: 40px;
+      padding: 8px 12px; border-radius: 14px; font-size: 0.88rem; line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: normal;
+      overflow-wrap: break-word;
+      box-sizing: border-box;
+    }
     #ccbdSupportBody .s-row.sent .s-msg {
       background: linear-gradient(135deg, #0066FF, #5856D6); color: #fff; border-bottom-right-radius: 4px;
     }
@@ -2698,7 +2713,7 @@ function _injectSupportStyles() {
       #ccbdSupportBtn { width: 52px; height: 52px; font-size: 1.2rem; }
     }
   `;
-  document.head.appendChild(style);
+  if (!style.parentNode) document.head.appendChild(style);
 }
 
 function _ensureSupportDom() {
