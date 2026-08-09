@@ -70,6 +70,36 @@ export function applyCachedNavbarAuth() {
 let unreadAdminMessages = [];
 let displayMessages = [];
 let adminMessageUnsubscribe = null;
+let notifDropdownOpen = false;
+
+function isImageContent(str) {
+  if (!str) return false;
+  const t = String(str).trim();
+  return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(t) ||
+    t.includes('res.cloudinary.com');
+}
+
+function getMessagePreview(content) {
+  if (!content) return 'New message';
+  const raw = String(content);
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  const textLines = lines.filter(l => !isImageContent(l));
+  const hasImage = lines.some(l => isImageContent(l));
+  if (textLines.length) {
+    const t = textLines.join(' ');
+    return t.length > 48 ? t.slice(0, 48) + '…' : t;
+  }
+  if (hasImage || isImageContent(raw)) return '📷 Photo';
+  return raw.length > 48 ? raw.slice(0, 48) + '…' : raw;
+}
+
+function escapeNotifHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 function startAdminMessageListener(user) {
   if (adminMessageUnsubscribe) {
@@ -78,42 +108,88 @@ function startAdminMessageListener(user) {
   }
 
   if (!user) {
+    unreadAdminMessages = [];
     updateNotificationBadge(0);
     updateNotificationList([]);
     return;
   }
 
+  // Single-field query — no composite index required
+  // Then filter: from admin + unread
+  const conversationId = `conv_${user.uid}_admin`;
   const q = query(
     collection(db, 'messages'),
-    where('toUserId', '==', user.uid),
-    where('fromUserId', '==', 'admin'),
-    where('read', '==', false)
+    where('conversationId', '==', conversationId)
   );
 
   adminMessageUnsubscribe = onSnapshot(q, (snapshot) => {
     unreadAdminMessages = [];
-    snapshot.forEach((doc) => {
-      unreadAdminMessages.push({ id: doc.id, ...doc.data() });
+    snapshot.forEach((d) => {
+      const data = d.data();
+      if (data.fromUserId === 'admin' && data.read === false) {
+        unreadAdminMessages.push({ id: d.id, ...data });
+      }
+    });
+    unreadAdminMessages.sort((a, b) => {
+      const ta = a.timestamp?.toDate?.()?.getTime?.() || 0;
+      const tb = b.timestamp?.toDate?.()?.getTime?.() || 0;
+      return tb - ta;
     });
     updateNotificationBadge(unreadAdminMessages.length);
-    if (displayMessages.length > 0) {
-      // ড্রপডাউন খোলা থাকলে নতুন মেসেজ যোগ করি না (পরে দেখাবে)
-    } else {
+    if (!notifDropdownOpen) {
       updateNotificationList(unreadAdminMessages);
     }
   }, (error) => {
     console.error('Admin messages listener error:', error);
+    tryFallbackNotifListener(user);
+  });
+}
+
+function tryFallbackNotifListener(user) {
+  if (adminMessageUnsubscribe) {
+    try { adminMessageUnsubscribe(); } catch (_) {}
+    adminMessageUnsubscribe = null;
+  }
+  const q = query(
+    collection(db, 'messages'),
+    where('toUserId', '==', user.uid)
+  );
+  adminMessageUnsubscribe = onSnapshot(q, (snapshot) => {
+    unreadAdminMessages = [];
+    snapshot.forEach((d) => {
+      const data = d.data();
+      if (data.fromUserId === 'admin' && data.read === false) {
+        unreadAdminMessages.push({ id: d.id, ...data });
+      }
+    });
+    unreadAdminMessages.sort((a, b) => {
+      const ta = a.timestamp?.toDate?.()?.getTime?.() || 0;
+      const tb = b.timestamp?.toDate?.()?.getTime?.() || 0;
+      return tb - ta;
+    });
+    updateNotificationBadge(unreadAdminMessages.length);
+    if (!notifDropdownOpen) {
+      updateNotificationList(unreadAdminMessages);
+    }
+  }, (err) => {
+    console.error('Fallback admin messages listener error:', err);
   });
 }
 
 function updateNotificationBadge(count) {
   const badge = document.getElementById('notificationBadge');
-  if (!badge) return;
-  if (count > 0) {
-    badge.textContent = count > 99 ? '99+' : count;
-    badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
+  const label = document.getElementById('notifCountLabel');
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+      badge.textContent = '0';
+    }
+  }
+  if (label) {
+    label.textContent = count > 0 ? `${count} new` : '0 new';
   }
 }
 
@@ -128,7 +204,7 @@ function updateNotificationList(messages) {
 
   let html = '';
   messages.slice(0, 10).forEach((msg) => {
-    const preview = msg.content?.length > 40 ? msg.content.slice(0, 40) + '...' : msg.content;
+    const preview = escapeNotifHtml(getMessagePreview(msg.content));
     const time = msg.timestamp?.toDate?.()?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) || '';
     html += `
       <a href="messages.html" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 transition-colors">
@@ -158,8 +234,9 @@ async function markAllAdminMessagesRead() {
   const user = auth.currentUser;
   if (!user || unreadAdminMessages.length === 0) return;
 
+  const toMark = [...unreadAdminMessages];
   try {
-    const promises = unreadAdminMessages.map((msg) =>
+    const promises = toMark.map((msg) =>
       updateDoc(doc(db, 'messages', msg.id), {
         read: true,
         readAt: serverTimestamp(),
@@ -179,13 +256,16 @@ window.toggleNotifications = function() {
   if (!dropdown) return;
   const isOpening = dropdown.classList.contains('hidden');
   if (isOpening) {
+    notifDropdownOpen = true;
     displayMessages = [...unreadAdminMessages];
     updateNotificationList(displayMessages);
     dropdown.classList.remove('hidden');
     document.body.classList.add('dropdown-open');
     dropdown.style.animation = 'dropdownFade 0.2s ease';
-    markAllAdminMessagesRead();
+    // Slight delay so list is visible before badge clears
+    setTimeout(() => { markAllAdminMessagesRead(); }, 400);
   } else {
+    notifDropdownOpen = false;
     displayMessages = [];
     dropdown.classList.add('hidden');
     document.body.classList.remove('dropdown-open');
@@ -1934,6 +2014,7 @@ document.addEventListener('click', (e) => {
       notifDropdown.classList.add('hidden');
       document.body.classList.remove('dropdown-open');
       displayMessages = [];
+      notifDropdownOpen = false;
     }
   }
 
@@ -1964,6 +2045,7 @@ document.addEventListener('keydown', (e) => {
       notifDropdown.classList.add('hidden');
       document.body.classList.remove('dropdown-open');
       displayMessages = [];
+      notifDropdownOpen = false;
     }
     const cartPopup = document.getElementById('cartPopup');
     if (cartPopup && !cartPopup.classList.contains('hidden')) {
