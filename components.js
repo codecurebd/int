@@ -2049,7 +2049,10 @@ export function updateNavbarAuth(user, displayName, role = null) {
       avatar.title = displayName || user.email || 'Account';
     }
     
-    if (authRequiredActions) authRequiredActions.style.display = 'flex';
+    if (authRequiredActions) {
+      authRequiredActions.style.display = 'flex';
+      authRequiredActions.style.visibility = 'visible';
+    }
 
     const isAdmin = (role === 'admin');
     if (adminLink) {
@@ -2061,20 +2064,19 @@ export function updateNavbarAuth(user, displayName, role = null) {
       mobileAdminLink.classList.toggle('hidden', !isAdmin);
     }
 
+    // Notifications: only for normal users (admin uses admin-panel messenger)
     if (!isAdmin) {
       startAdminMessageListener(user);
-      // Keep floating support launcher visible after auth settles
-      if (typeof window.__ccbdMountSupportWidget === 'function') {
-        window.__ccbdMountSupportWidget(user);
-      }
     } else {
       stopAllNotifListeners();
       updateNotificationBadge(0);
       updateNotificationList([]);
-      // Admins don't need the public support bubble
-      if (typeof window.__ccbdHideSupportWidget === 'function') {
-        window.__ccbdHideSupportWidget();
-      }
+    }
+
+    // Support floating button: ALWAYS keep on public pages (guest + user + admin)
+    // Only hidden on admin-panel.html / messages.html (handled inside mount)
+    if (typeof window.__ccbdMountSupportWidget === 'function') {
+      window.__ccbdMountSupportWidget(user);
     }
 
   } else {
@@ -2087,7 +2089,7 @@ export function updateNavbarAuth(user, displayName, role = null) {
     updateNotificationList([]);
 
     if (authRequiredActions) authRequiredActions.style.display = 'none';
-    // Guest: keep launcher visible (opens login prompt) — do NOT hide after auth load
+    // Guest: keep launcher visible (opens login prompt)
     if (typeof window.__ccbdMountSupportWidget === 'function') {
       window.__ccbdMountSupportWidget(null);
     }
@@ -2861,7 +2863,12 @@ window.__ccbdMountSupportWidget = function(user) {
   _supportUser = user || null;
   _ensureSupportDom();
   const root = document.getElementById('ccbdSupportRoot');
-  if (root) root.style.display = '';
+  if (root) {
+    root.style.display = 'block';
+    root.style.visibility = 'visible';
+    root.style.opacity = '1';
+    root.style.pointerEvents = 'auto';
+  }
   if (user) {
     _startSupportListener(user);
   } else if (_supportUnsub) {
