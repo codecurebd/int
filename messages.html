@@ -201,65 +201,80 @@
       text-transform: uppercase;
     }
 
-    /* ===== MESSAGE BUBBLES ===== */
-    .chat-msg {
+    /* ===== MESSAGE ROW (bubble + time outside) ===== */
+    .msg-row {
+      display: flex;
+      flex-direction: column;
       max-width: 78%;
-      padding: 11px 16px 8px;
-      border-radius: 18px;
-      font-size: 0.94rem;
-      line-height: 1.5;
-      word-wrap: break-word;
-      white-space: pre-wrap;
       animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-      position: relative;
       margin-bottom: 2px;
     }
-    .chat-msg.sent {
-      align-self: flex-end;
+    .msg-row.sent { align-self: flex-end; align-items: flex-end; }
+    .msg-row.received { align-self: flex-start; align-items: flex-start; }
+
+    /* Bubble: fits text tightly (messenger-style) */
+    .chat-msg {
+      display: inline-block;
+      width: fit-content;
+      max-width: 100%;
+      padding: 8px 12px;
+      border-radius: 16px;
+      font-size: 0.94rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      position: relative;
+    }
+    .msg-row.sent .chat-msg {
       background: linear-gradient(135deg, #0066FF 0%, #5856D6 100%);
       color: #fff;
-      border-bottom-right-radius: 5px;
-      box-shadow: 0 4px 16px rgba(0, 102, 255, 0.18);
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 102, 255, 0.16);
     }
-    .chat-msg.received {
-      align-self: flex-start;
+    .msg-row.received .chat-msg {
       background: #ffffff;
       color: #1e293b;
-      border-bottom-left-radius: 5px;
-      border: 1px solid rgba(0, 0, 0, 0.04);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
     }
-    .chat-msg .msg-time {
-      font-size: 0.62rem;
-      opacity: 0.7;
-      margin-top: 5px;
-      text-align: right;
+
+    /* Time BELOW bubble (outside) */
+    .msg-meta {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-    }
-    .chat-msg.sent .msg-time { color: rgba(255, 255, 255, 0.75); }
-    .chat-msg.received .msg-time { color: #94a3b8; }
-    .chat-msg .msg-status {
+      gap: 3px;
+      margin-top: 3px;
+      padding: 0 4px;
       font-size: 0.65rem;
-      margin-left: 2px;
-      letter-spacing: -1px;
+      font-weight: 500;
+      color: #94a3b8;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      user-select: none;
     }
-    .chat-msg .msg-status.read { opacity: 1; }
-    .chat-msg .msg-status.unread { opacity: 0.55; }
+    .msg-row.sent .msg-meta { justify-content: flex-end; }
+    .msg-row.received .msg-meta { justify-content: flex-start; }
+    .msg-meta .msg-status {
+      font-size: 0.7rem;
+      letter-spacing: -1px;
+      margin-left: 1px;
+    }
+    .msg-meta .msg-status.read { color: #0066FF; }
+    .msg-meta .msg-status.unread { color: #94a3b8; opacity: 0.8; }
 
     /* Image in message */
     .chat-msg .msg-img-wrap {
-      margin: 2px 0 4px;
-      border-radius: 12px;
+      margin: 0 0 4px;
+      border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
-      max-width: 260px;
+      max-width: 240px;
       position: relative;
+      display: block;
     }
+    .chat-msg .msg-img-wrap:last-child { margin-bottom: 0; }
     .chat-msg .msg-img-wrap img {
       width: 100%;
       max-height: 220px;
@@ -277,24 +292,36 @@
       right: 8px;
       background: rgba(0,0,0,0.45);
       color: #fff;
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       opacity: 0;
       transition: opacity 0.2s;
     }
     .chat-msg .msg-img-wrap:hover::after { opacity: 1; }
     .chat-msg .msg-text { display: block; }
 
-    /* Group spacing: consecutive same-side messages tighter */
-    .chat-msg + .chat-msg.sent,
-    .chat-msg + .chat-msg.received { margin-top: 2px; }
-    .chat-msg.sent + .chat-msg.received,
-    .chat-msg.received + .chat-msg.sent { margin-top: 10px; }
+    /* Image-only bubble: less padding */
+    .chat-msg.img-only {
+      padding: 4px;
+      background: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    .chat-msg.img-only .msg-img-wrap {
+      margin: 0;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Group spacing */
+    .msg-row + .msg-row { margin-top: 2px; }
+    .msg-row.sent + .msg-row.received,
+    .msg-row.received + .msg-row.sent { margin-top: 10px; }
 
     /* ===== SCROLL TO BOTTOM BTN ===== */
     .scroll-bottom-btn {
@@ -701,12 +728,12 @@
       .chat-header { padding: 12px 14px; }
       .chat-header .chat-avatar { width: 42px; height: 42px; font-size: 1rem; }
       .chat-messages { padding: 14px 12px 12px; }
+      .msg-row { max-width: 88%; }
       .chat-msg {
-        max-width: 88%;
         font-size: 0.9rem;
-        padding: 10px 14px 7px;
+        padding: 7px 11px;
       }
-      .chat-msg .msg-img-wrap { max-width: 220px; }
+      .chat-msg .msg-img-wrap { max-width: 200px; }
       .chat-input-wrap { padding: 10px 12px 12px; gap: 8px; }
       .chat-input-wrap .input-wrapper { padding-left: 14px; min-height: 44px; }
       .chat-input-wrap .send-btn { width: 44px; height: 44px; font-size: 1rem; }
@@ -723,7 +750,7 @@
       }
       .chat-header .chat-avatar { width: 38px; height: 38px; font-size: 0.9rem; }
       .chat-header .chat-info .name { font-size: 0.95rem; }
-      .chat-msg { max-width: 92%; }
+      .msg-row { max-width: 92%; }
       .chat-input-wrap .image-preview img { width: 30px; height: 30px; }
     }
   </style>
@@ -1123,10 +1150,15 @@
           contentHtml = '<span class="msg-text" style="opacity:0.6;">(empty)</span>';
         }
 
+        const imgOnly = imageUrl && !text ? ' img-only' : '';
+
         html += `
-          <div class="chat-msg ${isSent ? 'sent' : 'received'}">
-            ${contentHtml}
-            <div class="msg-time">${time} ${statusHtml}</div>
+          <div class="msg-row ${isSent ? 'sent' : 'received'}">
+            <div class="chat-msg${imgOnly}">${contentHtml}</div>
+            <div class="msg-meta">
+              <span class="msg-time">${time}</span>
+              ${statusHtml}
+            </div>
           </div>
         `;
       });
