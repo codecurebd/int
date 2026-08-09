@@ -215,34 +215,34 @@ function startAdminMessageListener(user) {
   }
 
   const uid = user.uid;
-  const conversationId = `conv_${uid}_admin`;
-  console.log('[notif] starting listeners for uid=', uid, 'email=', user.email || '');
+  console.log('[notif] starting participants listener for uid=', uid);
 
-  // Parallel queries — any one that succeeds is enough
-  const queries = [
-    { name: 'participants', q: query(collection(db, 'messages'), where('participants', 'array-contains', uid)) },
-    { name: 'conversationId', q: query(collection(db, 'messages'), where('conversationId', '==', conversationId)) },
-    { name: 'toUserId', q: query(collection(db, 'messages'), where('toUserId', '==', uid)) },
-  ];
-
-  queries.forEach(({ name, q }) => {
-    try {
-      const unsub = onSnapshot(q, (snapshot) => {
-        console.log(`[notif] ${name} snapshot size=`, snapshot.size);
-        // Log a sample doc shape (first unread candidate)
-        if (snapshot.size > 0) {
-          const sample = snapshot.docs[0].data();
-          console.log(`[notif] sample fromUserId=`, sample.fromUserId, 'read=', sample.read, 'toUserId=', sample.toUserId, 'participants=', sample.participants);
-        }
-        processNotifSnapshot(snapshot, user);
-      }, (error) => {
-        console.warn(`[notif] ${name} listener error:`, error?.code, error?.message);
-      });
-      adminMessageUnsubs.push(unsub);
-    } catch (e) {
-      console.warn(`[notif] ${name} failed to attach:`, e);
-    }
-  });
+  // ONLY participants query (rules-safe, no composite index, no permission noise)
+  try {
+    const qParts = query(
+      collection(db, 'messages'),
+      where('participants', 'array-contains', uid)
+    );
+    const unsub = onSnapshot(qParts, (snapshot) => {
+      console.log('[notif] participants snapshot size=', snapshot.size);
+      processNotifSnapshot(snapshot, user);
+    }, (error) => {
+      console.warn('[notif] participants error:', error?.code, error?.message);
+      // Fallback only if primary fails
+      try {
+        const convId = `conv_${uid}_admin`;
+        const q2 = query(collection(db, 'messages'), where('conversationId', '==', convId));
+        const unsub2 = onSnapshot(q2, (snap2) => {
+          console.log('[notif] fallback conversationId size=', snap2.size);
+          processNotifSnapshot(snap2, user);
+        }, (e2) => console.warn('[notif] fallback error:', e2?.code, e2?.message));
+        adminMessageUnsubs.push(unsub2);
+      } catch (_) {}
+    });
+    adminMessageUnsubs.push(unsub);
+  } catch (e) {
+    console.warn('[notif] failed to attach:', e);
+  }
 
   adminMessageUnsubscribe = () => stopAllNotifListeners();
 }
@@ -2053,6 +2053,10 @@ export async function updateCartInFirestore(userId, cart) {
   }
 }
 
+// Prevent auth UI flicker: ignore brief null during token refresh if we still have a session
+let _lastAuthUid = null;
+let _authNullTimer = null;
+
 export function updateNavbarAuth(user, displayName, role = null) {
   const authBtns = document.getElementById('auth-buttons');
   const profileSection = document.getElementById('profile-section');
@@ -2074,6 +2078,13 @@ export function updateNavbarAuth(user, displayName, role = null) {
   }
 
   if (user) {
+    // Cancel any pending "logout UI" from a brief null event
+    if (_authNullTimer) {
+      clearTimeout(_authNullTimer);
+      _authNullTimer = null;
+    }
+    _lastAuthUid = user.uid;
+
     if (authBtns) authBtns.classList.add('hidden');
     if (profileSection) profileSection.classList.remove('hidden');
     if (avatar) {
@@ -2097,30 +2108,36 @@ export function updateNavbarAuth(user, displayName, role = null) {
       mobileAdminLink.classList.toggle('hidden', !isAdmin);
     }
 
-    // Notifications for ANY logged-in user (including admin on public pages).
-    // Previously skipped admins — that made testing impossible with the owner account.
+    // Notifications for any logged-in user
     startAdminMessageListener(user);
 
-    // Support floating button: ALWAYS keep on public pages (guest + user + admin)
-    // Only hidden on admin-panel.html / messages.html (handled inside mount)
+    // Support floating button on public pages
     if (typeof window.__ccbdMountSupportWidget === 'function') {
       window.__ccbdMountSupportWidget(user);
     }
 
   } else {
-    if (authBtns) authBtns.classList.remove('hidden');
-    if (profileSection) profileSection.classList.add('hidden');
-    if (adminLink) { adminLink.style.display = 'none'; adminLink.classList.add('hidden'); }
-    if (mobileAdminLink) { mobileAdminLink.style.display = 'none'; mobileAdminLink.classList.add('hidden'); }
-    stopAllNotifListeners();
-    updateNotificationBadge(0);
-    updateNotificationList([]);
-
-    if (authRequiredActions) authRequiredActions.style.display = 'none';
-    // Guest: keep launcher visible (opens login prompt)
-    if (typeof window.__ccbdMountSupportWidget === 'function') {
-      window.__ccbdMountSupportWidget(null);
-    }
+    // Debounce logout UI — token refresh can emit null briefly
+    if (_authNullTimer) clearTimeout(_authNullTimer);
+    _authNullTimer = setTimeout(() => {
+      // If Firebase still has a user, do NOT clear UI
+      if (auth.currentUser) {
+        console.log('[auth] ignored brief null — session still active');
+        return;
+      }
+      _lastAuthUid = null;
+      if (authBtns) authBtns.classList.remove('hidden');
+      if (profileSection) profileSection.classList.add('hidden');
+      if (adminLink) { adminLink.style.display = 'none'; adminLink.classList.add('hidden'); }
+      if (mobileAdminLink) { mobileAdminLink.style.display = 'none'; mobileAdminLink.classList.add('hidden'); }
+      stopAllNotifListeners();
+      updateNotificationBadge(0);
+      updateNotificationList([]);
+      if (authRequiredActions) authRequiredActions.style.display = 'none';
+      if (typeof window.__ccbdMountSupportWidget === 'function') {
+        window.__ccbdMountSupportWidget(null);
+      }
+    }, 400);
   }
 }
 
@@ -2733,6 +2750,16 @@ function _ensureSupportDom() {
         if (body) body.scrollTop = body.scrollHeight;
         document.getElementById('ccbdSupportInput')?.focus();
       }, 50);
+      // Viewing chat in popup = mark admin messages read → clear badges
+      markAllAdminMessagesRead().then(() => {
+        // Optimistic local clear (listener will also rebuild)
+        unreadAdminMessages = [];
+        updateNotificationBadge(0);
+        updateNotificationList([]);
+        if (typeof window.__ccbdUpdateSupportBadge === 'function') {
+          window.__ccbdUpdateSupportBadge(0);
+        }
+      });
     } else {
       panel.classList.remove('open');
       if (icon) icon.className = 'fas fa-comment-dots';
