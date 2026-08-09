@@ -105,19 +105,20 @@ function escapeNotifHtml(str) {
 function isUnreadAdminMsg(data, userId) {
   if (!data || !userId) return false;
   // Admin messages only (admin panel uses fromUserId: 'admin')
-  const from = String(data.fromUserId || '').toLowerCase();
+  const from = String(data.fromUserId || data.from || data.senderId || '').toLowerCase();
   if (from !== 'admin') return false;
-  // Already read?
+  // Already read? (strict true only — missing/false/null = unread)
   if (data.read === true || data.read === 'true' || data.read === 1) return false;
   // Must belong to this user's conversation
   const expectedCid = `conv_${userId}_admin`;
-  const cid = data.conversationId || '';
-  const to = data.toUserId || '';
-  const parts = Array.isArray(data.participants) ? data.participants : [];
+  const cid = String(data.conversationId || data.convId || '');
+  const to = String(data.toUserId || data.to || '');
+  const parts = Array.isArray(data.participants) ? data.participants.map(String) : [];
   const matchesUser =
     cid === expectedCid ||
     to === userId ||
-    parts.includes(userId);
+    parts.includes(userId) ||
+    parts.includes(String(userId));
   return matchesUser;
 }
 
@@ -207,64 +208,49 @@ function startAdminMessageListener(user) {
     unreadAdminMessages = [];
     updateNotificationBadge(0);
     updateNotificationList([]);
+    if (typeof window.__ccbdUpdateSupportBadge === 'function') {
+      window.__ccbdUpdateSupportBadge(0);
+    }
     return;
   }
 
   const uid = user.uid;
-  console.log('[notif] starting participants listener for uid=', uid);
+  const conversationId = `conv_${uid}_admin`;
+  console.log('[notif] starting listeners for uid=', uid);
 
-  // PRIMARY only: participants array-contains
-  // Typical Firestore rules require: request.auth.uid in resource.data.participants
-  // A conversationId-only query is often REJECTED with permission-denied.
-  const qParts = query(
-    collection(db, 'messages'),
-    where('participants', 'array-contains', uid)
-  );
-  const unsub1 = onSnapshot(qParts, (snapshot) => {
-    console.log('[notif] participants snapshot size=', snapshot.size);
-    processNotifSnapshot(snapshot, user);
-  }, (error) => {
-    console.error('[notif] participants listener error:', error?.code, error?.message);
-    tryFallbackNotifListener(user);
+  // Run ALL queries in parallel (merge into one map) so badge works even if one path is blocked by rules
+  const queries = [
+    { name: 'participants', q: query(collection(db, 'messages'), where('participants', 'array-contains', uid)) },
+    { name: 'conversationId', q: query(collection(db, 'messages'), where('conversationId', '==', conversationId)) },
+    { name: 'toUserId', q: query(collection(db, 'messages'), where('toUserId', '==', uid)) },
+  ];
+
+  queries.forEach(({ name, q }) => {
+    try {
+      const unsub = onSnapshot(q, (snapshot) => {
+        console.log(`[notif] ${name} snapshot size=`, snapshot.size);
+        processNotifSnapshot(snapshot, user);
+      }, (error) => {
+        console.warn(`[notif] ${name} listener error:`, error?.code, error?.message);
+      });
+      adminMessageUnsubs.push(unsub);
+    } catch (e) {
+      console.warn(`[notif] ${name} failed to attach:`, e);
+    }
   });
-  adminMessageUnsubs.push(unsub1);
 
   adminMessageUnsubscribe = () => stopAllNotifListeners();
 }
 
-function tryFallbackNotifListener(user) {
-  if (!user) return;
-  const conversationId = `conv_${user.uid}_admin`;
-  console.warn('[notif] trying fallback conversationId query…');
-  const q1 = query(
-    collection(db, 'messages'),
-    where('conversationId', '==', conversationId)
-  );
-  const unsub = onSnapshot(q1, (snapshot) => {
-    console.log('[notif] fallback conversationId size=', snapshot.size);
-    processNotifSnapshot(snapshot, user);
-  }, (err1) => {
-    console.error('[notif] fallback conversationId error:', err1?.code, err1?.message);
-    const q2 = query(
-      collection(db, 'messages'),
-      where('toUserId', '==', user.uid)
-    );
-    const unsub2 = onSnapshot(q2, (snapshot) => {
-      console.log('[notif] fallback toUserId size=', snapshot.size);
-      processNotifSnapshot(snapshot, user);
-    }, (err2) => {
-      console.error('[notif] ALL listeners failed — check Firestore rules for messages.', err2?.code, err2?.message);
-      if (typeof window.showToast === 'function') {
-        window.showToast('⚠️ Notification permission error. Check Firebase rules.', 'error');
-      }
-    });
-    adminMessageUnsubs.push(unsub2);
-  });
-  adminMessageUnsubs.push(unsub);
-}
-
 function updateNotificationBadge(count) {
   const apply = () => {
+    // Ensure parent (bell area) is visible when logged in
+    const authRequired = document.getElementById('authRequiredActions');
+    if (authRequired && auth.currentUser) {
+      authRequired.style.display = 'flex';
+      authRequired.style.visibility = 'visible';
+    }
+
     const badge = document.getElementById('notificationBadge');
     const label = document.getElementById('notifCountLabel');
     const n = Number(count) || 0;
@@ -272,8 +258,9 @@ function updateNotificationBadge(count) {
       if (n > 0) {
         badge.textContent = n > 99 ? '99+' : String(n);
         badge.classList.remove('hidden');
+        badge.removeAttribute('hidden');
         badge.style.cssText =
-          'display:flex !important; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; border-radius:9999px; min-width:18px; height:18px; align-items:center; justify-content:center; padding:0 4px; z-index:20; line-height:1;';
+          'display:flex !important; visibility:visible !important; opacity:1 !important; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; border-radius:9999px; min-width:18px; height:18px; align-items:center; justify-content:center; padding:0 4px; z-index:50; line-height:1;';
       } else {
         badge.classList.add('hidden');
         badge.style.cssText = 'display:none !important;';
@@ -283,14 +270,17 @@ function updateNotificationBadge(count) {
     if (label) {
       label.textContent = n > 0 ? `${n} new` : '0 new';
     }
+    // Always sync floating chat badge too
+    if (typeof window.__ccbdUpdateSupportBadge === 'function') {
+      window.__ccbdUpdateSupportBadge(n);
+    }
     if (n > 0) console.log('[notif] badge count =', n);
   };
   apply();
-  // Retry once if navbar not in DOM yet
-  if (!document.getElementById('notificationBadge')) {
-    setTimeout(apply, 120);
-    setTimeout(apply, 400);
-  }
+  // Retry — navbar may render after first snapshot
+  setTimeout(apply, 80);
+  setTimeout(apply, 300);
+  setTimeout(apply, 800);
 }
 
 function updateNotificationList(messages) {
