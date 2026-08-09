@@ -292,14 +292,15 @@ select.form-input {
 .nav-link:hover { color: #0066FF; background: rgba(0, 102, 255, 0.06); }
 .nav-link:hover::after { width: 60%; }
 
-/* Active page highlight */
+/* Active page highlight (no underline) */
 .nav-link.active {
   color: #0066FF !important;
   background: rgba(0, 102, 255, 0.1);
   font-weight: 600;
 }
 .nav-link.active::after {
-  width: 60%;
+  width: 0 !important;
+  display: none;
 }
 
 /* Desktop nav group spacing */

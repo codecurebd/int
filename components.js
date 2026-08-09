@@ -567,17 +567,22 @@ function setupLandingNavbar() {
 // ================================================================
 function setActiveNavLink() {
   const path = (window.location.pathname || '').toLowerCase();
-  const file = path.split('/').pop() || 'index.html';
+  const file = path.split('/').pop() || '';
 
-  let key = 'home';
-  if (file === '' || file === 'index.html' || file === 'store') key = 'home';
-  else if (file.includes('get-new-website') || file.includes('product-detail')) key = 'store';
-  else if (file.includes('fix-website')) key = 'fix';
-  else if (file.includes('messages') || file.includes('contact')) key = 'contact';
-  // other pages (profile, orders, etc.) → no main nav active
+  // Only main public pages get an active nav item.
+  // Profile, orders, settings, messages, admin, etc. → nothing active.
+  let key = null;
+  if (file === '' || file === 'index.html' || file === 'store') {
+    key = 'home';
+  } else if (file.includes('get-new-website') || file.includes('product-detail')) {
+    key = 'store';
+  } else if (file.includes('fix-website')) {
+    key = 'fix';
+  }
+  // contact is a modal, not a page — no persistent active state
 
   document.querySelectorAll('[data-nav]').forEach(el => {
-    el.classList.toggle('active', el.getAttribute('data-nav') === key);
+    el.classList.toggle('active', key !== null && el.getAttribute('data-nav') === key);
   });
 }
 
