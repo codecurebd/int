@@ -206,35 +206,37 @@
     .msg-row {
       display: flex;
       flex-direction: column;
-      max-width: 82%;
+      max-width: min(85%, 520px);
       animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
       margin-bottom: 2px;
     }
     .msg-row.sent {
       align-self: flex-end;
       align-items: flex-end;
-      max-width: 82%;
+      max-width: min(85%, 520px);
     }
     .msg-row.received {
       align-self: flex-start;
       align-items: flex-start;
-      max-width: 90%;
+      max-width: min(90%, 560px);
     }
 
-    /* Bubble: roomier for admin (received) messages */
+    /* Bubble: natural text width — no premature line breaks */
     .chat-msg {
       display: inline-block;
-      width: fit-content;
+      width: auto;
       max-width: 100%;
       min-width: 48px;
       padding: 10px 14px;
       border-radius: 16px;
       font-size: 0.95rem;
-      line-height: 1.45;
-      word-wrap: break-word;
+      line-height: 1.5;
+      word-break: normal;
       overflow-wrap: break-word;
+      word-wrap: break-word;
       white-space: pre-wrap;
       position: relative;
+      box-sizing: border-box;
     }
     .msg-row.sent .chat-msg {
       background: linear-gradient(135deg, #0066FF 0%, #5856D6 100%);
@@ -250,6 +252,12 @@
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
       padding: 11px 16px;
       font-size: 0.96rem;
+    }
+    .chat-msg .msg-text {
+      display: inline;
+      white-space: pre-wrap;
+      word-break: normal;
+      overflow-wrap: break-word;
     }
 
     /* Time BELOW bubble (outside) */
@@ -315,7 +323,8 @@
       transition: opacity 0.2s;
     }
     .chat-msg .msg-img-wrap:hover::after { opacity: 1; }
-    .chat-msg .msg-text { display: block; }
+    /* text keeps natural width inside bubble (do not force full-width block) */
+    .chat-msg .msg-text { display: inline; white-space: pre-wrap; word-break: normal; overflow-wrap: break-word; }
 
     /* Image-only bubble: less padding */
     .chat-msg.img-only {
