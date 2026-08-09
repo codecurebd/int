@@ -202,49 +202,59 @@
       text-transform: uppercase;
     }
 
-    /* ===== MESSAGE ROW (bubble + time outside) ===== */
+    /* ===== MESSAGE ROW (bubble + time outside) =====
+       IMPORTANT: width must be fit-content — NOT percentage of a shrink-wrapped parent.
+       style.css had .messenger-wrap .chat-msg { max-width:80% } which caused
+       circular shrink → "Okay" rendered as "Ok / ye". */
     .msg-row {
       display: flex;
       flex-direction: column;
+      width: fit-content;
       max-width: min(85%, 520px);
+      min-width: 0;
       animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
       margin-bottom: 2px;
     }
     .msg-row.sent {
       align-self: flex-end;
       align-items: flex-end;
-      max-width: min(85%, 520px);
+      margin-left: auto;
     }
     .msg-row.received {
       align-self: flex-start;
       align-items: flex-start;
+      margin-right: auto;
       max-width: min(90%, 560px);
     }
 
-    /* Bubble: natural text width — no premature line breaks */
+    /* Bubble: grow with text; break only at real word boundaries */
+    .messenger-wrap .chat-msg,
     .chat-msg {
-      display: inline-block;
-      width: auto;
-      max-width: 100%;
+      display: block;
+      width: max-content;
+      max-width: min(85vw, 520px) !important;
       min-width: 48px;
       padding: 10px 14px;
       border-radius: 16px;
       font-size: 0.95rem;
       line-height: 1.5;
-      word-break: normal;
-      overflow-wrap: break-word;
+      word-break: normal !important;
+      overflow-wrap: anywhere;
       word-wrap: break-word;
       white-space: pre-wrap;
       position: relative;
       box-sizing: border-box;
+      align-self: auto !important; /* override style.css .chat-msg.sent { align-self } */
     }
-    .msg-row.sent .chat-msg {
+    .msg-row.sent .chat-msg,
+    .messenger-wrap .msg-row.sent .chat-msg {
       background: linear-gradient(135deg, #0066FF 0%, #5856D6 100%);
       color: #fff;
       border-bottom-right-radius: 4px;
       box-shadow: 0 2px 10px rgba(0, 102, 255, 0.16);
     }
-    .msg-row.received .chat-msg {
+    .msg-row.received .chat-msg,
+    .messenger-wrap .msg-row.received .chat-msg {
       background: #ffffff;
       color: #1e293b;
       border-bottom-left-radius: 4px;
@@ -256,7 +266,7 @@
     .chat-msg .msg-text {
       display: inline;
       white-space: pre-wrap;
-      word-break: normal;
+      word-break: normal !important;
       overflow-wrap: break-word;
     }
 
@@ -748,11 +758,15 @@
       .chat-header { padding: 12px 14px; }
       .chat-header .chat-avatar { width: 42px; height: 42px; font-size: 1rem; }
       .chat-messages { padding: 14px 12px 12px; }
-      .msg-row.sent { max-width: 88%; }
-      .msg-row.received { max-width: 92%; }
+      .msg-row.sent { max-width: min(88%, 520px); }
+      .msg-row.received { max-width: min(92%, 560px); }
+      .messenger-wrap .chat-msg,
       .chat-msg {
         font-size: 0.92rem;
         padding: 9px 13px;
+        max-width: min(88vw, 520px) !important;
+        width: max-content;
+        word-break: normal !important;
       }
       .msg-row.received .chat-msg {
         padding: 10px 15px;
@@ -769,8 +783,12 @@
     @media (max-width: 480px) {
       .chat-header .chat-avatar { width: 38px; height: 38px; font-size: 0.9rem; }
       .chat-header .chat-info .name { font-size: 0.95rem; }
-      .msg-row.sent { max-width: 90%; }
-      .msg-row.received { max-width: 94%; }
+      .msg-row.sent { max-width: min(90%, 520px); }
+      .msg-row.received { max-width: min(94%, 560px); }
+      .messenger-wrap .chat-msg,
+      .chat-msg {
+        max-width: min(90vw, 520px) !important;
+      }
       .chat-input-wrap .image-preview img { width: 30px; height: 30px; }
     }
   </style>
