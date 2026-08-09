@@ -129,6 +129,9 @@ function rebuildUnreadFromMap(user) {
     unreadAdminMessages = [];
     updateNotificationBadge(0);
     updateNotificationList([]);
+    if (typeof window.__ccbdUpdateSupportBadge === 'function') {
+      window.__ccbdUpdateSupportBadge(0);
+    }
     return;
   }
   const prevIds = new Set(unreadAdminMessages.map(m => m.id));
@@ -143,7 +146,8 @@ function rebuildUnreadFromMap(user) {
     const tb = b.timestamp?.toDate?.()?.getTime?.() || b.timestamp || 0;
     return tb - ta;
   });
-  updateNotificationBadge(unreadAdminMessages.length);
+  const count = unreadAdminMessages.length;
+  updateNotificationBadge(count);
   if (!notifDropdownOpen) {
     updateNotificationList(unreadAdminMessages);
   }
@@ -159,9 +163,9 @@ function rebuildUnreadFromMap(user) {
     }
   }
   notifListenerReady = true;
-  // Keep floating support widget badge in sync
+  // Navbar bell + floating support button badges (same unread count)
   if (typeof window.__ccbdUpdateSupportBadge === 'function') {
-    window.__ccbdUpdateSupportBadge(unreadAdminMessages.length);
+    window.__ccbdUpdateSupportBadge(count);
   }
 }
 
@@ -2565,7 +2569,7 @@ function _injectSupportStyles() {
   const style = document.createElement('style');
   style.id = 'ccbd-support-styles';
   style.textContent = `
-    #ccbdSupportRoot { position: fixed; bottom: 22px; right: 22px; z-index: 9800; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; }
+    #ccbdSupportRoot { position: fixed; bottom: 22px; left: 22px; right: auto; z-index: 9800; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; }
     #ccbdSupportBtn {
       width: 58px; height: 58px; border-radius: 50%; border: none; cursor: pointer;
       background: linear-gradient(135deg, #0066FF, #8B5CF6); color: #fff;
@@ -2577,10 +2581,11 @@ function _injectSupportStyles() {
       position: absolute; top: -2px; right: -2px; min-width: 20px; height: 20px; padding: 0 5px;
       border-radius: 999px; background: #ef4444; color: #fff; font-size: 11px; font-weight: 700;
       display: none; align-items: center; justify-content: center; border: 2px solid #fff; line-height: 1;
+      z-index: 2;
     }
     #ccbdSupportBtnBadge.show { display: flex !important; }
     #ccbdSupportPanel {
-      position: absolute; bottom: 70px; right: 0; width: 360px; max-width: calc(100vw - 24px);
+      position: absolute; bottom: 70px; left: 0; right: auto; width: 360px; max-width: calc(100vw - 24px);
       height: 480px; max-height: calc(100vh - 120px); background: #fff; border-radius: 18px;
       box-shadow: 0 16px 48px rgba(0,0,0,0.16); border: 1px solid rgba(0,0,0,0.06);
       display: none; flex-direction: column; overflow: hidden; animation: ccbdSupportIn 0.22s ease;
@@ -2647,8 +2652,8 @@ function _injectSupportStyles() {
       border: none; padding: 10px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 0.85rem;
     }
     @media (max-width: 480px) {
-      #ccbdSupportRoot { bottom: 16px; right: 14px; }
-      #ccbdSupportPanel { width: calc(100vw - 20px); height: min(70vh, 520px); right: -6px; }
+      #ccbdSupportRoot { bottom: 16px; left: 14px; right: auto; }
+      #ccbdSupportPanel { width: calc(100vw - 20px); height: min(70vh, 520px); left: 0; right: auto; }
       #ccbdSupportBtn { width: 52px; height: 52px; font-size: 1.2rem; }
     }
   `;
@@ -2843,15 +2848,25 @@ function _startSupportListener(user) {
 }
 
 window.__ccbdUpdateSupportBadge = function(count) {
-  const badge = document.getElementById('ccbdSupportBtnBadge');
-  if (!badge) return;
-  const n = Number(count) || 0;
-  if (n > 0) {
-    badge.textContent = n > 99 ? '99+' : String(n);
-    badge.classList.add('show');
-  } else {
-    badge.textContent = '0';
-    badge.classList.remove('show');
+  const apply = () => {
+    const badge = document.getElementById('ccbdSupportBtnBadge');
+    if (!badge) return false;
+    const n = Number(count) || 0;
+    if (n > 0) {
+      badge.textContent = n > 99 ? '99+' : String(n);
+      badge.classList.add('show');
+      badge.style.display = 'flex';
+    } else {
+      badge.textContent = '0';
+      badge.classList.remove('show');
+      badge.style.display = 'none';
+    }
+    return true;
+  };
+  if (!apply()) {
+    // DOM not ready yet — retry
+    setTimeout(apply, 100);
+    setTimeout(apply, 400);
   }
 };
 
@@ -2871,10 +2886,15 @@ window.__ccbdMountSupportWidget = function(user) {
   }
   if (user) {
     _startSupportListener(user);
+    // Re-apply current unread badge after mount
+    if (typeof window.__ccbdUpdateSupportBadge === 'function') {
+      window.__ccbdUpdateSupportBadge(unreadAdminMessages.length);
+    }
   } else if (_supportUnsub) {
     try { _supportUnsub(); } catch (_) {}
     _supportUnsub = null;
     _supportMsgs = [];
+    window.__ccbdUpdateSupportBadge(0);
   }
 };
 
