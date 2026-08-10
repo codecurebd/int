@@ -576,7 +576,27 @@
                 padding: 2px 10px;
             }
         }
-    </style>
+    
+    .btn-try-now {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1.5px solid rgba(0,102,255,0.25);
+      color: #0066FF;
+      background: rgba(0,102,255,0.06);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-try-now:hover {
+      background: rgba(0,102,255,0.12);
+      border-color: #0066FF;
+    }
+
+  </style>
 </head>
 <body>
 
@@ -957,6 +977,7 @@ onAuthStateChanged(auth, async (user) => {
                     <button onclick="window.addToCart('${p.id}')" class="btn-add-cart">
                       <i class="fas fa-cart-plus"></i> Add
                     </button>
+                    ${hasHtml ? `<button type="button" onclick="window.openProductDemo('${p.id}')" class="btn-try-now"><i class="fas fa-external-link-alt"></i> Try Now</button>` : ''}
                   </div>
                 </div>
               </div>
@@ -1051,7 +1072,37 @@ onAuthStateChanged(auth, async (user) => {
             showToast(`✅ "${product.name}" added to cart`, 'success');
         };
 
-        console.log('🚀 Store page: currency toggle removed, rate banner added.');
+        // Try Now → open product HTML demo in a new browser tab
+        window.openProductDemo = function(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            const htmlContent = product?.htmlContent;
+            if (!htmlContent || !String(htmlContent).trim()) {
+                showToast('No demo available for this product.', 'warning');
+                return;
+            }
+            let docHtml = String(htmlContent).trim();
+            const looksFull = /<html[\s>]/i.test(docHtml) || /<!DOCTYPE/i.test(docHtml);
+            if (!looksFull) {
+                const title = (product?.name || 'Demo').replace(/</g, '');
+                docHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{margin:0}</style></head><body>${docHtml}</body></html>`;
+            }
+            try {
+                const blob = new Blob([docHtml], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const win = window.open(url, '_blank');
+                if (!win) {
+                    showToast('Please allow pop-ups to view the live demo.', 'warning');
+                    URL.revokeObjectURL(url);
+                    return;
+                }
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            } catch (err) {
+                console.error(err);
+                showToast('Could not open demo: ' + err.message, 'error');
+            }
+        };
+
+        console.log('🚀 Store page: Try Now opens demo in a new tab.');
     </script>
 </body>
 </html>

@@ -814,49 +814,46 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // ===== TRY NOW OVERLAY FUNCTIONS =====
+    // ===== TRY NOW → open product demo in a new browser tab =====
     function openTryNow() {
-      const overlay = document.getElementById('trynowOverlay');
-      const content = document.getElementById('demoContent');
       const htmlContent = currentProductData?.htmlContent;
-      if (!htmlContent) {
+      if (!htmlContent || !String(htmlContent).trim()) {
         showToast('No demo available for this product.', 'warning');
         return;
       }
-      const escaped = htmlContent.replace(/"/g, '&quot;');
-      content.innerHTML = `<iframe id="demoIframe" style="width:100%; height:100%; border:none;" srcdoc="${escaped}"></iframe>`;
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
+
+      let docHtml = String(htmlContent).trim();
+      // If content is a fragment, wrap as full document
+      const looksFull = /<html[\s>]/i.test(docHtml) || /<!DOCTYPE/i.test(docHtml);
+      if (!looksFull) {
+        docHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${(currentProductData?.name || 'Demo').replace(/</g,'')}</title><style>body{margin:0;}</style></head><body>${docHtml}</body></html>`;
+      }
+
+      try {
+        const blob = new Blob([docHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const win = window.open(url, '_blank');
+        if (!win) {
+          showToast('Please allow pop-ups to view the live demo.', 'warning');
+          URL.revokeObjectURL(url);
+          return;
+        }
+        // Revoke after the new tab has a chance to load
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch (err) {
+        console.error('Try Now error:', err);
+        showToast('Could not open demo: ' + err.message, 'error');
+      }
     }
 
     function closeTryNow() {
-      document.getElementById('trynowOverlay').classList.remove('open');
+      const overlay = document.getElementById('trynowOverlay');
+      if (overlay) overlay.classList.remove('open');
       document.body.style.overflow = '';
-      const content = document.getElementById('demoContent');
-      content.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:#94a3b8; font-size:1.2rem;"><i class="fas fa-spinner fa-spin mr-2"></i> Loading demo...</div>`;
-    }
-
-    async function handleTryNowBuy() {
-      await window.addToCart();
-      closeTryNow();
-      setTimeout(() => {
-        if (typeof window.checkout === 'function') window.checkout();
-        else window.location.href = 'get-new-website.html?checkout=1';
-      }, 500);
-    }
-
-    async function handleTryNowCart() {
-      await window.addToCart();
-      closeTryNow();
-      setTimeout(() => {
-        if (typeof window.toggleCart === 'function') window.toggleCart();
-      }, 300);
     }
 
     window.openTryNow = openTryNow;
     window.closeTryNow = closeTryNow;
-    window.handleTryNowBuy = handleTryNowBuy;
-    window.handleTryNowCart = handleTryNowCart;
     window.addToCart = addToCart;
     window.buyNow = buyNow;
     window.submitRating = submitRating;
