@@ -1317,6 +1317,158 @@
       to { transform: rotate(360deg); }
     }
 
+
+    /* ===== COMPACT ORDER FILTERS ===== */
+    .filter-group-compact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 14px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+    }
+    .filter-group-compact .form-input,
+    .filter-group-compact select.form-input {
+      min-width: 0;
+      width: auto;
+      flex: 0 1 auto;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      border-radius: 10px;
+      min-height: 34px;
+    }
+    .filter-group-compact input[type="date"] { max-width: 130px; }
+    .filter-group-compact input[type="number"] { max-width: 90px; }
+    .filter-group-compact select { max-width: 140px; }
+    .filter-group-compact .btn-sm,
+    .filter-group-compact button {
+      padding: 7px 12px;
+      font-size: 0.75rem;
+      min-height: 34px;
+      border-radius: 10px;
+    }
+
+    /* ===== DASHBOARD EXTRA ===== */
+    .dashboard-grid-secondary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .dash-mini {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.65);
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+    }
+    .dash-mini .dm-label { font-size: 0.68rem; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+    .dash-mini .dm-value { font-size: 1.35rem; font-weight: 700; color: #1a1a2e; margin-top: 2px; }
+    .dash-mini .dm-value.orange { color: #d97706; }
+    .dash-mini .dm-value.blue { color: #2563eb; }
+    .dash-mini .dm-value.green { color: #059669; }
+    .dash-mini .dm-value.red { color: #dc2626; }
+    .dash-mini .dm-value.purple { color: #7c3aed; }
+    .recent-activity {
+      margin-top: 1.25rem;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.65);
+      border-radius: 16px;
+      padding: 1rem 1.15rem;
+    }
+    .recent-activity h3 { font-size: 0.95rem; font-weight: 600; color: #1a1a2e; margin-bottom: 0.75rem; }
+    .activity-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 0.82rem;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item .act-icon {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0;
+    }
+    .activity-item .act-icon.order { background: rgba(0,102,255,0.1); color: #0066FF; }
+    .activity-item .act-icon.user { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+    .activity-item .act-icon.fix { background: rgba(245,158,11,0.12); color: #d97706; }
+    .activity-item .act-icon.msg { background: rgba(52,199,89,0.12); color: #059669; }
+    .activity-item .act-body { flex: 1; min-width: 0; }
+    .activity-item .act-title { font-weight: 600; color: #1a1a2e; }
+    .activity-item .act-meta { color: #8e8e93; font-size: 0.72rem; margin-top: 1px; }
+
+    /* ===== ENHANCED MESSAGES / FIX REQUESTS ===== */
+    .admin-toolbar {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+      margin: 0.75rem 0 1rem; padding: 0.65rem 0.85rem;
+      background: rgba(255,255,255,0.75); border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .admin-toolbar .form-input {
+      padding: 7px 12px; font-size: 0.8rem; border-radius: 10px; min-height: 34px;
+      flex: 1; min-width: 140px; max-width: 280px;
+    }
+    .admin-toolbar select.form-input { flex: 0 1 auto; max-width: 150px; min-width: 110px; }
+    .msg-card, .fix-card {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(255,255,255,0.65);
+      border-radius: 16px; padding: 1rem 1.15rem;
+      margin-bottom: 0.75rem;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .msg-card:hover, .fix-card:hover {
+      box-shadow: 0 8px 28px rgba(0,102,255,0.06);
+      transform: translateY(-2px);
+    }
+    .msg-card.unread { border-left: 3px solid #0066FF; }
+    .fix-card.priority-high { border-left: 3px solid #dc2626; }
+    .fix-card.priority-medium { border-left: 3px solid #d97706; }
+    .fix-card.priority-low { border-left: 3px solid #059669; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: flex-start; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .card-actions button { font-size: 0.72rem; padding: 5px 12px; border-radius: 8px; border: none; cursor: pointer; }
+    .btn-soft { background: rgba(0,0,0,0.04); color: #374151; }
+    .btn-soft:hover { background: rgba(0,0,0,0.08); }
+    .btn-soft-blue { background: rgba(0,102,255,0.08); color: #1d4ed8; }
+    .btn-soft-green { background: rgba(5,150,105,0.1); color: #059669; }
+    .btn-soft-red { background: rgba(220,38,38,0.08); color: #dc2626; }
+    .btn-soft-amber { background: rgba(217,119,6,0.1); color: #d97706; }
+
+    /* Support chat enhancements */
+    .support-toolbar {
+      display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center;
+    }
+    .support-toolbar input {
+      flex: 1; min-width: 160px; padding: 8px 14px; border-radius: 12px;
+      border: 1.5px solid rgba(0,102,255,0.08); font-size: 0.85rem; outline: none;
+      background: rgba(255,255,255,0.85);
+    }
+    .support-toolbar input:focus { border-color: #0066FF; box-shadow: 0 0 0 3px rgba(0,102,255,0.08); }
+    .quick-reply-bar {
+      display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 12px 0;
+      background: rgba(248,250,252,0.6);
+    }
+    .quick-reply-bar button {
+      background: #fff; border: 1px solid rgba(0,102,255,0.12); color: #0066FF;
+      font-size: 0.72rem; font-weight: 600; padding: 5px 12px; border-radius: 20px;
+      cursor: pointer; transition: 0.15s;
+    }
+    .quick-reply-bar button:hover { background: rgba(0,102,255,0.06); border-color: #0066FF; }
+    .chat-header-actions { margin-left: auto; display: flex; gap: 6px; }
+    .chat-header-actions button {
+      background: rgba(0,0,0,0.04); border: none; border-radius: 8px;
+      padding: 6px 10px; font-size: 0.75rem; cursor: pointer; color: #374151;
+    }
+    .chat-header-actions button:hover { background: rgba(0,0,0,0.08); }
+    .product-toolbar .sort-select {
+      padding: 7px 12px; font-size: 0.8rem; border-radius: 10px;
+      border: 1.5px solid rgba(0,102,255,0.08); background: #fff; min-height: 36px;
+    }
+
     /* ===== PRODUCTS - NEW LIST/GRID STYLES ===== */
     .product-toolbar {
       display: flex;
@@ -1788,12 +1940,26 @@
                     <div class="dashboard-card"><div class="label">Users</div><div class="value" id="totalUsers">0</div></div>
                     <div class="dashboard-card"><div class="label">Fix Requests</div><div class="value" id="totalFixRequests">0</div></div>
                 </div>
+                <div class="dashboard-grid-secondary">
+                    <div class="dash-mini"><div class="dm-label">Pending Orders</div><div class="dm-value orange" id="dashPendingOrders">0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Processing</div><div class="dm-value blue" id="dashProcessingOrders">0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Completed</div><div class="dm-value green" id="dashCompletedOrders">0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Due Amount</div><div class="dm-value red" id="dashDueAmount">$0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Avg Order</div><div class="dm-value purple" id="dashAvgOrder">$0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Pending Fixes</div><div class="dm-value orange" id="dashPendingFixes">0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Contact Msgs</div><div class="dm-value blue" id="dashContactMsgs">0</div></div>
+                    <div class="dash-mini"><div class="dm-label">Unread Chats</div><div class="dm-value purple" id="dashUnreadChats">0</div></div>
+                </div>
                 <div class="chart-grid">
                     <div class="glass-card"><h3 class="font-semibold text-gray-700 mb-2" style="font-size:0.9rem;">📈 Daily Orders</h3><div class="chart-container"><canvas id="dailyOrdersChart"></canvas></div></div>
                     <div class="glass-card"><h3 class="font-semibold text-gray-700 mb-2" style="font-size:0.9rem;">💰 Daily Revenue</h3><div class="chart-container"><canvas id="dailyRevenueChart"></canvas></div></div>
                     <div class="glass-card"><h3 class="font-semibold text-gray-700 mb-2" style="font-size:0.9rem;">📊 Monthly Revenue</h3><div class="chart-container"><canvas id="monthlyRevenueChart"></canvas></div></div>
                     <div class="glass-card"><h3 class="font-semibold text-gray-700 mb-2" style="font-size:0.9rem;">👤 Daily Signups</h3><div class="chart-container"><canvas id="dailySignupsChart"></canvas></div></div>
                     <div class="glass-card"><h3 class="font-semibold text-gray-700 mb-2" style="font-size:0.9rem;">🔧 Daily Fix Requests</h3><div class="chart-container"><canvas id="dailyFixRequestsChart"></canvas></div></div>
+                </div>
+                <div class="recent-activity">
+                    <h3><i class="fas fa-stream" style="color:#0066FF;margin-right:6px;"></i> Recent Activity</h3>
+                    <div id="recentActivityList"><div class="text-sm text-gray-400">Loading…</div></div>
                 </div>
             </div>
 
@@ -1804,12 +1970,20 @@
                     <button onclick="openProductModal()" class="btn-primary text-sm py-2 px-4"><i class="fas fa-plus"></i> Add</button>
                 </div>
 
-                <!-- Toolbar: Search + View Toggle -->
+                <!-- Toolbar: Search + Sort + View Toggle -->
                 <div class="product-toolbar">
                     <div class="search-wrap">
                         <i class="fas fa-search"></i>
                         <input type="text" id="productSearchInput" placeholder="Search products by name, category…" autocomplete="off" />
                     </div>
+                    <select id="productSortSelect" class="sort-select">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="name-asc">Name: A → Z</option>
+                        <option value="name-desc">Name: Z → A</option>
+                        <option value="price-asc">Price: Low → High</option>
+                        <option value="price-desc">Price: High → Low</option>
+                    </select>
                     <div class="view-toggle-wrap">
                         <span class="view-label">View</span>
                         <div class="view-toggle" id="productViewToggle">
@@ -1829,30 +2003,31 @@
                     <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Orders</h2>
                     <button onclick="exportOrdersCSV()" class="btn-outline text-sm py-2 px-4"><i class="fas fa-file-csv"></i> Export CSV</button>
                 </div>
-                <div class="filter-group" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
-                    <input type="date" id="orderDateFrom" class="form-input form-input-sm" placeholder="From" />
-                    <input type="date" id="orderDateTo" class="form-input form-input-sm" placeholder="To" />
-                    <input type="number" id="orderPriceMin" class="form-input form-input-sm" placeholder="Min $" />
-                    <input type="number" id="orderPriceMax" class="form-input form-input-sm" placeholder="Max $" />
-                    <select id="orderStatusFilter" class="form-input form-input-sm">
-                        <option value="all">All Status</option>
+                <div class="filter-group-compact">
+                    <input type="date" id="orderDateFrom" class="form-input" title="From date" />
+                    <input type="date" id="orderDateTo" class="form-input" title="To date" />
+                    <input type="number" id="orderPriceMin" class="form-input" placeholder="Min $" />
+                    <input type="number" id="orderPriceMax" class="form-input" placeholder="Max $" />
+                    <select id="orderStatusFilter" class="form-input">
+                        <option value="all">Status</option>
                         <option value="pending">Pending</option>
                         <option value="processing">Processing</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
-                    <select id="orderPaymentTypeFilter" class="form-input form-input-sm">
-                        <option value="all">All Payment Types</option>
-                        <option value="full">Full Payment</option>
+                    <select id="orderPaymentTypeFilter" class="form-input">
+                        <option value="all">Pay type</option>
+                        <option value="full">Full</option>
                         <option value="advance">Pay Later</option>
                     </select>
-                    <select id="orderVerifiedFilter" class="form-input form-input-sm">
-                        <option value="all">All Verify Status</option>
+                    <select id="orderVerifiedFilter" class="form-input">
+                        <option value="all">Verify</option>
                         <option value="verified">Verified</option>
                         <option value="unverified">Unverified</option>
                     </select>
-                    <button onclick="applyOrderFilters()" class="btn-primary btn-sm">Apply</button>
-                    <button onclick="resetOrderFilters()" class="btn-outline btn-sm">Reset</button>
+                    <input type="text" id="orderSearchInput" class="form-input" placeholder="Search ID / user…" style="max-width:150px;" />
+                    <button onclick="applyOrderFilters()" class="btn-primary btn-sm"><i class="fas fa-filter"></i></button>
+                    <button onclick="resetOrderFilters()" class="btn-outline btn-sm"><i class="fas fa-undo"></i></button>
                 </div>
 
                 <div id="orderBulkActions" style="display:none;" class="bulk-actions">
@@ -2002,14 +2177,44 @@
 
             <!-- MESSAGES -->
             <div id="tab-messages" class="tab-content">
-                <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Contact Messages</h2>
-                <div id="messageList" class="space-y-3 mt-4"></div>
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Contact Messages</h2>
+                    <span class="text-sm text-gray-500" id="msgCountLabel">0 messages</span>
+                </div>
+                <div class="admin-toolbar">
+                    <input type="text" id="msgSearchInput" class="form-input" placeholder="Search name, email, message…" />
+                    <select id="msgReadFilter" class="form-input">
+                        <option value="all">All</option>
+                        <option value="unread">Unread</option>
+                        <option value="read">Read</option>
+                    </select>
+                    <button onclick="markAllContactRead()" class="btn-outline btn-sm"><i class="fas fa-check-double"></i> Mark all read</button>
+                </div>
+                <div id="messageList" class="space-y-3"></div>
             </div>
 
             <!-- FIX REQUESTS -->
             <div id="tab-fixrequests" class="tab-content">
-                <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Fix Requests</h2>
-                <div id="fixRequestList" class="space-y-3 mt-4"></div>
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Fix Requests</h2>
+                    <span class="text-sm text-gray-500" id="fixCountLabel">0 requests</span>
+                </div>
+                <div class="admin-toolbar">
+                    <input type="text" id="fixSearchInput" class="form-input" placeholder="Search ticket, name, problem…" />
+                    <select id="fixStatusFilter" class="form-input">
+                        <option value="all">All status</option>
+                        <option value="pending">Pending</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                    <select id="fixPriorityFilter" class="form-input">
+                        <option value="all">All priority</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div id="fixRequestList" class="space-y-3"></div>
             </div>
 
             <!-- ===== RATINGS (NEW) ===== -->
@@ -2165,7 +2370,14 @@
 
             <!-- SUPPORT CHAT -->
             <div id="tab-supportchat" class="tab-content">
-                <h2 class="text-2xl font-bold mb-4" style="color:#1c1c1e;">Support Chat</h2>
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                    <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Support Chat</h2>
+                    <span class="text-sm text-gray-500" id="supportConvCount">0 conversations</span>
+                </div>
+                <div class="support-toolbar">
+                    <input type="text" id="convSearchInput" placeholder="Search conversations by name or email…" />
+                    <button type="button" class="btn-outline btn-sm" onclick="markAllSupportRead()"><i class="fas fa-check-double"></i> Mark all read</button>
+                </div>
                 <div class="messenger-wrap">
                     <div class="conv-list" id="convList">
                         <div class="empty-state" style="height:100%;font-size:0.85rem;">
@@ -2175,13 +2387,26 @@
                     <div class="chat-area">
                         <div class="chat-header" id="chatHeader">
                             <div class="chat-avatar" id="chatHeaderAvatar">U</div>
-                            <span id="chatHeaderName">Select a conversation</span>
+                            <div style="flex:1;min-width:0;">
+                                <div id="chatHeaderName" style="font-weight:600;">Select a conversation</div>
+                                <div id="chatHeaderEmail" style="font-size:0.72rem;color:#8e8e93;"></div>
+                            </div>
+                            <div class="chat-header-actions">
+                                <button type="button" onclick="copyUserEmail()" title="Copy email"><i class="fas fa-copy"></i></button>
+                            </div>
                         </div>
                         <div class="chat-messages" id="chatMessages">
                             <div class="empty-state"><i class="fas fa-inbox"></i><span>No messages</span></div>
                         </div>
+                        <div class="quick-reply-bar" id="adminQuickReplies">
+                            <button type="button" data-text="Hello! How can I help you today?">👋 Hello</button>
+                            <button type="button" data-text="Thanks for your order. We are working on it.">📦 Order update</button>
+                            <button type="button" data-text="Please share your transaction ID / screenshot.">🧾 Need TXN ID</button>
+                            <button type="button" data-text="Your request has been resolved. Please check and confirm.">✅ Resolved</button>
+                            <button type="button" data-text="Sorry for the delay. We will get back to you shortly.">⏳ Delay</button>
+                        </div>
                         <form class="chat-input-wrap" id="adminChatForm">
-                            <input type="text" id="adminChatInput" placeholder="Type a reply…" required autocomplete="off" />
+                            <input type="text" id="adminChatInput" placeholder="Type a reply…" autocomplete="off" />
                             <button type="submit" id="adminChatSendBtn"><i class="fas fa-paper-plane"></i></button>
                         </form>
                     </div>
@@ -2483,11 +2708,83 @@
                 allUsers = [],
                 allFixRequests = [],
                 allProducts = [],
-                allRatings = [];
+                allRatings = [],
+                allContactMessages = [];
+            let conversationsMap = {}; // early init for dashboard unread count
 
             function updatePendingOrders(orders) {
                 const pending = orders.filter(o => (o.status || 'pending') === 'pending');
                 document.getElementById('pendingOrdersCount').textContent = pending.length;
+            }
+
+            function updateDashboardExtras() {
+                const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+                const pending = allOrders.filter(o => (o.status || 'pending') === 'pending').length;
+                const processing = allOrders.filter(o => o.status === 'processing').length;
+                const completed = allOrders.filter(o => o.status === 'completed').length;
+                let dueUSD = 0;
+                allOrders.forEach(o => { dueUSD += Number(o.dueAmountUSD) || 0; });
+                const rev = allOrders.reduce((s, o) => s + (Number(o.total) || 0), 0);
+                const avg = allOrders.length ? (rev / allOrders.length) : 0;
+                const pendingFixes = allFixRequests.filter(f => (f.status || 'pending') === 'pending').length;
+                set('dashPendingOrders', pending);
+                set('dashProcessingOrders', processing);
+                set('dashCompletedOrders', completed);
+                set('dashDueAmount', '$' + dueUSD.toFixed(2));
+                set('dashAvgOrder', '$' + avg.toFixed(2));
+                set('dashPendingFixes', pendingFixes);
+                set('dashContactMsgs', allContactMessages.length);
+                // unread chats approx from conversationsMap if available
+                try {
+                    const unread = Object.values(conversationsMap || {}).reduce((s, c) => s + (c.unread || 0), 0);
+                    set('dashUnreadChats', unread);
+                } catch (_) { set('dashUnreadChats', 0); }
+                renderRecentActivity();
+            }
+
+            function renderRecentActivity() {
+                const list = document.getElementById('recentActivityList');
+                if (!list) return;
+                const items = [];
+                allOrders.slice().sort((a,b) => {
+                    const ta = a.createdAt?.toDate?.()?.getTime() || new Date(a.createdAt || 0).getTime();
+                    const tb = b.createdAt?.toDate?.()?.getTime() || new Date(b.createdAt || 0).getTime();
+                    return tb - ta;
+                }).slice(0, 5).forEach(o => {
+                    const t = o.createdAt?.toDate?.() || new Date(o.createdAt || Date.now());
+                    items.push({ t: t.getTime(), icon: 'order', title: `Order #${(o.id||'').slice(0,8).toUpperCase()} — $${(o.total||0).toFixed(2)}`, meta: `${o.status||'pending'} · ${t.toLocaleString()}` });
+                });
+                allUsers.slice().sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0, 3).forEach(u => {
+                    const t = new Date(u.createdAt || Date.now());
+                    items.push({ t: t.getTime(), icon: 'user', title: `New user: ${u.displayName || u.email || 'User'}`, meta: t.toLocaleString() });
+                });
+                allFixRequests.slice().sort((a,b) => {
+                    const ta = a.timestamp?.toDate?.()?.getTime() || 0;
+                    const tb = b.timestamp?.toDate?.()?.getTime() || 0;
+                    return tb - ta;
+                }).slice(0, 3).forEach(f => {
+                    const t = f.timestamp?.toDate?.() || new Date();
+                    items.push({ t: t.getTime(), icon: 'fix', title: `Fix: ${f.ticketNumber || f.name || 'Request'}`, meta: `${f.status||'pending'} · ${t.toLocaleString()}` });
+                });
+                allContactMessages.slice().sort((a,b) => {
+                    const ta = a.timestamp?.toDate?.()?.getTime() || 0;
+                    const tb = b.timestamp?.toDate?.()?.getTime() || 0;
+                    return tb - ta;
+                }).slice(0, 3).forEach(m => {
+                    const t = m.timestamp?.toDate?.() || new Date();
+                    items.push({ t: t.getTime(), icon: 'msg', title: `Message from ${m.name || m.email || 'Guest'}`, meta: t.toLocaleString() });
+                });
+                items.sort((a,b) => b.t - a.t);
+                const top = items.slice(0, 10);
+                if (!top.length) {
+                    list.innerHTML = '<div class="text-sm text-gray-400">No recent activity yet.</div>';
+                    return;
+                }
+                list.innerHTML = top.map(it => `
+                    <div class="activity-item">
+                        <div class="act-icon ${it.icon}"><i class="fas fa-${it.icon==='order'?'shopping-cart':it.icon==='user'?'user-plus':it.icon==='fix'?'wrench':'envelope'}"></i></div>
+                        <div class="act-body"><div class="act-title">${it.title}</div><div class="act-meta">${it.meta}</div></div>
+                    </div>`).join('');
             }
 
             // ===== DASHBOARD CHARTS =====
@@ -2591,6 +2888,7 @@
                 renderDashboardCharts(allOrders, allUsers, allFixRequests);
                 renderOrdersTable(allOrders);
                 renderUsersPage(allUsers);
+                updateDashboardExtras();
             });
 
             onSnapshot(collection(db, 'users'), (snapshot) => {
@@ -2600,6 +2898,7 @@
                 renderDashboardCharts(allOrders, allUsers, allFixRequests);
                 renderUsersPage(allUsers);
                 updateUserStats(allUsers);
+                updateDashboardExtras();
             });
 
             onSnapshot(collection(db, 'fixRequests'), (snapshot) => {
@@ -2607,6 +2906,8 @@
                 allFixRequests = [];
                 snapshot.forEach(doc => allFixRequests.push({ id: doc.id, ...doc.data() }));
                 renderDashboardCharts(allOrders, allUsers, allFixRequests);
+                renderFixRequestsAdmin();
+                updateDashboardExtras();
             });
 
             // Products (for ratings and product dropdown)
@@ -2625,9 +2926,17 @@
             let allProductsData = [];
             let productViewMode = 'list'; // 'list' or 'grid'
             let productSearchQuery = '';
+            let productSortMode = 'newest';
 
             const productContainer = document.getElementById('productContainer');
             const productSearchInput = document.getElementById('productSearchInput');
+            const productSortSelect = document.getElementById('productSortSelect');
+            if (productSortSelect) {
+                productSortSelect.addEventListener('change', function() {
+                    productSortMode = this.value || 'newest';
+                    renderProductView();
+                });
+            }
 
             // View toggle
             document.querySelectorAll('#productViewToggle button').forEach(btn => {
@@ -2654,7 +2963,7 @@
                 }
 
                 // Filter
-                let filtered = allProducts;
+                let filtered = [...allProducts];
                 if (productSearchQuery) {
                     filtered = filtered.filter(p => {
                         const name = (p.name || '').toLowerCase();
@@ -2665,6 +2974,19 @@
                             desc.includes(productSearchQuery);
                     });
                 }
+
+                // Sort
+                const getTs = (p) => {
+                    if (p.createdAt?.toDate) return p.createdAt.toDate().getTime();
+                    if (p.createdAt) return new Date(p.createdAt).getTime();
+                    return 0;
+                };
+                if (productSortMode === 'newest') filtered.sort((a,b) => getTs(b) - getTs(a));
+                else if (productSortMode === 'oldest') filtered.sort((a,b) => getTs(a) - getTs(b));
+                else if (productSortMode === 'name-asc') filtered.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+                else if (productSortMode === 'name-desc') filtered.sort((a,b) => (b.name||'').localeCompare(a.name||''));
+                else if (productSortMode === 'price-asc') filtered.sort((a,b) => (a.price||0) - (b.price||0));
+                else if (productSortMode === 'price-desc') filtered.sort((a,b) => (b.price||0) - (a.price||0));
 
                 if (!filtered.length) {
                     productContainer.innerHTML =
@@ -2872,7 +3194,10 @@
                         featured,
                     };
                     if (id) await updateDoc(doc(db, 'products', id), data);
-                    else await addDoc(collection(db, 'products'), data);
+                    else {
+                        data.createdAt = serverTimestamp();
+                        await addDoc(collection(db, 'products'), data);
+                    }
                     closeProductModal();
                     showToast('✅ Product saved!', 'success');
                 } catch (err) { showToast(err.message, 'error'); } finally { setLoading(productSubmitBtn, false); }
@@ -3735,6 +4060,7 @@
                 const paymentTypeFilter = document.getElementById('orderPaymentTypeFilter')?.value || 'all';
                 const verifiedFilter = document.getElementById('orderVerifiedFilter')?.value || 'all';
 
+                const searchQ = (document.getElementById('orderSearchInput')?.value || '').trim().toLowerCase();
                 filteredOrders = orders.filter(o => {
                     const oDate = o.createdAt?.toDate?.() || new Date(o.createdAt);
                     if (fromDate && oDate < new Date(fromDate)) return false;
@@ -3747,6 +4073,14 @@
                     const isVerified = !!o.paymentVerified;
                     if (verifiedFilter === 'verified' && !isVerified) return false;
                     if (verifiedFilter === 'unverified' && isVerified) return false;
+                    if (searchQ) {
+                        const uid = o.userId || '';
+                        const user = allUsers.find(u => u.id === uid);
+                        const uname = (user?.displayName || user?.email || o.userEmail || '').toLowerCase();
+                        const oid = (o.id || '').toLowerCase();
+                        const txn = (o.transactionId || '').toLowerCase();
+                        if (!oid.includes(searchQ) && !uname.includes(searchQ) && !txn.includes(searchQ) && !uid.toLowerCase().includes(searchQ)) return false;
+                    }
                     return true;
                 });
 
@@ -3834,6 +4168,8 @@
                 if (ptf) ptf.value = 'all';
                 const vf = document.getElementById('orderVerifiedFilter');
                 if (vf) vf.value = 'all';
+                const os = document.getElementById('orderSearchInput');
+                if (os) os.value = '';
                 renderOrdersTable(allOrders);
             };
 
@@ -4259,76 +4595,246 @@
             };
 
             // ==============================================================
-            // MESSAGES & FIX REQUESTS
+            // MESSAGES & FIX REQUESTS (ENHANCED)
             // ==============================================================
             const messageList = document.getElementById('messageList');
-            onSnapshot(collection(db, 'contactMessages'), (snapshot) => {
-                if (snapshot.empty) {
-                    messageList.innerHTML =
-                        `<div class="text-center py-10 text-gray-500"><i class="fas fa-envelope text-4xl opacity-30"></i><p class="mt-2">No messages yet.</p></div>`;
+            let msgSearchQ = '';
+            let msgReadFilter = 'all';
+
+            function escapeHtmlAdmin(str) {
+                return String(str || '')
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            function renderContactMessages() {
+                if (!messageList) return;
+                let list = [...allContactMessages];
+                list.sort((a, b) => {
+                    const ta = a.timestamp?.toDate?.()?.getTime() || 0;
+                    const tb = b.timestamp?.toDate?.()?.getTime() || 0;
+                    return tb - ta;
+                });
+                if (msgSearchQ) {
+                    const q = msgSearchQ.toLowerCase();
+                    list = list.filter(m =>
+                        (m.name || '').toLowerCase().includes(q) ||
+                        (m.email || '').toLowerCase().includes(q) ||
+                        (m.message || '').toLowerCase().includes(q)
+                    );
+                }
+                if (msgReadFilter === 'unread') list = list.filter(m => !m.read);
+                else if (msgReadFilter === 'read') list = list.filter(m => m.read);
+
+                const label = document.getElementById('msgCountLabel');
+                if (label) label.textContent = `${list.length} message${list.length !== 1 ? 's' : ''}`;
+
+                if (!list.length) {
+                    messageList.innerHTML = `<div class="text-center py-10 text-gray-500"><i class="fas fa-envelope text-4xl opacity-30"></i><p class="mt-2">No messages found.</p></div>`;
                     return;
                 }
                 let html = '';
-                snapshot.forEach(doc => {
-                    const m = doc.data();
+                list.forEach(m => {
+                    const time = m.timestamp?.toDate?.()?.toLocaleString() || '';
+                    const unreadClass = m.read ? '' : 'unread';
                     html += `
-                        <div class="glass-card">
-                            <p><strong>${m.name}</strong> (${m.email})</p>
-                            <p class="text-sm">${m.message}</p>
-                            <p class="text-xs text-gray-400">${m.timestamp?.toDate?.()?.toLocaleString() || ''}</p>
-                        </div>
-                    `;
+                        <div class="msg-card ${unreadClass}" id="contact-${m.id}">
+                            <div class="card-top">
+                                <div>
+                                    <p class="font-semibold text-gray-900">${escapeHtmlAdmin(m.name || 'Guest')} <span class="text-sm font-normal text-gray-500">(${escapeHtmlAdmin(m.email || '—')})</span></p>
+                                    <p class="text-sm text-gray-700 mt-1 whitespace-pre-wrap">${escapeHtmlAdmin(m.message || '')}</p>
+                                    <p class="text-xs text-gray-400 mt-1"><i class="far fa-clock"></i> ${time}</p>
+                                </div>
+                                <span class="status-badge ${m.read ? 'closed' : 'pending'}">${m.read ? 'Read' : 'Unread'}</span>
+                            </div>
+                            <div class="card-actions">
+                                ${!m.read ? `<button class="btn-soft-blue" onclick="markContactRead('${m.id}')"><i class="fas fa-check"></i> Mark read</button>` : ''}
+                                <a class="btn-soft" href="mailto:${encodeURIComponent(m.email || '')}?subject=Re: CodeCureBD Contact"><i class="fas fa-reply"></i> Email</a>
+                                <button class="btn-soft-red" onclick="deleteContactMsg('${m.id}')"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </div>`;
                 });
                 messageList.innerHTML = html;
+            }
+
+            onSnapshot(collection(db, 'contactMessages'), (snapshot) => {
+                allContactMessages = [];
+                snapshot.forEach(d => allContactMessages.push({ id: d.id, ...d.data() }));
+                renderContactMessages();
+                updateDashboardExtras();
             });
 
+            document.getElementById('msgSearchInput')?.addEventListener('input', (e) => {
+                msgSearchQ = e.target.value.trim();
+                renderContactMessages();
+            });
+            document.getElementById('msgReadFilter')?.addEventListener('change', (e) => {
+                msgReadFilter = e.target.value;
+                renderContactMessages();
+            });
+
+            window.markContactRead = async (id) => {
+                try {
+                    await updateDoc(doc(db, 'contactMessages', id), { read: true, readAt: serverTimestamp() });
+                    showToast('✅ Marked as read', 'success');
+                } catch (err) { showToast('Error: ' + err.message, 'error'); }
+            };
+
+            window.markAllContactRead = async () => {
+                const unread = allContactMessages.filter(m => !m.read);
+                if (!unread.length) { showToast('Nothing unread', 'info'); return; }
+                try {
+                    await Promise.all(unread.map(m => updateDoc(doc(db, 'contactMessages', m.id), { read: true, readAt: serverTimestamp() })));
+                    showToast(`✅ ${unread.length} marked read`, 'success');
+                } catch (err) { showToast('Error: ' + err.message, 'error'); }
+            };
+
+            window.deleteContactMsg = async (id) => {
+                const confirmed = await openConfirmModal({
+                    title: 'Delete Message',
+                    desc: 'Permanently delete this contact message?',
+                    icon: 'fa-envelope',
+                    itemId: id,
+                    itemIdLabel: 'Message ID',
+                    expectedValue: id,
+                    inputPlaceholder: 'Paste or type the ID…',
+                    inputLabel: 'Type the ID to confirm:'
+                });
+                if (!confirmed) return;
+                try {
+                    await deleteDoc(doc(db, 'contactMessages', id));
+                    showToast('✅ Deleted', 'success');
+                } catch (err) { showToast('Error: ' + err.message, 'error'); }
+            };
+
+            // ----- FIX REQUESTS -----
             const fixRequestList = document.getElementById('fixRequestList');
-            onSnapshot(collection(db, 'fixRequests'), (snapshot) => {
-                if (snapshot.empty) {
-                    fixRequestList.innerHTML =
-                        `<div class="text-center py-10 text-gray-500"><i class="fas fa-tools text-4xl opacity-30"></i><p class="mt-2">No fix requests.</p></div>`;
+            let fixSearchQ = '';
+            let fixStatusF = 'all';
+            let fixPriorityF = 'all';
+
+            function renderFixRequestsAdmin() {
+                if (!fixRequestList) return;
+                let list = [...allFixRequests];
+                list.sort((a, b) => {
+                    const ta = a.timestamp?.toDate?.()?.getTime() || 0;
+                    const tb = b.timestamp?.toDate?.()?.getTime() || 0;
+                    return tb - ta;
+                });
+                if (fixSearchQ) {
+                    const q = fixSearchQ.toLowerCase();
+                    list = list.filter(r =>
+                        (r.ticketNumber || '').toLowerCase().includes(q) ||
+                        (r.name || '').toLowerCase().includes(q) ||
+                        (r.email || '').toLowerCase().includes(q) ||
+                        (r.problem || '').toLowerCase().includes(q)
+                    );
+                }
+                if (fixStatusF !== 'all') list = list.filter(r => (r.status || 'pending') === fixStatusF);
+                if (fixPriorityF !== 'all') list = list.filter(r => (r.priority || 'medium') === fixPriorityF);
+
+                const label = document.getElementById('fixCountLabel');
+                if (label) label.textContent = `${list.length} request${list.length !== 1 ? 's' : ''}`;
+
+                if (!list.length) {
+                    fixRequestList.innerHTML = `<div class="text-center py-10 text-gray-500"><i class="fas fa-tools text-4xl opacity-30"></i><p class="mt-2">No fix requests found.</p></div>`;
                     return;
                 }
                 let html = '';
-                snapshot.forEach(doc => {
-                    const r = doc.data();
-                    const reply = r.reply || '';
+                list.forEach(r => {
+                    const status = r.status || 'pending';
+                    const priority = r.priority || 'medium';
+                    const time = r.timestamp?.toDate?.()?.toLocaleString() || '';
                     let replyTimeStr = '';
                     if (r.replyTimestamp) {
-                        const replyDate = r.replyTimestamp.toDate ? r.replyTimestamp.toDate() : new Date(r
-                            .replyTimestamp);
-                        replyTimeStr = replyDate.toLocaleString('en-US', { year: 'numeric', month: 'short',
-                            day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                        const rd = r.replyTimestamp.toDate ? r.replyTimestamp.toDate() : new Date(r.replyTimestamp);
+                        replyTimeStr = rd.toLocaleString();
                     }
+                    const catIcons = { speed: '🚀', error: '🐛', design: '🎨', hacking: '🔒', hosting: '☁️', other: '📌' };
                     html += `
-                        <div class="glass-card" id="fix-${doc.id}">
-                            <div>
-                                <p><strong>${r.name}</strong> (${r.email})</p>
-                                <p class="text-sm">${r.problem}</p>
-                                ${r.imageLink ? `<p class="text-xs text-gray-400">Image: ${r.imageLink}</p>` : ''}
-                            </div>
-                            <div class="mt-3 border-t pt-3">
-                                <label class="text-sm font-semibold text-gray-700">Admin Reply:</label>
-                                <div class="flex flex-wrap gap-2 mt-1">
-                                    <textarea id="reply-${doc.id}" rows="2" class="form-input flex-1 text-sm" placeholder="Write reply…">${reply}</textarea>
-                                    <button onclick="sendReply('${doc.id}')" class="btn-primary btn-sm">Send</button>
+                        <div class="fix-card priority-${priority}" id="fix-${r.id}">
+                            <div class="card-top">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex flex-wrap gap-2 items-center mb-1">
+                                        <span class="ticket-code text-xs">${escapeHtmlAdmin(r.ticketNumber || 'N/A')}</span>
+                                        <span class="status-badge ${status}">${status}</span>
+                                        <span class="priority-badge ${priority}">${priority}</span>
+                                        <span class="text-xs text-gray-400">${catIcons[r.category] || '📌'} ${escapeHtmlAdmin(r.category || '')}</span>
+                                    </div>
+                                    <p class="font-semibold text-gray-900">${escapeHtmlAdmin(r.name || '')} <span class="text-sm font-normal text-gray-500">(${escapeHtmlAdmin(r.email || '')})</span></p>
+                                    ${r.phone ? `<p class="text-xs text-gray-500"><i class="fas fa-phone"></i> ${escapeHtmlAdmin(r.phone)}</p>` : ''}
+                                    ${r.url ? `<p class="text-xs"><a href="${escapeHtmlAdmin(r.url)}" target="_blank" class="text-blue-600 hover:underline">${escapeHtmlAdmin(r.url)}</a></p>` : ''}
+                                    <p class="text-sm text-gray-700 mt-2 whitespace-pre-wrap">${escapeHtmlAdmin(r.problem || '')}</p>
+                                    <p class="text-xs text-gray-400 mt-1"><i class="far fa-clock"></i> ${time}</p>
+                                    ${r.imageLink ? `<p class="text-xs mt-1"><a href="${escapeHtmlAdmin(r.imageLink)}" target="_blank" class="text-blue-500"><i class="fas fa-image"></i> Screenshot</a></p>` : ''}
                                 </div>
-                                ${reply ? `<p class="text-xs text-green-600 mt-1">✔ Reply sent: ${replyTimeStr}</p>` : ''}
                             </div>
-                        </div>
-                    `;
+                            <div class="mt-3 border-t border-gray-100 pt-3">
+                                <label class="text-sm font-semibold text-gray-700">Admin Reply</label>
+                                <textarea id="reply-${r.id}" rows="2" class="form-input text-sm mt-1" placeholder="Write reply…">${escapeHtmlAdmin(r.reply || '')}</textarea>
+                                <div class="card-actions">
+                                    <button class="btn-soft-blue" onclick="sendReply('${r.id}')"><i class="fas fa-paper-plane"></i> Send reply</button>
+                                    <button class="btn-soft-amber" onclick="setFixStatus('${r.id}','pending')">Pending</button>
+                                    <button class="btn-soft-green" onclick="setFixStatus('${r.id}','resolved')">Resolved</button>
+                                    <button class="btn-soft" onclick="setFixStatus('${r.id}','closed')">Closed</button>
+                                    <button class="btn-soft-red" onclick="deleteFixRequest('${r.id}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                                ${r.reply ? `<p class="text-xs text-green-600 mt-1">✔ Last reply: ${replyTimeStr}</p>` : ''}
+                            </div>
+                        </div>`;
                 });
                 fixRequestList.innerHTML = html;
+            }
+
+            document.getElementById('fixSearchInput')?.addEventListener('input', (e) => {
+                fixSearchQ = e.target.value.trim();
+                renderFixRequestsAdmin();
+            });
+            document.getElementById('fixStatusFilter')?.addEventListener('change', (e) => {
+                fixStatusF = e.target.value;
+                renderFixRequestsAdmin();
+            });
+            document.getElementById('fixPriorityFilter')?.addEventListener('change', (e) => {
+                fixPriorityF = e.target.value;
+                renderFixRequestsAdmin();
             });
 
             window.sendReply = async (requestId) => {
                 const textarea = document.getElementById(`reply-${requestId}`);
-                const replyText = textarea.value.trim();
+                const replyText = textarea?.value.trim();
                 if (!replyText) { showToast('Please write a reply.', 'warning'); return; }
                 try {
-                    await updateDoc(doc(db, 'fixRequests', requestId), { reply: replyText,
-                        replyTimestamp: serverTimestamp() });
-                    showToast('✅ Reply sent!', 'success');
+                    await updateDoc(doc(db, 'fixRequests', requestId), {
+                        reply: replyText,
+                        replyTimestamp: serverTimestamp(),
+                        status: 'resolved'
+                    });
+                    showToast('✅ Reply sent (status → resolved)', 'success');
+                } catch (err) { showToast('Error: ' + err.message, 'error'); }
+            };
+
+            window.setFixStatus = async (id, status) => {
+                try {
+                    await updateDoc(doc(db, 'fixRequests', id), { status });
+                    showToast(`✅ Status → ${status}`, 'success');
+                } catch (err) { showToast('Error: ' + err.message, 'error'); }
+            };
+
+            window.deleteFixRequest = async (id) => {
+                const confirmed = await openConfirmModal({
+                    title: 'Delete Fix Request',
+                    desc: 'Permanently delete this fix request?',
+                    icon: 'fa-wrench',
+                    itemId: id,
+                    itemIdLabel: 'Request ID',
+                    expectedValue: id,
+                    inputPlaceholder: 'Paste or type the ID…',
+                    inputLabel: 'Type the ID to confirm:'
+                });
+                if (!confirmed) return;
+                try {
+                    await deleteDoc(doc(db, 'fixRequests', id));
+                    showToast('✅ Deleted', 'success');
                 } catch (err) { showToast('Error: ' + err.message, 'error'); }
             };
 
@@ -4621,8 +5127,38 @@
             const adminChatSendBtn = document.getElementById('adminChatSendBtn');
             let activeConversationUserId = null;
             let allUsersCache = {};
-            let conversationsMap = {};
+            // conversationsMap declared earlier
             let allMessages = [];
+            let convSearchQ = '';
+            let activeUserEmail = '';
+
+            document.getElementById('convSearchInput')?.addEventListener('input', (e) => {
+                convSearchQ = (e.target.value || '').trim().toLowerCase();
+                renderConvList();
+            });
+
+            document.getElementById('adminQuickReplies')?.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const t = btn.dataset.text || '';
+                    if (!t || !adminChatInput) return;
+                    adminChatInput.value = t;
+                    adminChatInput.focus();
+                });
+            });
+
+            window.copyUserEmail = () => {
+                if (!activeUserEmail) { showToast('No email', 'warning'); return; }
+                navigator.clipboard?.writeText(activeUserEmail).then(() => showToast('Email copied', 'success')).catch(() => showToast(activeUserEmail, 'info'));
+            };
+
+            window.markAllSupportRead = async () => {
+                const unread = allMessages.filter(m => m.fromUserId !== 'admin' && !m.read);
+                if (!unread.length) { showToast('No unread messages', 'info'); return; }
+                try {
+                    await Promise.all(unread.map(m => updateDoc(doc(db, 'messages', m.id), { read: true, readAt: serverTimestamp() })));
+                    showToast(`✅ ${unread.length} marked read`, 'success');
+                } catch (err) { showToast('Error: ' + err.message, 'error'); }
+            };
 
             function getConvId(userId) { return `conv_${userId}_admin`; }
 
@@ -4640,10 +5176,22 @@
             }
 
             function renderConvList() {
-                const entries = Object.values(conversationsMap);
+                let entries = Object.values(conversationsMap);
+                if (convSearchQ) {
+                    entries = entries.filter(entry => {
+                        const user = entry.user || {};
+                        const name = (user.displayName || '').toLowerCase();
+                        const email = (user.email || '').toLowerCase();
+                        const last = (entry.lastMsg || '').toLowerCase();
+                        return name.includes(convSearchQ) || email.includes(convSearchQ) || last.includes(convSearchQ) || (entry.userId || '').includes(convSearchQ);
+                    });
+                }
+                const countEl = document.getElementById('supportConvCount');
+                if (countEl) countEl.textContent = `${Object.keys(conversationsMap).length} conversation${Object.keys(conversationsMap).length !== 1 ? 's' : ''}`;
+                try { updateDashboardExtras(); } catch (_) {}
                 if (entries.length === 0) {
                     convListEl.innerHTML =
-                        `<div class="empty-state" style="height:100%;font-size:0.85rem;"><i class="fas fa-comments"></i><span>No conversations yet</span></div>`;
+                        `<div class="empty-state" style="height:100%;font-size:0.85rem;"><i class="fas fa-comments"></i><span>${convSearchQ ? 'No matches' : 'No conversations yet'}</span></div>`;
                     return;
                 }
                 entries.sort((a, b) => (b.lastMsgTime || 0) - (a.lastMsgTime || 0));
@@ -4653,6 +5201,7 @@
                     const name = user.displayName || user.email || 'Unknown';
                     const avatarLetter = (name || 'U').charAt(0).toUpperCase();
                     const lastMsg = entry.lastMsg || '';
+                    const safeLast = String(lastMsg).replace(/</g,'&lt;').replace(/>/g,'&gt;');
                     const time = entry.lastMsgTime ? new Date(entry.lastMsgTime).toLocaleString('en-US', { hour: '2-digit',
                         minute: '2-digit' }) : '';
                     const unread = entry.unread || 0;
@@ -4661,8 +5210,8 @@
                         <div class="conv-item ${active}" data-userid="${entry.userId}">
                             <div class="conv-avatar">${avatarLetter}</div>
                             <div class="conv-info">
-                                <div class="conv-name">${name}</div>
-                                <div class="conv-last">${lastMsg || 'Start a conversation'}</div>
+                                <div class="conv-name">${name.replace(/</g,'&lt;')}</div>
+                                <div class="conv-last">${safeLast || 'Start a conversation'}</div>
                             </div>
                             ${time ? `<span class="conv-time">${time}</span>` : ''}
                             ${unread > 0 ? `<span class="conv-unread">${unread}</span>` : ''}
@@ -4705,6 +5254,9 @@
                 const name = user.displayName || user.email || 'User';
                 chatHeaderName.textContent = name;
                 chatHeaderAvatar.textContent = name.charAt(0).toUpperCase();
+                activeUserEmail = user.email || '';
+                const emailEl = document.getElementById('chatHeaderEmail');
+                if (emailEl) emailEl.textContent = activeUserEmail || userId;
                 adminChatInput.focus();
             }
 
@@ -4720,9 +5272,17 @@
                     const time = m.timestamp?.toDate?.()?.toLocaleString('en-US', { hour: '2-digit',
                         minute: '2-digit' }) || '';
                     const status = m.read ? '✓✓' : '✓';
+                    const raw = String(m.content || '');
+                    const isImg = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(raw.trim()) || raw.includes('res.cloudinary.com');
+                    let body;
+                    if (isImg) {
+                        body = `<a href="${raw.replace(/"/g,'')}" target="_blank"><img src="${raw.replace(/"/g,'')}" alt="img" style="max-width:220px;border-radius:10px;display:block;" /></a>`;
+                    } else {
+                        body = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    }
                     html += `
                         <div class="chat-msg ${isSent ? 'sent' : 'received'}">
-                            ${m.content}
+                            ${body}
                             <div class="msg-time">${time} ${isSent ? `<span class="msg-status">${status}</span>` : ''}</div>
                         </div>
                     `;
