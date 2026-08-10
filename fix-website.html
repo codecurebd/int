@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
   <title>Website Fix & Repair Service Bangladesh | CodeCureBD</title>
-  
-  <!-- ✅ Preconnect for faster font loading -->
+  <meta name="description" content="Professional website repair in Bangladesh. Fix bugs, speed issues, design problems, security & hosting. Get a ticket number and track progress." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
@@ -14,170 +14,402 @@
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
 
-  
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tailwind.css" />
   <link rel="stylesheet" href="style.css" />
-  
+
   <style>
-    /* ===== BASE ===== */
     * { box-sizing: border-box; }
     body {
-      background: #f2f4f7;
+      background: #f0f4f9;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
-      padding: 0;
       min-height: 100vh;
     }
 
-    /* ===== TICKET BADGE ===== */
-    .ticket-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 60px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+    /* Hero */
+    .fix-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      padding: 2.25rem 1.75rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(0,102,255,0.12), transparent 50%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(139,92,246,0.12), transparent 50%),
+        linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 8px 40px rgba(0,102,255,0.06);
+    }
+    .fix-hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+      line-height: 1.15;
+    }
+    .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(0,102,255,0.08);
+      color: #0066FF;
+      border: 1px solid rgba(0,102,255,0.12);
     }
-
-    /* ===== PRIORITY BADGE ===== */
-    .priority-badge {
-      padding: 4px 14px;
-      border-radius: 60px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-    .priority-high { background: #fee2e2; color: #dc2626; }
-    .priority-medium { background: #fef3c7; color: #d97706; }
-    .priority-low { background: #d1fae5; color: #059669; }
-
-    /* ===== GLASS CARD ===== */
-    .glass-card {
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
-      transition: all 0.3s ease;
-    }
-    .glass-card:hover {
-      box-shadow: 0 12px 48px rgba(0,0,0,0.06);
-    }
-
-    /* ===== FORM INPUT ===== */
-    .form-input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid rgba(60, 60, 67, 0.08);
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px;
       border-radius: 14px;
-      font-size: 1rem;
-      background: rgba(255,255,255,0.8);
-      transition: all 0.3s ease;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-      color: #1c1c1e;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(0,0,0,0.04);
+      min-width: 110px;
     }
-    .form-input:focus {
-      border-color: #007AFF;
-      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.08);
-      background: #ffffff;
+    .stat-pill .sv { font-size: 1.25rem; font-weight: 800; color: #0f172a; }
+    .stat-pill .sl { font-size: 0.7rem; color: #64748b; font-weight: 500; }
+
+    /* Service cards */
+    .svc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
     }
-    .form-input::placeholder {
-      color: #8e8e93;
-      opacity: 0.7;
+    .svc-card {
+      background: #fff;
+      border: 1.5px solid rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 1.15rem 1rem;
+      text-align: center;
+      transition: 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+      cursor: pointer;
     }
-    .form-input.error {
-      border-color: #FF3B30;
-      box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.08);
+    .svc-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,102,255,0.2);
+      box-shadow: 0 12px 32px rgba(0,102,255,0.08);
     }
-    select.form-input {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      padding-right: 40px;
+    .svc-card.selected {
+      border-color: #0066FF;
+      background: rgba(0,102,255,0.04);
+      box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
     }
-    textarea.form-input {
-      resize: vertical;
-      min-height: 120px;
+    .svc-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      font-size: 1.15rem;
+    }
+    .svc-card h3 { font-size: 0.88rem; font-weight: 700; color: #1e293b; margin: 0 0 4px; }
+    .svc-card p { font-size: 0.72rem; color: #94a3b8; margin: 0; line-height: 1.35; }
+
+    /* Steps */
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 768px) {
+      .steps-row { grid-template-columns: 1fr 1fr; }
+    }
+    .step-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.15rem 1rem;
+      border: 1px solid rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+    .step-card h4 { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin: 0 0 4px; }
+    .step-card p { font-size: 0.75rem; color: #64748b; margin: 0; line-height: 1.4; }
+
+    /* Form panel */
+    .form-panel {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.75);
+      border-radius: 22px;
+      padding: 1.75rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.04);
+    }
+    .form-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #94a3b8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(0,0,0,0.06);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 560px) {
+      .form-grid-2 { grid-template-columns: 1fr; }
     }
 
-    /* ===== BUTTON ===== */
-    .btn-primary {
-      background: linear-gradient(135deg, #007AFF, #5856D6);
-      color: #fff;
-      padding: 14px 28px;
-      border-radius: 60px;
+    .form-input, select.form-input, textarea.form-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.2s;
+      font-family: inherit;
+      color: #1e293b;
+    }
+    .form-input:focus, select.form-input:focus, textarea.form-input:focus {
+      border-color: #0066FF;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
+    }
+    label.field-label {
+      display: block;
+      font-size: 0.82rem;
       font-weight: 600;
-      font-size: 1rem;
-      border: none;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    label.field-label .req { color: #ef4444; }
+
+    /* Priority pills */
+    .priority-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .priority-pill {
+      flex: 1;
+      min-width: 90px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      display: inline-flex;
+      text-align: center;
+      transition: 0.2s;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #475569;
+      user-select: none;
+    }
+    .priority-pill input { display: none; }
+    .priority-pill:hover { border-color: #cbd5e1; }
+    .priority-pill.active-high {
+      border-color: #ef4444;
+      background: #fef2f2;
+      color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+    }
+    .priority-pill.active-medium {
+      border-color: #f59e0b;
+      background: #fffbeb;
+      color: #d97706;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+    }
+    .priority-pill.active-low {
+      border-color: #10b981;
+      background: #ecfdf5;
+      color: #059669;
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+    }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 1.25rem;
+      text-align: center;
+      background: #f8fafc;
+      transition: 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: #0066FF;
+      background: rgba(0,102,255,0.03);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .upload-preview {
+      max-height: 160px;
+      border-radius: 12px;
+      margin: 0 auto 8px;
+      display: none;
+      object-fit: cover;
+      max-width: 100%;
+      border: 1px solid #e2e8f0;
+    }
+    .upload-preview.show { display: block; }
+
+    .char-count {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      min-height: 54px;
-      width: 100%;
+      min-height: 52px;
+      box-shadow: 0 6px 24px rgba(0,102,255,0.25);
+      transition: 0.25s;
     }
-    .btn-primary:hover {
+    .btn-submit:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0, 122, 255, 0.35);
+      box-shadow: 0 10px 32px rgba(0,102,255,0.35);
     }
-    .btn-primary:disabled {
-      opacity: 0.7;
+    .btn-submit:disabled {
+      opacity: 0.65;
       cursor: not-allowed;
       transform: none !important;
-      box-shadow: none !important;
     }
 
-    /* ===== SUCCESS / TICKET BOX ===== */
     .feedback-box {
-      padding: 16px 20px;
+      padding: 14px 16px;
       border-radius: 14px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
-      animation: fadeSlideUp 0.4s ease forwards;
+      animation: fadeSlideUp 0.35s ease;
     }
-    .feedback-box.success {
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
-    }
-    .feedback-box.error {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fca5a5;
-    }
-    .feedback-box.ticket {
-      background: #eff6ff;
-      color: #1e40af;
-      border: 1px solid #93c5fd;
-    }
-    .feedback-box i { font-size: 1.3rem; flex-shrink: 0; }
+    .feedback-box.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .feedback-box.error { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    .feedback-box.ticket { background: #eff6ff; color: #1e40af; border: 1px solid #93c5fd; }
+    .feedback-box i { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
 
     @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== RESPONSIVE ===== */
+    /* Trust / FAQ */
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .trust-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .trust-item .ti {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.95rem;
+    }
+    .trust-item h4 { font-size: 0.85rem; font-weight: 700; color: #1e293b; margin: 0 0 2px; }
+    .trust-item p { font-size: 0.72rem; color: #64748b; margin: 0; line-height: 1.35; }
+
+    .faq-item {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.04);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .faq-q {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background: none;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-family: inherit;
+    }
+    .faq-q i { color: #94a3b8; transition: 0.2s; font-size: 0.8rem; }
+    .faq-item.open .faq-q i { transform: rotate(180deg); color: #0066FF; }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 16px;
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.55;
+    }
+    .faq-item.open .faq-a {
+      max-height: 200px;
+      padding: 0 16px 14px;
+    }
+
+    .section-head {
+      margin-bottom: 1.25rem;
+    }
+    .section-head h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+    }
+    .section-head p {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin: 0;
+    }
+
     @media (max-width: 640px) {
-      .glass-card { padding: 1.5rem; border-radius: 16px; }
-      .form-input { padding: 12px 16px; font-size: 0.95rem; border-radius: 12px; }
-      .btn-primary { font-size: 0.95rem; min-height: 48px; padding: 12px 20px; }
-      .ticket-badge { font-size: 0.7rem; padding: 4px 12px; }
+      .fix-hero { padding: 1.5rem 1.15rem; border-radius: 18px; }
+      .form-panel { padding: 1.25rem; border-radius: 18px; }
+      .svc-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -186,274 +418,465 @@
     <div id="navbar-placeholder"></div>
 
     <main class="main-content">
-      <section class="pt-4 pb-16 px-6 max-w-3xl mx-auto">
-        <!-- Header -->
-        <div class="flex items-center gap-3 mb-2">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <i class="fas fa-wrench text-xl text-white"></i>
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 pb-16 pt-2">
+
+        <!-- ===== HERO ===== -->
+        <section class="fix-hero mb-10">
+          <div class="flex flex-wrap items-start justify-between gap-6">
+            <div class="flex-1 min-w-[260px]">
+              <span class="hero-badge mb-3"><i class="fas fa-wrench"></i> Website Repair Service</span>
+              <h1 class="mt-2">Broken site? We fix it — fast &amp; professionally.</h1>
+              <p class="text-gray-500 mt-3 text-[0.95rem] leading-relaxed max-w-xl">
+                Bugs, slow speed, design issues, security or hosting problems — submit a request,
+                get a <strong>ticket number</strong>, and track progress in real time.
+              </p>
+              <div class="flex flex-wrap gap-3 mt-5">
+                <a href="#fix-form" class="btn-primary text-sm py-2.5 px-5" style="min-height:auto;border-radius:12px;">
+                  <i class="fas fa-paper-plane"></i> Submit Request
+                </a>
+                <a href="my-fix-requests.html" class="btn-outline text-sm py-2.5 px-5" style="min-height:auto;border-radius:12px;">
+                  <i class="fas fa-ticket-alt"></i> Track Ticket
+                </a>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <div class="stat-pill"><span class="sv">24h</span><span class="sl">Avg. response</span></div>
+              <div class="stat-pill"><span class="sv">100%</span><span class="sl">Secure tickets</span></div>
+              <div class="stat-pill"><span class="sv">BD</span><span class="sl">Local support</span></div>
+            </div>
           </div>
-          <h1 class="text-3xl font-bold text-gray-900">Fix My Website</h1>
-        </div>
-        <p class="text-gray-500 mt-1 text-lg">
-          Describe your issue in detail. We'll get back to you within 24 hours.
-        </p>
-        <div class="mt-3 flex flex-wrap items-center gap-3 text-sm">
-          <span class="ticket-badge"><i class="fas fa-ticket-alt"></i> Get Ticket Number</span>
-          <span class="text-gray-400 flex items-center gap-1"><i class="fas fa-clock"></i> Response: 24h</span>
-          <span class="text-gray-400 flex items-center gap-1"><i class="fas fa-lock"></i> 100% Secure</span>
-        </div>
+        </section>
+
+        <!-- ===== HOW IT WORKS ===== -->
+        <section class="mb-10">
+          <div class="section-head">
+            <h2>How it works</h2>
+            <p>Four simple steps from report to resolution</p>
+          </div>
+          <div class="steps-row">
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <h4>Describe the issue</h4>
+              <p>Pick a category, priority, and explain what’s broken.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <h4>Get a ticket</h4>
+              <p>Instant ticket number after submit — save it for tracking.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <h4>We diagnose</h4>
+              <p>Our team reviews and replies with a plan or fix status.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">4</div>
+              <h4>Track &amp; resolve</h4>
+              <p>Follow progress anytime from My Fix Requests.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== SERVICES ===== -->
+        <section class="mb-10">
+          <div class="section-head">
+            <h2>What we can fix</h2>
+            <p>Tap a category to pre-select it in the form</p>
+          </div>
+          <div class="svc-grid" id="serviceCards">
+            <div class="svc-card" data-cat="speed">
+              <div class="svc-icon" style="background:rgba(0,102,255,0.1);color:#0066FF;"><i class="fas fa-tachometer-alt"></i></div>
+              <h3>Speed issues</h3>
+              <p>Slow load, lag, optimization</p>
+            </div>
+            <div class="svc-card" data-cat="error">
+              <div class="svc-icon" style="background:rgba(239,68,68,0.1);color:#ef4444;"><i class="fas fa-bug"></i></div>
+              <h3>Errors &amp; bugs</h3>
+              <p>Broken features, 404, JS errors</p>
+            </div>
+            <div class="svc-card" data-cat="design">
+              <div class="svc-icon" style="background:rgba(139,92,246,0.1);color:#8B5CF6;"><i class="fas fa-paint-brush"></i></div>
+              <h3>Design issues</h3>
+              <p>Layout, mobile, UI polish</p>
+            </div>
+            <div class="svc-card" data-cat="hacking">
+              <div class="svc-icon" style="background:rgba(245,158,11,0.12);color:#d97706;"><i class="fas fa-shield-alt"></i></div>
+              <h3>Security</h3>
+              <p>Hacks, malware, hardening</p>
+            </div>
+            <div class="svc-card" data-cat="hosting">
+              <div class="svc-icon" style="background:rgba(16,185,129,0.1);color:#059669;"><i class="fas fa-cloud"></i></div>
+              <h3>Hosting / Domain</h3>
+              <p>DNS, SSL, downtime</p>
+            </div>
+            <div class="svc-card" data-cat="other">
+              <div class="svc-icon" style="background:rgba(100,116,139,0.12);color:#475569;"><i class="fas fa-ellipsis-h"></i></div>
+              <h3>Other</h3>
+              <p>Anything else site-related</p>
+            </div>
+          </div>
+        </section>
 
         <!-- ===== FORM ===== -->
-        <div class="glass-card mt-8">
-          <form id="fixForm" class="space-y-5">
-            <!-- Name -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                Your Name <span class="text-red-500">*</span>
-              </label>
-              <input type="text" id="fixName" required class="form-input" placeholder="e.g. John Doe" autocomplete="name" />
+        <section class="mb-10" id="fix-form">
+          <div class="section-head">
+            <h2>Submit a fix request</h2>
+            <p>Fill the form carefully — more detail = faster resolution</p>
+          </div>
+          <div class="form-panel">
+            <form id="fixForm" class="space-y-5">
+              <div>
+                <div class="form-section-title">Contact details</div>
+                <div class="form-grid-2">
+                  <div>
+                    <label class="field-label" for="fixName">Your name <span class="req">*</span></label>
+                    <input type="text" id="fixName" required class="form-input" placeholder="e.g. John Doe" autocomplete="name" />
+                  </div>
+                  <div>
+                    <label class="field-label" for="fixEmail">Email <span class="req">*</span></label>
+                    <input type="email" id="fixEmail" required class="form-input" placeholder="your@email.com" autocomplete="email" />
+                  </div>
+                  <div>
+                    <label class="field-label" for="fixPhone">Phone</label>
+                    <input type="tel" id="fixPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" autocomplete="tel" />
+                  </div>
+                  <div>
+                    <label class="field-label" for="fixUrl">Website URL</label>
+                    <input type="url" id="fixUrl" class="form-input" placeholder="https://example.com" autocomplete="url" />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="form-section-title">Issue details</div>
+                <div class="mb-4">
+                  <label class="field-label" for="fixCategory">Category</label>
+                  <select id="fixCategory" class="form-input">
+                    <option value="speed">🚀 Speed issue</option>
+                    <option value="error">🐛 Error / bug</option>
+                    <option value="design">🎨 Design issue</option>
+                    <option value="hacking">🔒 Security / hacking</option>
+                    <option value="hosting">☁️ Hosting / domain</option>
+                    <option value="other">📌 Other</option>
+                  </select>
+                </div>
+
+                <div class="mb-4">
+                  <label class="field-label">Priority</label>
+                  <div class="priority-group" id="priorityGroup">
+                    <label class="priority-pill active-medium" data-value="medium">
+                      <input type="radio" name="fixPriority" value="medium" checked />
+                      <i class="fas fa-minus-circle"></i> Medium
+                    </label>
+                    <label class="priority-pill" data-value="high">
+                      <input type="radio" name="fixPriority" value="high" />
+                      <i class="fas fa-exclamation-circle"></i> High
+                    </label>
+                    <label class="priority-pill" data-value="low">
+                      <input type="radio" name="fixPriority" value="low" />
+                      <i class="fas fa-check-circle"></i> Low
+                    </label>
+                  </div>
+                  <input type="hidden" id="fixPriority" value="medium" />
+                </div>
+
+                <div>
+                  <label class="field-label" for="fixProblem">Describe the problem <span class="req">*</span></label>
+                  <textarea id="fixProblem" rows="5" required class="form-input resize-y"
+                    placeholder="What’s broken? Error messages? When did it start? Steps to reproduce…"
+                    maxlength="2000"></textarea>
+                  <div class="char-count"><span id="problemCharCount">0</span>/2000</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="form-section-title">Screenshot (optional)</div>
+                <div class="upload-zone" id="uploadZone">
+                  <img id="fixImagePreview" class="upload-preview" alt="Screenshot preview" />
+                  <div id="uploadPlaceholder">
+                    <i class="fas fa-cloud-upload-alt text-2xl text-blue-500 mb-2"></i>
+                    <p class="text-sm font-semibold text-gray-700 m-0">Drop image or click to upload</p>
+                    <p class="text-xs text-gray-400 mt-1 mb-0">PNG, JPG, WebP — max ~5MB</p>
+                  </div>
+                  <input type="file" id="fixImageFile" accept="image/*" />
+                </div>
+                <input type="hidden" id="fixImageLink" value="" />
+                <p id="uploadStatus" class="text-xs text-gray-400 mt-2 hidden"></p>
+              </div>
+
+              <button type="submit" class="btn-submit" id="fixSubmitBtn">
+                <i class="fas fa-paper-plane"></i> Submit fix request
+              </button>
+
+              <div id="fixFeedback" class="hidden feedback-box"></div>
+              <div id="ticketNumber" class="hidden feedback-box ticket"></div>
+            </form>
+          </div>
+
+          <div class="mt-4 p-4 bg-blue-50/80 rounded-xl border border-blue-100 flex items-start gap-3">
+            <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+            <p class="text-sm text-blue-800 m-0">
+              After submit you’ll get a <strong>ticket number</strong>. Track status anytime in
+              <a href="my-fix-requests.html" class="font-semibold underline hover:text-blue-950">My Fix Requests</a>.
+              Login is recommended so requests stay linked to your account.
+            </p>
+          </div>
+        </section>
+
+        <!-- ===== TRUST ===== -->
+        <section class="mb-10">
+          <div class="section-head">
+            <h2>Why CodeCureBD</h2>
+            <p>Built for clear communication and reliable delivery</p>
+          </div>
+          <div class="trust-row">
+            <div class="trust-item">
+              <div class="ti" style="background:rgba(0,102,255,0.1);color:#0066FF;"><i class="fas fa-ticket-alt"></i></div>
+              <div>
+                <h4>Ticket tracking</h4>
+                <p>Every request gets an ID you can follow until it’s closed.</p>
+              </div>
             </div>
-
-            <!-- Email -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                Email <span class="text-red-500">*</span>
-              </label>
-              <input type="email" id="fixEmail" required class="form-input" placeholder="your@email.com" autocomplete="email" />
+            <div class="trust-item">
+              <div class="ti" style="background:rgba(16,185,129,0.1);color:#059669;"><i class="fas fa-reply"></i></div>
+              <div>
+                <h4>Admin replies</h4>
+                <p>Updates appear on your request page when we respond.</p>
+              </div>
             </div>
-
-            <!-- Phone -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Phone</label>
-              <input type="tel" id="fixPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" autocomplete="tel" />
+            <div class="trust-item">
+              <div class="ti" style="background:rgba(139,92,246,0.1);color:#8B5CF6;"><i class="fas fa-lock"></i></div>
+              <div>
+                <h4>Secure data</h4>
+                <p>Stored in Firebase with role-based access rules.</p>
+              </div>
             </div>
-
-            <!-- Website URL -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Website URL (if any)</label>
-              <input type="url" id="fixUrl" class="form-input" placeholder="https://example.com" autocomplete="url" />
+            <div class="trust-item">
+              <div class="ti" style="background:rgba(245,158,11,0.12);color:#d97706;"><i class="fas fa-bolt"></i></div>
+              <div>
+                <h4>Fast turnaround</h4>
+                <p>Typical first response within 24 hours.</p>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <!-- Category -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Problem Category</label>
-              <select id="fixCategory" class="form-input">
-                <option value="speed">🚀 Speed Issue</option>
-                <option value="error">🐛 Error / Bug</option>
-                <option value="design">🎨 Design Issue</option>
-                <option value="hacking">🔒 Security / Hacking</option>
-                <option value="hosting">☁️ Hosting / Domain</option>
-                <option value="other">📌 Other</option>
-              </select>
+        <!-- ===== FAQ ===== -->
+        <section class="mb-6">
+          <div class="section-head">
+            <h2>FAQ</h2>
+            <p>Common questions about the fix service</p>
+          </div>
+          <div id="faqList">
+            <div class="faq-item">
+              <button type="button" class="faq-q">Do I need an account? <i class="fas fa-chevron-down"></i></button>
+              <div class="faq-a">You can submit without login, but signing in links the ticket to your account so you can track it under My Fix Requests.</div>
             </div>
-
-            <!-- Priority -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">Priority</label>
-              <select id="fixPriority" class="form-input">
-                <option value="low">🟢 Low</option>
-                <option value="medium" selected>🟡 Medium</option>
-                <option value="high">🔴 High</option>
-              </select>
+            <div class="faq-item">
+              <button type="button" class="faq-q">How do I track my request? <i class="fas fa-chevron-down"></i></button>
+              <div class="faq-a">Save your ticket number after submit, then open My Fix Requests. Status and admin replies show there.</div>
             </div>
-
-            <!-- Problem Description -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                Describe the problem <span class="text-red-500">*</span>
-              </label>
-              <textarea id="fixProblem" rows="5" required class="form-input resize-y" 
-                        placeholder="What's broken? Slow speed? Error messages? Please be as detailed as possible."></textarea>
+            <div class="faq-item">
+              <button type="button" class="faq-q">What should I include in the description? <i class="fas fa-chevron-down"></i></button>
+              <div class="faq-a">URL, what you expected vs what happens, error text, and a screenshot if possible. More detail speeds up the fix.</div>
             </div>
-
-            <!-- ===== Cloudinary Image Upload (Updated) ===== -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                Screenshot / Image (Upload)
-              </label>
-              <img id="fixImagePreview" class="hidden w-full h-40 object-cover rounded-xl mb-2 border border-gray-200" alt="Screenshot Preview" />
-              <input type="file" id="fixImageFile" accept="image/*" class="form-input" onchange="window.handleFixImageUpload(event)" />
-              <input type="text" id="fixImageLink" class="form-input mt-2" placeholder="Image URL will appear here automatically" readonly />
-              <p class="text-xs text-gray-400 mt-1.5 flex items-center gap-1">
-                <i class="fas fa-cloud-upload-alt text-blue-500"></i> 
-                Select a screenshot to upload directly to Cloudinary.
-              </p>
+            <div class="faq-item">
+              <button type="button" class="faq-q">Is there a fixed price? <i class="fas fa-chevron-down"></i></button>
+              <div class="faq-a">Pricing depends on complexity. After review we confirm scope and cost before major work.</div>
             </div>
+          </div>
+        </section>
 
-            <!-- Submit -->
-            <button type="submit" class="btn-primary">
-              <i class="fas fa-paper-plane"></i> Submit Fix Request
-            </button>
-
-            <!-- Feedback & Ticket -->
-            <div id="fixFeedback" class="hidden feedback-box"></div>
-            <div id="ticketNumber" class="hidden feedback-box ticket"></div>
-          </form>
-        </div>
-
-        <!-- ===== TRACKING INFO ===== -->
-        <div class="mt-6 p-4 bg-blue-50/70 backdrop-blur-sm rounded-xl border border-blue-200/50 flex items-start gap-3">
-          <i class="fas fa-info-circle text-blue-500 text-xl mt-0.5"></i>
-          <p class="text-sm text-blue-700">
-            After submitting, you'll receive a <strong>Ticket Number</strong>. 
-            Use it to track your request in 
-            <a href="my-fix-requests.html" class="font-semibold underline hover:text-blue-900 transition-colors">My Fix Requests</a>.
-          </p>
-        </div>
-      </section>
+      </div>
     </main>
 
     <div id="footer-placeholder"></div>
   </div>
 
-  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
-
-  </div>
-
   <div id="toast-container"></div>
 
   <script type="module">
-    // ================================================================
-    // ইমপোর্ট
-    // ================================================================
     import {
-renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
-      renderCartSidebar, setLoading, renderPaymentModal,
-  renderAuthModal
-} from './components.js';
-    import { uploadImage } from './components.js'; // ✅ যোগ করেছি
-    import { 
-      auth, db, collection, addDoc, serverTimestamp, 
-      signInWithEmailAndPassword, createUserWithEmailAndPassword, 
-      onAuthStateChanged, signOut, doc, setDoc, getDoc,
-      signInWithPopup, googleProvider
+      auth, db, collection, addDoc, serverTimestamp,
+      onAuthStateChanged, doc, getDoc
     } from './firebase-config.js';
+    import { renderNavbar, renderFooter, updateNavbarAuth, setLoading, renderAuthModal, uploadImage } from './components.js';
 
-    // ===== রেন্ডার =====
     renderNavbar();
-    renderAuthModal();
     renderFooter();
-    renderCartSidebar();
-    renderPaymentModal();
-    updateCartBadge();
+    renderAuthModal();
 
-    // ===== টোস্ট =====
-    window.showToast = (message, type = 'success') => {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
+    // Toast
+    window.showToast = function(message, type = 'success') {
+      const container = document.getElementById('toast-container') || document.body;
       const toast = document.createElement('div');
-      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
-      toast.className = `toast ${type}`;
+      toast.className = `toast toast-${type}`;
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
       toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
       container.appendChild(toast);
-      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
     };
 
-    // ===== Auth Modal =====
-    // Auth handled by components.js (renderAuthModal / openAuthModal)
-// togglePasswordVisibility moved to components.js as toggleAuthPassword
-// socialLogin handled by components.js
-// Auth form handled by components.js
-onAuthStateChanged(auth, async (user) => {
-      let name = null;
-      if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        name = userDoc.exists() ? userDoc.data().displayName : user.email.split('@')[0];
-      }
-      updateNavbarAuth(user, name);
+    // FAQ accordion
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const open = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!open) item.classList.add('open');
+      });
     });
 
-    // handleLogout handled by components.js
-// ================================================================
-    // ===== Cloudinary Upload Handler for Fix Request =====
-    // ================================================================
-    window.handleFixImageUpload = async (e) => {
-      const file = e.target.files[0];
+    // Service cards → category select
+    const catSelect = document.getElementById('fixCategory');
+    document.querySelectorAll('#serviceCards .svc-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const cat = card.dataset.cat;
+        if (!cat || !catSelect) return;
+        catSelect.value = cat;
+        document.querySelectorAll('#serviceCards .svc-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        document.getElementById('fix-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('Category set: ' + card.querySelector('h3')?.textContent, 'info');
+      });
+    });
+    catSelect?.addEventListener('change', () => {
+      document.querySelectorAll('#serviceCards .svc-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.cat === catSelect.value);
+      });
+    });
+
+    // Priority pills
+    const priorityHidden = document.getElementById('fixPriority');
+    document.querySelectorAll('#priorityGroup .priority-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#priorityGroup .priority-pill').forEach(p => {
+          p.classList.remove('active-high', 'active-medium', 'active-low');
+        });
+        const v = pill.dataset.value;
+        priorityHidden.value = v;
+        pill.querySelector('input').checked = true;
+        pill.classList.add('active-' + v);
+      });
+    });
+
+    // Char count
+    const problemEl = document.getElementById('fixProblem');
+    const charEl = document.getElementById('problemCharCount');
+    problemEl?.addEventListener('input', () => {
+      if (charEl) charEl.textContent = problemEl.value.length;
+    });
+
+    // Cloudinary upload (shared helper from components.js)
+    window.handleFixImageUpload = async function(event) {
+      const file = event.target?.files?.[0];
       if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select an image file', 'warning');
+        return;
+      }
 
-      const input = document.getElementById('fixImageLink');
       const preview = document.getElementById('fixImagePreview');
-      const btn = e.target;
+      const placeholder = document.getElementById('uploadPlaceholder');
+      const status = document.getElementById('uploadStatus');
+      const linkInput = document.getElementById('fixImageLink');
 
-      btn.disabled = true;
+      const localUrl = URL.createObjectURL(file);
+      if (preview) {
+        preview.src = localUrl;
+        preview.classList.add('show');
+      }
+      if (placeholder) placeholder.style.display = 'none';
+      if (status) {
+        status.classList.remove('hidden');
+        status.textContent = 'Uploading…';
+        status.className = 'text-xs text-blue-500 mt-2';
+      }
 
       try {
         const url = await uploadImage(file);
-        input.value = url;
-        preview.src = url;
-        preview.classList.remove('hidden');
-        showToast('✅ Screenshot uploaded successfully!', 'success');
+        if (linkInput) linkInput.value = url;
+        if (preview) preview.src = url;
+        if (status) {
+          status.textContent = '✓ Uploaded successfully';
+          status.className = 'text-xs text-green-600 mt-2';
+        }
+        showToast('Screenshot uploaded', 'success');
       } catch (err) {
-        showToast('⚠️ Upload failed: ' + err.message, 'error');
         console.error(err);
-      } finally {
-        btn.disabled = false;
-        btn.value = '';
+        if (status) {
+          status.textContent = 'Upload failed — try again';
+          status.className = 'text-xs text-red-500 mt-2';
+        }
+        showToast('Upload failed: ' + err.message, 'error');
       }
     };
 
-    // ================================================================
-    // ✅ ফিক্স ফর্ম লজিক (UI ইমপ্রুভ সহ)
-    // ================================================================
+    document.getElementById('fixImageFile')?.addEventListener('change', window.handleFixImageUpload);
+
+    // Drag & drop
+    const zone = document.getElementById('uploadZone');
+    if (zone) {
+      ['dragenter', 'dragover'].forEach(ev => {
+        zone.addEventListener(ev, e => {
+          e.preventDefault();
+          zone.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(ev => {
+        zone.addEventListener(ev, e => {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+        });
+      });
+      zone.addEventListener('drop', e => {
+        const file = e.dataTransfer?.files?.[0];
+        if (!file) return;
+        const input = document.getElementById('fixImageFile');
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        if (input) {
+          input.files = dt.files;
+          window.handleFixImageUpload({ target: input });
+        }
+      });
+    }
+
+    // Form submit — same Firestore schema as before
     const fixForm = document.getElementById('fixForm');
-    const fixBtn = fixForm.querySelector('button[type="submit"]');
+    const fixBtn = document.getElementById('fixSubmitBtn');
     const feedback = document.getElementById('fixFeedback');
     const ticketDiv = document.getElementById('ticketNumber');
 
-    // Remove error state on focus
-    document.querySelectorAll('.form-input').forEach(el => {
-      el.addEventListener('focus', () => el.classList.remove('error'));
-    });
-
-    fixForm.addEventListener('submit', async (e) => {
+    fixForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const name = document.getElementById('fixName').value.trim();
       const email = document.getElementById('fixEmail').value.trim();
       const phone = document.getElementById('fixPhone').value.trim();
       const url = document.getElementById('fixUrl').value.trim();
       const category = document.getElementById('fixCategory').value;
-      const priority = document.getElementById('fixPriority').value;
+      const priority = document.getElementById('fixPriority').value || 'medium';
       const problem = document.getElementById('fixProblem').value.trim();
       const imageLink = document.getElementById('fixImageLink').value.trim();
 
-      // Reset errors
-      document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
-      feedback.className = 'hidden feedback-box';
-      ticketDiv.className = 'hidden feedback-box ticket';
-
-      // Validation
-      let hasError = false;
-      if (!name) {
-        document.getElementById('fixName').classList.add('error');
-        hasError = true;
-      }
-      if (!email) {
-        document.getElementById('fixEmail').classList.add('error');
-        hasError = true;
-      } else if (!email.includes('@')) {
-        document.getElementById('fixEmail').classList.add('error');
-        hasError = true;
-      }
-      if (!problem) {
-        document.getElementById('fixProblem').classList.add('error');
-        hasError = true;
-      }
-
-      if (hasError) {
-        feedback.className = 'feedback-box error';
-        feedback.innerHTML = `<i class="fas fa-exclamation-circle"></i> Please fill in all required fields correctly.`;
-        showToast('Please fill in all required fields.', 'error');
+      if (!name || !email || !problem) {
+        showToast('Please fill required fields', 'warning');
         return;
       }
 
-      setLoading(fixBtn, true, 'Submitting...');
+      setLoading(fixBtn, true, 'Submit fix request');
+      feedback.className = 'hidden feedback-box';
+      ticketDiv.className = 'hidden feedback-box ticket';
 
       try {
-        const userId = auth.currentUser ? auth.currentUser.uid : null;
-        const userEmail = auth.currentUser ? auth.currentUser.email : email;
-
-        const ticketNumber = `FIX-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        const user = auth.currentUser;
+        const userId = user ? user.uid : null;
+        const userEmail = user ? user.email : email;
+        const ticketNumber = `FX-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
         await addDoc(collection(db, 'fixRequests'), {
           name,
@@ -474,58 +897,65 @@ onAuthStateChanged(auth, async (user) => {
           replyTimestamp: null
         });
 
-        // Success feedback
         feedback.className = 'feedback-box success';
-        feedback.innerHTML = `<i class="fas fa-check-circle"></i> Your request has been submitted successfully! We will contact you within 24 hours.`;
+        feedback.innerHTML = `<i class="fas fa-check-circle"></i> <div>Your request has been submitted successfully! We will contact you within 24 hours.</div>`;
 
         ticketDiv.className = 'feedback-box ticket';
         ticketDiv.innerHTML = `
           <i class="fas fa-ticket-alt"></i>
           <div>
             <strong>Your Ticket Number:</strong>
-            <span class="font-mono font-bold text-base">${ticketNumber}</span>
-            <br />
-            <span class="text-xs opacity-75">Please save this number to track your request.</span>
+            <span class="font-mono font-bold text-base">${ticketNumber}</span><br />
+            <span class="text-xs opacity-80">Save this number · <a href="my-fix-requests.html" class="underline font-semibold">Track now</a></span>
           </div>
         `;
 
         showToast('✅ Request submitted! Ticket: ' + ticketNumber, 'success');
         fixForm.reset();
-
-        // Auto hide after 10s
-        setTimeout(() => {
-          feedback.className = 'hidden feedback-box';
-          ticketDiv.className = 'hidden feedback-box ticket';
-        }, 12000);
+        document.getElementById('fixPriority').value = 'medium';
+        document.querySelectorAll('#priorityGroup .priority-pill').forEach(p => {
+          p.classList.remove('active-high', 'active-medium', 'active-low');
+          if (p.dataset.value === 'medium') p.classList.add('active-medium');
+        });
+        const preview = document.getElementById('fixImagePreview');
+        const placeholder = document.getElementById('uploadPlaceholder');
+        if (preview) { preview.classList.remove('show'); preview.removeAttribute('src'); }
+        if (placeholder) placeholder.style.display = '';
+        document.getElementById('fixImageLink').value = '';
+        if (charEl) charEl.textContent = '0';
+        document.querySelectorAll('#serviceCards .svc-card').forEach(c => c.classList.remove('selected'));
 
       } catch (error) {
         console.error('Fix request error:', error);
         feedback.className = 'feedback-box error';
-        feedback.innerHTML = `<i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.`;
+        feedback.innerHTML = `<i class="fas fa-exclamation-circle"></i> <div>Something went wrong. Please try again.</div>`;
         showToast('⚠️ ' + error.message, 'error');
       } finally {
         setLoading(fixBtn, false);
       }
     });
 
-    // ===== Auto-fill user data =====
+    // Auto-fill logged-in user
     onAuthStateChanged(auth, async (user) => {
+      updateNavbarAuth(user, user?.displayName || null);
       if (user) {
         const nameInput = document.getElementById('fixName');
         const emailInput = document.getElementById('fixEmail');
-        if (!nameInput.value) {
+        try {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
             const data = userDoc.data();
-            if (data.displayName) nameInput.value = data.displayName;
-            if (data.phone) document.getElementById('fixPhone').value = data.phone;
+            if (nameInput && !nameInput.value && data.displayName) nameInput.value = data.displayName;
+            if (data.phone && !document.getElementById('fixPhone').value) {
+              document.getElementById('fixPhone').value = data.phone;
+            }
           }
-          if (!emailInput.value) emailInput.value = user.email;
-        }
+        } catch (_) {}
+        if (emailInput && !emailInput.value) emailInput.value = user.email || '';
       }
     });
 
-    console.log('🔧 Fix Website page loaded successfully!');
+    console.log('🔧 Fix Website page loaded (upgraded)');
   </script>
 </body>
 </html>
