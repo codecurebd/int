@@ -148,6 +148,28 @@
       letter-spacing: -0.03em;
       line-height: 1.12;
       color: #0f172a;
+      min-height: 1.35em; /* reduce layout jump while typing */
+    }
+    .hero-section .hero-title .typed-text {
+      background: linear-gradient(135deg, #0066FF, #8B5CF6, #F59E0B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-section .hero-title .typed-cursor {
+      display: inline-block;
+      width: 0.08em;
+      margin-left: 2px;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: transparent;
+      animation: typedBlink 0.85s step-end infinite;
+      vertical-align: -0.05em;
+      height: 0.95em;
+      border-radius: 1px;
+    }
+    @keyframes typedBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
     .hero-section .hero-sub {
       font-size: clamp(1rem, 2vw, 1.25rem);
@@ -644,8 +666,8 @@
             <span class="trust-badge"><i class="fas fa-check-circle text-emerald-500"></i> 150+ Projects</span>
           </div>
 
-          <h1 class="hero-title fade-up">
-            Build Your <span class="gradient-text">Dream Website</span> Today
+          <h1 class="hero-title fade-up" aria-live="polite">
+            <span id="typedHero" class="typed-text">Build Your Dream Website Today</span><span class="typed-cursor" aria-hidden="true"></span>
           </h1>
           <p class="hero-sub fade-up" style="transition-delay:0.1s;">
             Professional website development, fixing, and maintenance – tailored for your business.
@@ -1297,7 +1319,78 @@ onAuthStateChanged(auth, async (user) => {
       }
     });
 
-    console.log('🏠 Landing page loaded with HTML previews + DISCOUNT & BDT + single-line title in featured products!');
+    // ===== HERO TYPING ANIMATION (3 texts × 4s each) =====
+    (function initHeroTyping() {
+      const el = document.getElementById('typedHero');
+      if (!el) return;
+
+      const texts = [
+        'Build Your Dream Website Today',
+        'Fix Bugs, Speed & Security — Fast',
+        'Ready-Made Sites for Your Business'
+      ];
+      const DURATION = 4000; // total time per text (ms)
+      const typeMs = 42;
+      const deleteMs = 28;
+      let textIndex = 0;
+      let charIndex = 0;
+      let deleting = false;
+      let holdUntil = 0;
+
+      // Start with full first text already visible, then cycle
+      el.textContent = texts[0];
+      charIndex = texts[0].length;
+      holdUntil = performance.now() + 2200; // brief hold before first delete
+
+      function tick(now) {
+        const full = texts[textIndex];
+
+        if (!deleting && charIndex === full.length) {
+          // Holding full text until DURATION window ends
+          if (now < holdUntil) {
+            requestAnimationFrame(tick);
+            return;
+          }
+          deleting = true;
+        }
+
+        if (deleting) {
+          if (charIndex > 0) {
+            charIndex--;
+            el.textContent = full.slice(0, charIndex);
+            setTimeout(() => requestAnimationFrame(tick), deleteMs);
+            return;
+          }
+          // move to next
+          deleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+          charIndex = 0;
+          setTimeout(() => requestAnimationFrame(tick), 280);
+          return;
+        }
+
+        // typing
+        charIndex++;
+        el.textContent = full.slice(0, charIndex);
+        if (charIndex === full.length) {
+          // schedule hold so total ~DURATION from start of this phrase
+          const typedTime = charIndex * typeMs;
+          const hold = Math.max(1200, DURATION - typedTime - (full.length * deleteMs) - 280);
+          holdUntil = performance.now() + hold;
+        }
+        setTimeout(() => requestAnimationFrame(tick), typeMs);
+      }
+
+      // Prefer reduced motion: show first text only
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.textContent = texts[0];
+        return;
+      }
+
+      requestAnimationFrame(tick);
+    })();
+
+    console.log('🏠 Landing page loaded — hero typing animation active');
   </script>
 </body>
 </html>
