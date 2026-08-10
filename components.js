@@ -309,22 +309,6 @@ function updateNotificationBadge(count) {
     if (label) {
       label.textContent = n > 0 ? `${n} new` : '0 new';
     }
-    const mobileNotif = document.getElementById('mobileNotifCount');
-    const mobileNotifBtn = document.getElementById('mobileNotifBtn');
-    if (mobileNotif) {
-      if (n > 0) {
-        mobileNotif.textContent = n > 99 ? '99+' : String(n);
-        mobileNotif.style.display = 'inline-flex';
-      } else {
-        mobileNotif.style.display = 'none';
-        mobileNotif.textContent = '0';
-      }
-    }
-    if (mobileNotifBtn && auth.currentUser) {
-      mobileNotifBtn.style.display = 'flex';
-    } else if (mobileNotifBtn) {
-      mobileNotifBtn.style.display = 'none';
-    }
     // Always sync floating chat badge too
     if (typeof window.__ccbdUpdateSupportBadge === 'function') {
       window.__ccbdUpdateSupportBadge(n);
@@ -490,20 +474,19 @@ document.head.appendChild(toastStyles);
 // ✅ CART BADGE (রিয়েল-টাইম আপডেটের জন্য পৃথক ফাংশন)
 // ================================================================
 export function updateCartBadge() {
+  const cartBadge = document.getElementById('cartCount');
+  if (!cartBadge) {
+    console.warn('⚠️ cartCount element not found in DOM');
+    return;
+  }
   try {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    const cartBadge = document.getElementById('cartCount');
-    if (cartBadge) {
-      cartBadge.textContent = totalQty;
-      cartBadge.style.display = totalQty > 0 ? 'inline-flex' : 'none';
-    }
-    const mobileCart = document.getElementById('mobileCartCount');
-    if (mobileCart) {
-      mobileCart.textContent = totalQty;
-      mobileCart.style.display = totalQty > 0 ? 'inline-flex' : 'none';
-    }
+    cartBadge.textContent = totalQty;
+    cartBadge.style.display = totalQty > 0 ? 'inline-flex' : 'none';
   } catch (e) {
+    cartBadge.textContent = '0';
+    cartBadge.style.display = 'none';
     console.error('Badge update error:', e);
   }
 }
@@ -511,38 +494,27 @@ export function updateCartBadge() {
 // ================================================================
 // ✅ MOBILE MENU TOGGLE
 // ================================================================
-window.closeMobileMenu = function() {
-  const menu = document.getElementById('mobileMenu');
-  const icon = document.getElementById('hamburgerIcon');
-  if (!menu || menu.classList.contains('hidden')) return;
-  menu.style.maxHeight = '0';
-  menu.style.opacity = '0';
-  setTimeout(() => menu.classList.add('hidden'), 280);
-  if (icon) {
-    icon.classList.add('fa-bars');
-    icon.classList.remove('fa-times');
-  }
-};
-
 window.toggleMobileMenu = function() {
   const menu = document.getElementById('mobileMenu');
   const icon = document.getElementById('hamburgerIcon');
-  if (!menu) return;
-  const isHidden = menu.classList.contains('hidden');
-  if (isHidden) {
-    menu.classList.remove('hidden');
-    menu.style.maxHeight = '0';
-    menu.style.opacity = '0';
-    setTimeout(() => {
-      menu.style.maxHeight = '80vh';
-      menu.style.opacity = '1';
-    }, 10);
+  if (menu) {
+    const isOpen = !menu.classList.contains('hidden');
+    menu.classList.toggle('hidden');
     if (icon) {
-      icon.classList.remove('fa-bars');
-      icon.classList.add('fa-times');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
     }
-  } else {
-    window.closeMobileMenu();
+    if (!isOpen) {
+      menu.style.maxHeight = '0';
+      menu.style.opacity = '0';
+      setTimeout(() => {
+        menu.style.maxHeight = '500px';
+        menu.style.opacity = '1';
+      }, 10);
+    } else {
+      menu.style.maxHeight = '0';
+      menu.style.opacity = '0';
+    }
   }
 };
 
@@ -830,11 +802,11 @@ export function renderNavbar() {
   renderContactModal();
 
   const navbarHTML = `
-    <nav id="mainNavbar" class="fixed top-0 left-0 w-full z-50 h-[56px] md:h-[60px] flex items-center px-3 sm:px-6 lg:px-10 transition-all duration-300 ease-out glass shadow-sm border-b border-gray-100/30">
-      <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-        <a href="index.html" class="flex items-center gap-2 text-xl font-bold text-gray-900 hover:opacity-80 transition-opacity shrink-0">
-          <img src="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" alt="CodeCureBD Logo" class="logo-img h-7 w-auto" />
-          <span class="logo-text tracking-tight text-lg">CodeCure<span class="gradient-text">BD</span></span>
+    <nav id="mainNavbar" class="fixed top-0 left-0 w-full z-50 h-[72px] md:h-[80px] flex items-center px-4 sm:px-8 lg:px-12 transition-all duration-300 ease-out glass shadow-sm border-b border-gray-100/30">
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2.5 text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
+          <img src="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" alt="CodeCureBD Logo" class="logo-img h-8 w-auto" />
+          <span class="logo-text tracking-tight">CodeCure<span class="gradient-text">BD</span></span>
         </a>
         
         <div class="nav-desktop hidden md:flex items-center">
@@ -844,17 +816,16 @@ export function renderNavbar() {
           <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link text-sm">Contact</a>
         </div>
 
-        <div class="flex items-center gap-1 md:gap-2 shrink-0">
-          <!-- Search: always visible -->
+        <div class="flex items-center gap-2 md:gap-3">
           <div class="relative">
-            <button onclick="window.toggleSearchDropdown()" class="nav-icon-btn" title="Search products">
+            <button onclick="window.toggleSearchDropdown()" class="w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-600 hover:text-blue-600 transition-colors text-lg" title="Search products">
               <i class="fas fa-search"></i>
             </button>
             <div id="searchDropdown" class="absolute right-0 mt-2 w-96 max-w-[90vw] bg-white rounded-2xl shadow-xl border border-gray-100 hidden z-50 overflow-hidden">
-              <div class="p-3 border-b border-gray-100">
+              <div class="p-4 border-b border-gray-100">
                 <div class="relative">
                   <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                  <input type="text" id="searchInput" placeholder="Search products..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm" autocomplete="off" />
+                  <input type="text" id="searchInput" placeholder="Search products..." class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm" autocomplete="off" />
                 </div>
               </div>
               <div id="searchResults" class="max-h-[350px] overflow-y-auto">
@@ -866,96 +837,87 @@ export function renderNavbar() {
             </div>
           </div>
 
-          <!-- Cart: desktop only button; popup always in DOM for mobile menu -->
           <div class="relative">
-            <button id="cartBtn" onclick="window.toggleCart()" class="nav-icon-btn relative hidden md:inline-flex" title="Cart">
+            <button id="cartBtn" onclick="window.toggleCart()" class="w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-600 hover:text-blue-600 transition-colors text-lg relative" title="Cart">
               <i class="fas fa-shopping-cart"></i>
               <span id="cartCount" class="cart-badge" style="display:none;">0</span>
             </button>
             <div id="cartPopupContainer"></div>
           </div>
 
-          <div id="authRequiredActions" class="flex items-center gap-1 md:gap-2" style="display:none;">
-            <!-- Notifications: desktop button; dropdown always in DOM for mobile -->
+          <div id="authRequiredActions" class="flex items-center gap-2 md:gap-3" style="display:none;">
             <div class="relative">
-              <button onclick="window.toggleNotifications()" class="nav-icon-btn relative hidden md:inline-flex" aria-label="Notifications">
+              <button onclick="window.toggleNotifications()" class="w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-600 hover:text-blue-600 transition-colors text-lg relative" aria-label="Notifications">
                 <i class="fas fa-bell"></i>
-                <span id="notificationBadge" class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[9px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-0.5 hidden">
+                <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 hidden">
                   0
                 </span>
               </button>
               <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 max-w-[90vw] bg-white rounded-2xl shadow-xl border border-gray-100 hidden max-h-[70vh] overflow-y-auto z-50">
-                <div class="p-3 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
-                  <h3 class="font-semibold text-gray-900 text-sm">Notifications</h3>
-                  <button onclick="window.markAllNotificationsRead()" class="text-xs text-blue-600 hover:underline">Mark all read</button>
+                <div class="p-4 font-semibold border-b text-gray-900 flex items-center justify-between">
+                  <span><i class="fas fa-bell mr-2 text-blue-500"></i>Notifications</span>
+                  <span class="text-xs font-normal text-gray-400" id="notifCountLabel">0 new</span>
                 </div>
                 <div id="notificationList" class="divide-y divide-gray-50">
-                  <div class="p-6 text-center text-gray-400 text-sm">No notifications</div>
+                  <div class="p-4 text-sm text-gray-500 text-center">Loading...</div>
+                </div>
+                <div class="p-2 border-t">
+                  <a href="messages.html" class="block text-center text-sm text-blue-600 hover:bg-gray-50 py-2 rounded-lg transition-colors">View all messages</a>
                 </div>
               </div>
             </div>
+          </div>
+          
+          <div id="auth-loading" class="flex items-center gap-2">
+            <div class="w-16 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-24 h-10 bg-gray-200 rounded-full animate-pulse hidden md:block"></div>
+          </div>
 
-            <!-- Profile: desktop only (mobile uses menu links) -->
-            <div class="relative hidden md:block">
-              <button id="profileAvatar" class="profile-avatar w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white text-xs font-semibold flex items-center justify-center overflow-hidden ring-2 ring-white shadow-sm" title="Profile">
-                <span id="avatarLetter">U</span>
-              </button>
-              <div id="dropdownMenu" class="dropdown-menu">
-                <a href="my-profile.html"><i class="fas fa-user"></i> Profile</a>
-                <a href="my-orders.html"><i class="fas fa-box"></i> Orders</a>
-                <a href="my-fix-requests.html"><i class="fas fa-tools"></i> Fix Requests</a>
-                <a href="messages.html"><i class="fas fa-comment-dots"></i> Support Chat</a>
-                <a href="admin-panel.html" id="adminPanelLink" class="hidden"><i class="fas fa-shield-alt text-blue-500"></i> Admin Panel</a>
-                <hr class="my-1 border-gray-100" />
-                <a href="#" onclick="window.handleLogout(); return false;"><i class="fas fa-sign-out-alt text-red-400"></i> Logout</a>
-              </div>
+          <div id="auth-buttons" class="hidden flex items-center gap-2">
+            <button onclick="window.openAuthModal('signin')" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors px-3 py-2 rounded-lg hover:bg-blue-50/50">Sign In</button>
+            <button onclick="window.openAuthModal('signup')" class="btn-primary text-sm py-2.5 px-5 shadow-md shadow-blue-500/20 hover:shadow-blue-500/30">
+              <i class="fas fa-rocket text-xs"></i> Get Started
+            </button>
+          </div>
+
+          <div id="profile-section" class="relative hidden">
+            <button class="profile-avatar" id="profileAvatar" title="Account" aria-label="Account menu"><i class="fas fa-user"></i></button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <a href="my-profile.html" class="hover:bg-blue-50/50"><i class="fas fa-user mr-3 text-gray-400"></i> My Profile</a>
+              <a href="my-orders.html" class="hover:bg-blue-50/50"><i class="fas fa-box mr-3 text-gray-400"></i> My Orders</a>
+              <a href="my-fix-requests.html" class="hover:bg-blue-50/50"><i class="fas fa-tools mr-3 text-gray-400"></i> Fix Requests</a>
+              <a href="messages.html" class="hover:bg-blue-50/50"><i class="fas fa-comment-dots mr-3 text-gray-400"></i> Support Chat</a>
+              <a href="settings.html" class="hover:bg-blue-50/50"><i class="fas fa-cog mr-3 text-gray-400"></i> Settings</a>
+              <a href="admin-panel.html" id="adminPanelLink" class="hidden hover:bg-blue-50/50"><i class="fas fa-shield-alt mr-3 text-blue-500"></i> Admin Panel</a>
+              <hr class="my-1 border-gray-100" />
+              <a href="#" onclick="window.handleLogout()" class="text-red-500 hover:bg-red-50/50"><i class="fas fa-sign-out-alt mr-3 text-red-400"></i> Logout</a>
             </div>
           </div>
 
-          <div id="guestActions" class="flex items-center gap-1.5">
-            <button onclick="window.openAuthModal('login')" class="hidden sm:inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full border border-blue-200 text-blue-600 hover:bg-blue-50 transition">Login</button>
-            <button onclick="window.openAuthModal('signup')" class="hidden md:inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-90 transition">Sign up</button>
-          </div>
-
-          <button onclick="window.toggleMobileMenu()" class="md:hidden nav-icon-btn text-gray-700" aria-label="Toggle menu">
+          <button onclick="window.toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-700 text-2xl transition-colors" aria-label="Toggle menu">
             <i class="fas fa-bars" id="hamburgerIcon"></i>
           </button>
         </div>
       </div>
     </nav>
 
-    <div id="mobileMenu" class="fixed top-[56px] left-0 w-full bg-white/95 backdrop-blur-lg shadow-lg z-40 hidden md:hidden overflow-hidden transition-all duration-300 border-b border-gray-100/30" style="max-height:0; opacity:0;">
-      <div class="flex flex-col p-3 gap-0.5">
-        <a href="index.html" data-nav="home" class="nav-link py-2.5 px-3 rounded-xl font-medium text-gray-700 text-sm">Home</a>
-        <a href="get-new-website.html" data-nav="store" class="nav-link py-2.5 px-3 rounded-xl font-medium text-gray-700 text-sm">Store</a>
-        <a href="fix-website.html" data-nav="fix" class="nav-link py-2.5 px-3 rounded-xl font-medium text-gray-700 text-sm">Fix</a>
-        <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link py-2.5 px-3 rounded-xl font-medium text-gray-700 text-sm">Contact</a>
-        <hr class="my-1.5 border-gray-100" />
-        <!-- Mobile: Cart + Notifications in dropdown menu -->
-        <button type="button" onclick="window.toggleCart(); window.closeMobileMenu && window.closeMobileMenu();" class="nav-link py-2.5 px-3 rounded-xl font-medium text-gray-700 text-sm text-left flex items-center gap-3 w-full">
-          <i class="fas fa-shopping-cart w-5 text-center text-gray-500"></i>
-          <span class="flex-1">Cart</span>
-          <span id="mobileCartCount" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full" style="display:none;">0</span>
-        </button>
-        <button type="button" id="mobileNotifBtn" onclick="window.toggleNotifications(); window.closeMobileMenu && window.closeMobileMenu();" class="nav-link py-2.5 px-3 rounded-xl font-medium text-gray-700 text-sm text-left flex items-center gap-3 w-full" style="display:none;">
-          <i class="fas fa-bell w-5 text-center text-gray-500"></i>
-          <span class="flex-1">Notifications</span>
-          <span id="mobileNotifCount" class="text-xs font-bold text-white bg-red-500 px-2 py-0.5 rounded-full" style="display:none;">0</span>
-        </button>
-        <hr class="my-1.5 border-gray-100" />
-        <a href="my-profile.html" class="nav-link py-2.5 px-3 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors text-sm"><i class="fas fa-user mr-3 w-5 text-center"></i> Profile</a>
-        <a href="my-orders.html" class="nav-link py-2.5 px-3 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors text-sm"><i class="fas fa-box mr-3 w-5 text-center"></i> Orders</a>
-        <a href="my-fix-requests.html" class="nav-link py-2.5 px-3 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors text-sm"><i class="fas fa-tools mr-3 w-5 text-center"></i> Fix Requests</a>
-        <a href="messages.html" class="nav-link py-2.5 px-3 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors text-sm"><i class="fas fa-comment-dots mr-3 w-5 text-center"></i> Support Chat</a>
-        <a href="admin-panel.html" id="mobileAdminPanelLink" class="hidden nav-link py-2.5 px-3 rounded-xl hover:bg-blue-50/50 font-medium text-blue-600 transition-colors text-sm"><i class="fas fa-shield-alt mr-3 w-5 text-center"></i> Admin Panel</a>
-        <a href="#" onclick="window.handleLogout()" class="nav-link py-2.5 px-3 rounded-xl hover:bg-red-50/50 font-medium text-red-500 transition-colors text-sm"><i class="fas fa-sign-out-alt mr-3 w-5 text-center"></i> Logout</a>
-        <div id="mobileGuestLogin" class="mt-1 px-3 pb-2">
-          <button onclick="window.openAuthModal('login')" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold">Login / Sign up</button>
-        </div>
+    <div id="mobileMenu" class="fixed top-[72px] md:top-[80px] left-0 w-full bg-white/95 backdrop-blur-lg shadow-lg z-40 hidden md:hidden overflow-hidden transition-all duration-300 border-b border-gray-100/30" style="max-height:0; opacity:0;">
+      <div class="flex flex-col p-4 gap-1">
+        <a href="index.html" data-nav="home" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Home</a>
+        <a href="get-new-website.html" data-nav="store" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Store</a>
+        <a href="fix-website.html" data-nav="fix" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Fix</a>
+        <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Contact</a>
+        <hr class="my-2 border-gray-100" />
+        <a href="my-profile.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-user mr-3"></i> Profile</a>
+        <a href="my-orders.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-box mr-3"></i> Orders</a>
+        <a href="my-fix-requests.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-tools mr-3"></i> Fix Requests</a>
+        <a href="messages.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-comment-dots mr-3"></i> Support Chat</a>
+        <a href="admin-panel.html" id="mobileAdminPanelLink" class="hidden nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-blue-600 transition-colors"><i class="fas fa-shield-alt mr-3"></i> Admin Panel</a>
+        <a href="#" onclick="window.handleLogout()" class="nav-link py-3 px-4 rounded-xl hover:bg-red-50/50 font-medium text-red-500 transition-colors"><i class="fas fa-sign-out-alt mr-3"></i> Logout</a>
       </div>
     </div>
   `;
-
+  
   const placeholder = document.getElementById('navbar-placeholder');
   if (placeholder) {
     placeholder.innerHTML = navbarHTML;
@@ -2096,12 +2058,9 @@ let _lastAuthUid = null;
 let _authNullTimer = null;
 
 export function updateNavbarAuth(user, displayName, role = null) {
-  const authBtns = document.getElementById('auth-buttons') || document.getElementById('guestActions');
-  const profileSection = document.getElementById('profile-section') || document.getElementById('profileAvatar')?.parentElement;
+  const authBtns = document.getElementById('auth-buttons');
+  const profileSection = document.getElementById('profile-section');
   const loadingEl = document.getElementById('auth-loading');
-  const guestActions = document.getElementById('guestActions');
-  const mobileGuestLogin = document.getElementById('mobileGuestLogin');
-  const mobileNotifBtn = document.getElementById('mobileNotifBtn');
   const avatar = document.getElementById('profileAvatar');
   const adminLink = document.getElementById('adminPanelLink');
   const mobileAdminLink = document.getElementById('mobileAdminPanelLink');
@@ -2127,13 +2086,7 @@ export function updateNavbarAuth(user, displayName, role = null) {
     _lastAuthUid = user.uid;
 
     if (authBtns) authBtns.classList.add('hidden');
-    if (guestActions) guestActions.style.display = 'none';
-    if (mobileGuestLogin) mobileGuestLogin.style.display = 'none';
-    if (profileSection) {
-      profileSection.classList.remove('hidden');
-      profileSection.style.display = '';
-    }
-    if (mobileNotifBtn) mobileNotifBtn.style.display = 'flex';
+    if (profileSection) profileSection.classList.remove('hidden');
     if (avatar) {
       // Keep default profile icon (do not use first letter)
       avatar.innerHTML = '<i class="fas fa-user"></i>';
@@ -2174,8 +2127,6 @@ export function updateNavbarAuth(user, displayName, role = null) {
       }
       _lastAuthUid = null;
       if (authBtns) authBtns.classList.remove('hidden');
-      if (guestActions) guestActions.style.display = '';
-      if (mobileGuestLogin) mobileGuestLogin.style.display = '';
       if (profileSection) profileSection.classList.add('hidden');
       if (adminLink) { adminLink.style.display = 'none'; adminLink.classList.add('hidden'); }
       if (mobileAdminLink) { mobileAdminLink.style.display = 'none'; mobileAdminLink.classList.add('hidden'); }
@@ -2183,7 +2134,6 @@ export function updateNavbarAuth(user, displayName, role = null) {
       updateNotificationBadge(0);
       updateNotificationList([]);
       if (authRequiredActions) authRequiredActions.style.display = 'none';
-      if (mobileNotifBtn) mobileNotifBtn.style.display = 'none';
       if (typeof window.__ccbdMountSupportWidget === 'function') {
         window.__ccbdMountSupportWidget(null);
       }

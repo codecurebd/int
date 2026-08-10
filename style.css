@@ -257,10 +257,10 @@ select.form-input {
 }
 
 /* ── Logo ── */
-.logo-img { height: 30px; width: auto; flex-shrink: 0; }
+.logo-img { height: 36px; width: auto; flex-shrink: 0; }
 @media (max-width: 768px) {
   .logo-text { display: none; }
-  .logo-img { height: 28px; }
+  .logo-img { height: 40px; }
 }
 
 /* ── Navbar ── */
@@ -270,38 +270,11 @@ select.form-input {
   color: #3a3a4c;
   transition: color 0.3s ease, background 0.2s ease;
   cursor: pointer;
-  padding: 0.35rem 0.75rem;
-  margin: 0 0.1rem;
-  border-radius: 0.45rem;
+  padding: 0.5rem 1rem;
+  margin: 0 0.2rem;
+  border-radius: 0.5rem;
   text-decoration: none;
   display: inline-block;
-}
-
-/* Compact icon buttons in navbar */
-.nav-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #4b5563;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-  font-size: 0.95rem;
-}
-.nav-icon-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #0066FF;
-}
-@media (max-width: 767px) {
-  .nav-icon-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 0.9rem;
-  }
 }
 
 .nav-link::after {
@@ -416,13 +389,13 @@ select.form-input {
   background: linear-gradient(135deg, #FF3B30, #dc2626);
   color: #fff;
   border-radius: 50%;
-  padding: 0 5px;
-  font-size: 0.55rem;
+  padding: 1px 7px;
+  font-size: 0.6rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.5;
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -6px;
+  right: -6px;
   min-width: 20px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(255, 59, 48, 0.35);
@@ -910,7 +883,7 @@ select.form-input {
 
 /* ── Page Layout ── */
 .page-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
-.main-content { flex: 1 0 auto; padding-top: 64px; }
+.main-content { flex: 1 0 auto; padding-top: 84px; }
 
 /* ── Utilities ── */
 .text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -930,7 +903,7 @@ select.form-input {
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .main-content { padding-top: 56px; }
+  .main-content { padding-top: 72px; }
   .glass-card { padding: 1rem; border-radius: 16px; }
   .btn-primary, .btn-outline, .btn-danger { padding: 12px 20px; font-size: 0.9rem; min-height: 44px; }
   #toast-container { bottom: 16px; right: 16px; max-width: calc(100vw - 32px); }
@@ -952,7 +925,7 @@ select.form-input {
   /* Mobile dropdown full-screen */
   #searchDropdown, #notificationDropdown, .cart-popup {
     position: fixed;
-    top: 56px;
+    top: 72px;
     left: 0;
     right: 0;
     width: 100%;
@@ -960,23 +933,23 @@ select.form-input {
     border-radius: 0;
     margin-top: 0;
     z-index: 200;
-    max-height: calc(100vh - 56px);
+    max-height: calc(100vh - 72px);
     overflow-y: auto;
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
     border: none;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
   }
-  #searchDropdown { height: calc(100vh - 56px); }
+  #searchDropdown { height: calc(100vh - 72px); }
   #searchDropdown .p-4 { padding: 1rem; }
   #searchInput { font-size: 1rem; padding: 14px 16px 14px 44px; border-radius: 14px; }
   #searchResults { max-height: calc(100vh - 200px); }
-  .cart-popup { height: calc(100vh - 56px); top: 56px; bottom: auto; border-radius: 0; }
+  .cart-popup { height: calc(100vh - 72px); top: 72px; bottom: auto; border-radius: 0; }
   body.dropdown-open { overflow: hidden; }
 }
 
 @media (max-width: 480px) {
-  .main-content { padding-top: 56px; }
+  .main-content { padding-top: 64px; }
   .glass-card { padding: 0.75rem; border-radius: 12px; }
   .form-input { padding: 12px 16px; font-size: 0.9rem; border-radius: 12px; }
   .profile-avatar { width: 36px; height: 36px; font-size: 0.85rem; }
