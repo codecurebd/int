@@ -180,22 +180,6 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-section .hero-title .typed-cursor {
-      display: inline-block;
-      width: 0.08em;
-      margin-left: 2px;
-      background: linear-gradient(135deg, #0066FF, #8B5CF6);
-      color: transparent;
-      animation: typedBlink 0.85s step-end infinite;
-      vertical-align: -0.05em;
-      height: 0.95em;
-      border-radius: 1px;
-      flex-shrink: 0;
-    }
-    @keyframes typedBlink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
     .hero-section .hero-sub {
       font-size: clamp(1rem, 2vw, 1.25rem);
       color: #64748b;
@@ -692,7 +676,7 @@
           </div>
 
           <h1 class="hero-title fade-up" aria-live="polite">
-            <span id="typedHero" class="typed-text">Build Your Dream Website Today</span><span class="typed-cursor" aria-hidden="true"></span>
+            <span id="typedHero" class="typed-text">Build Your Dream Website Today</span>
           </h1>
           <p class="hero-sub fade-up" style="transition-delay:0.1s;">
             Professional website development, fixing, and maintenance – tailored for your business.
