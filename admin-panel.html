@@ -1680,6 +1680,24 @@
     .product-grid .product-card .card-body .product-actions .del-btn:hover {
       background: rgba(220, 38, 38, 0.15);
     }
+    .product-grid .product-card .card-body .product-actions .dl-btn,
+    .product-list-view .product-list-item .pl-actions .dl-btn {
+      background: rgba(5, 150, 105, 0.1);
+      color: #059669;
+    }
+    .product-grid .product-card .card-body .product-actions .dl-btn:hover,
+    .product-list-view .product-list-item .pl-actions .dl-btn:hover {
+      background: rgba(5, 150, 105, 0.18);
+    }
+    .product-list-view .product-list-item .pl-actions .dl-btn {
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.68rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.2s;
+    }
 
     .product-list-view {
       width: 100%;
@@ -2542,6 +2560,36 @@
     </div>
 
     <!-- ===== USER MODAL ===== -->
+    <!-- PRODUCT DOWNLOAD MODAL -->
+    <div class="modal-overlay" id="productDownloadModal">
+        <div class="modal-box" style="max-width:420px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-download" style="color:#059669;margin-right:8px;"></i>Download product code</h3>
+                <button class="modal-close" onclick="closeProductDownload()">&times;</button>
+            </div>
+            <p class="text-sm text-gray-500 mb-3" id="dlProductLabel">Product</p>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">File name</label>
+                    <input type="text" id="dlFileName" class="form-input" placeholder="my-website" autocomplete="off" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Format</label>
+                    <select id="dlFileFormat" class="form-input">
+                        <option value="html">.html — full webpage</option>
+                        <option value="txt">.txt — plain text</option>
+                        <option value="htm">.htm — HTML (alternate)</option>
+                    </select>
+                </div>
+                <p class="text-xs text-gray-400" id="dlHint">Saves the HTML code stored in Firebase to your device.</p>
+                <div class="flex gap-2 mt-2">
+                    <button type="button" class="btn-primary flex-1" onclick="confirmProductDownload()"><i class="fas fa-download"></i> Download</button>
+                    <button type="button" class="btn-outline" onclick="closeProductDownload()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="userModal">
         <div class="modal-box">
             <div class="modal-header"><h3 id="userModalTitle">Add User</h3><button class="modal-close" onclick="closeUserModal()">&times;</button></div>
@@ -3101,6 +3149,7 @@
                                 <div class="product-price">$${p.price?.toFixed(2) || '0.00'}</div>
                                 <div class="product-actions">
                                     <button class="edit-btn" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="dl-btn" onclick="openProductDownload('${p.id}')"><i class="fas fa-download"></i> Download</button>
                                     <button class="del-btn" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i> Delete</button>
                                 </div>
                             </div>
@@ -3127,6 +3176,7 @@
                             <div class="pl-price">$${p.price?.toFixed(2) || '0.00'}</div>
                             <div class="pl-actions">
                                 <button class="edit-btn" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="dl-btn" onclick="openProductDownload('${p.id}')"><i class="fas fa-download"></i> Download</button>
                                 <button class="del-btn" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i> Delete</button>
                             </div>
                         </div>
@@ -3207,6 +3257,75 @@
                     updateHtmlUploadUI();
 
                     document.getElementById('productModal').classList.add('open');
+                }
+            };
+
+            // ===== PRODUCT CODE DOWNLOAD =====
+            let downloadProductId = null;
+
+            function slugifyFileName(name) {
+                return String(name || 'product')
+                    .trim()
+                    .replace(/[^a-zA-Z0-9\u0980-\u09FF\-_\s]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '')
+                    .slice(0, 80) || 'product';
+            }
+
+            window.openProductDownload = function(id) {
+                const p = allProducts.find(x => x.id === id);
+                if (!p) { showToast('Product not found.', 'error'); return; }
+                if (!p.htmlContent || !String(p.htmlContent).trim()) {
+                    showToast('No HTML code saved for this product.', 'warning');
+                    return;
+                }
+                downloadProductId = id;
+                const defaultName = p.htmlFileName
+                    ? String(p.htmlFileName).replace(/\.(html?|txt)$/i, '')
+                    : slugifyFileName(p.name);
+                document.getElementById('dlProductLabel').textContent = p.name || 'Product';
+                document.getElementById('dlFileName').value = defaultName;
+                document.getElementById('dlFileFormat').value = 'html';
+                document.getElementById('productDownloadModal').classList.add('open');
+                setTimeout(() => document.getElementById('dlFileName')?.focus(), 50);
+            };
+
+            window.closeProductDownload = function() {
+                document.getElementById('productDownloadModal')?.classList.remove('open');
+                downloadProductId = null;
+            };
+
+            window.confirmProductDownload = function() {
+                const p = allProducts.find(x => x.id === downloadProductId);
+                if (!p || !p.htmlContent) {
+                    showToast('Nothing to download.', 'warning');
+                    return;
+                }
+                let name = (document.getElementById('dlFileName')?.value || '').trim();
+                name = slugifyFileName(name || p.name || 'product');
+                const fmt = document.getElementById('dlFileFormat')?.value || 'html';
+                const ext = fmt === 'txt' ? 'txt' : (fmt === 'htm' ? 'htm' : 'html');
+                const fileName = name + '.' + ext;
+                const content = String(p.htmlContent);
+                const mime = ext === 'txt' ? 'text/plain;charset=utf-8' : 'text/html;charset=utf-8';
+
+                try {
+                    const blob = new Blob([content], { type: mime });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    setTimeout(() => URL.revokeObjectURL(url), 2000);
+                    showToast('✅ Downloaded: ' + fileName, 'success');
+                    closeProductDownload();
+                } catch (err) {
+                    console.error(err);
+                    showToast('Download failed: ' + err.message, 'error');
                 }
             };
 
