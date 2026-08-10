@@ -143,12 +143,36 @@
       text-align: center;
     }
     .hero-section .hero-title {
-      font-size: clamp(2.25rem, 5vw, 4.25rem);
+      font-size: clamp(1.85rem, 5vw, 4.25rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.12;
+      line-height: 1.2;
       color: #0f172a;
-      min-height: 1.35em; /* reduce layout jump while typing */
+      /* Always reserve 2 lines → CTA buttons stay fixed while typing */
+      min-height: calc(1.2em * 2);
+      height: calc(1.2em * 2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      max-width: 20rem;
+      overflow: hidden;
+    }
+    @media (min-width: 640px) {
+      .hero-section .hero-title {
+        max-width: 36rem;
+      }
+    }
+    @media (max-width: 380px) {
+      .hero-section .hero-title {
+        font-size: 1.65rem;
+        /* still exactly 2 lines of space */
+        min-height: calc(1.2em * 2);
+        height: calc(1.2em * 2);
+      }
     }
     .hero-section .hero-title .typed-text {
       background: linear-gradient(135deg, #0066FF, #8B5CF6, #F59E0B);
@@ -166,6 +190,7 @@
       vertical-align: -0.05em;
       height: 0.95em;
       border-radius: 1px;
+      flex-shrink: 0;
     }
     @keyframes typedBlink {
       0%, 100% { opacity: 1; }
@@ -1326,7 +1351,7 @@ onAuthStateChanged(auth, async (user) => {
 
       const texts = [
         'Build Your Dream Website Today',
-        'Fix Bugs, Speed & Security — Fast',
+        'Fix Bugs, Speed & Security Fast',
         'Ready-Made Sites for Your Business'
       ];
       const DURATION = 4000; // total time per text (ms)
