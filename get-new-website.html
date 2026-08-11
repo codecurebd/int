@@ -596,6 +596,117 @@
       border-color: #0066FF;
     }
 
+    /* ── Pagination ── */
+    .pagination-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 1.75rem;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    }
+    .pagination-info {
+      font-size: 0.85rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .pagination-info strong {
+      color: #1c1c1e;
+      font-weight: 700;
+    }
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .page-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(0, 0, 0, 0.06);
+      background: rgba(255, 255, 255, 0.9);
+      color: #374151;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+    .page-btn:hover:not(:disabled):not(.active) {
+      border-color: #0066FF;
+      color: #0066FF;
+      background: rgba(0, 102, 255, 0.04);
+    }
+    .page-btn.active {
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(0, 102, 255, 0.25);
+    }
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .page-ellipsis {
+      padding: 0 4px;
+      color: #9ca3af;
+      font-weight: 600;
+      user-select: none;
+    }
+    .per-page-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #6b7280;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .per-page-wrap select {
+      min-width: 72px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(0, 0, 0, 0.08);
+      background: #fff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #1c1c1e;
+      cursor: pointer;
+      outline: none;
+      font-family: inherit;
+    }
+    .per-page-wrap select:focus {
+      border-color: #0066FF;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.08);
+    }
+    @media (max-width: 640px) {
+      .pagination-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 14px;
+      }
+      .pagination-controls { justify-content: center; }
+      .page-btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.82rem;
+        padding: 0 10px;
+      }
+      .pagination-info { text-align: center; font-size: 0.8rem; }
+      .per-page-wrap { justify-content: center; }
+    }
+
   </style>
 </head>
 <body>
@@ -634,6 +745,15 @@
                             <option value="price-desc">Price: High to Low</option>
                             <option value="name">Name: A to Z</option>
                         </select>
+                        <div class="per-page-wrap">
+                            <span>Show</span>
+                            <select id="perPageSelect" aria-label="Products per page">
+                                <option value="6">6</option>
+                                <option value="9" selected>9</option>
+                                <option value="12">12</option>
+                            </select>
+                            <span>per page</span>
+                        </div>
 
                         <button onclick="resetFilters()" class="btn-outline text-sm py-2 px-4">
                             <i class="fas fa-undo"></i> Reset
@@ -644,6 +764,9 @@
                     <div id="productGrid" class="grid md:grid-cols-3 gap-6 mt-8">
                         <!-- rendered by JS -->
                     </div>
+
+                    <!-- pagination -->
+                    <div id="paginationBar" class="pagination-bar" style="display:none;"></div>
 
                 </div>
             </section>
@@ -781,10 +904,14 @@ onAuthStateChanged(auth, async (user) => {
         let productsReady = false;
         let discountsReady = false;
         let lastRenderKey = '';
+        let currentPage = 1;
+        let pageSize = 9; // default 9 per page
         const grid = document.getElementById('productGrid');
         const searchInput = document.getElementById('productSearchInput');
         const categoryFilter = document.getElementById('categoryFilter');
         const sortFilter = document.getElementById('sortFilter');
+        const perPageSelect = document.getElementById('perPageSelect');
+        const paginationBar = document.getElementById('paginationBar');
 
         function renderSkeletons(count = 6) {
             let html = '';
@@ -799,6 +926,7 @@ onAuthStateChanged(auth, async (user) => {
             `;
             }
             grid.innerHTML = html;
+            if (paginationBar) paginationBar.style.display = 'none';
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
         }
         renderSkeletons();
@@ -824,6 +952,8 @@ onAuthStateChanged(auth, async (user) => {
                 search,
                 cat,
                 sort,
+                pageSize,
+                currentPage,
                 allProducts.map(p => p.id + ':' + (p.price || 0)).join(',')
             ].join('|');
         }
@@ -879,31 +1009,115 @@ onAuthStateChanged(auth, async (user) => {
             return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        function renderProducts() {
+        function getFilteredProducts() {
             let filtered = [...allProducts];
-            const search = searchInput.value.toLowerCase();
+            const search = (searchInput?.value || '').toLowerCase();
             if (search) {
                 filtered = filtered.filter(p =>
-                    p.name.toLowerCase().includes(search) ||
+                    (p.name || '').toLowerCase().includes(search) ||
                     (p.desc || p.description || '').toLowerCase().includes(search)
                 );
             }
-            const cat = categoryFilter.value;
+            const cat = categoryFilter?.value || 'all';
             if (cat !== 'all') {
                 filtered = filtered.filter(p => p.category?.toLowerCase().trim() === cat);
             }
-            const sort = sortFilter.value;
-            if (sort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
-            else if (sort === 'price-desc') filtered.sort((a, b) => b.price - a.price);
-            else if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
+            const sort = sortFilter?.value || 'price-asc';
+            if (sort === 'price-asc') filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+            else if (sort === 'price-desc') filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+            else if (sort === 'name') filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            return filtered;
+        }
+
+        function renderPagination(totalItems) {
+            if (!paginationBar) return;
+            const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            if (totalItems === 0) {
+                paginationBar.style.display = 'none';
+                paginationBar.innerHTML = '';
+                return;
+            }
+
+            const start = (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            const pages = [];
+            const windowSize = 2;
+            let from = Math.max(1, currentPage - windowSize);
+            let to = Math.min(totalPages, currentPage + windowSize);
+            if (currentPage <= windowSize + 1) to = Math.min(totalPages, windowSize * 2 + 1);
+            if (currentPage >= totalPages - windowSize) from = Math.max(1, totalPages - windowSize * 2);
+
+            if (from > 1) {
+                pages.push(1);
+                if (from > 2) pages.push('…');
+            }
+            for (let i = from; i <= to; i++) pages.push(i);
+            if (to < totalPages) {
+                if (to < totalPages - 1) pages.push('…');
+                pages.push(totalPages);
+            }
+
+            const pageBtns = pages.map(p => {
+                if (p === '…') return `<span class="page-ellipsis">…</span>`;
+                const active = p === currentPage ? 'active' : '';
+                return `<button type="button" class="page-btn ${active}" data-page="${p}" ${p === currentPage ? 'aria-current="page"' : ''}>${p}</button>`;
+            }).join('');
+
+            paginationBar.innerHTML = `
+                <div class="pagination-info">
+                    Showing <strong>${start}–${end}</strong> of <strong>${totalItems}</strong>
+                    <span style="opacity:0.6;"> · Page ${currentPage}/${totalPages}</span>
+                </div>
+                <div class="pagination-controls">
+                    <button type="button" class="page-btn" data-page="prev" ${currentPage <= 1 ? 'disabled' : ''} aria-label="Previous page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    ${pageBtns}
+                    <button type="button" class="page-btn" data-page="next" ${currentPage >= totalPages ? 'disabled' : ''} aria-label="Next page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+            paginationBar.style.display = 'flex';
+
+            paginationBar.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const val = btn.dataset.page;
+                    let next = currentPage;
+                    if (val === 'prev') next = currentPage - 1;
+                    else if (val === 'next') next = currentPage + 1;
+                    else next = parseInt(val, 10);
+                    if (!next || next === currentPage || next < 1 || next > totalPages) return;
+                    currentPage = next;
+                    lastRenderKey = '';
+                    renderProducts();
+                    grid?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        }
+
+        function renderProducts() {
+            const filtered = getFilteredProducts();
 
             if (filtered.length === 0) {
                 grid.innerHTML =
                     `<div class="col-span-full text-center py-12 text-gray-500"><i class="fas fa-box-open text-5xl opacity-30"></i><p class="mt-3 text-lg">No products found.</p><p class="text-sm">Try adjusting your search or filters.</p></div>`;
+                renderPagination(0);
                 return;
             }
 
-            grid.innerHTML = filtered.map(p => {
+            const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const pageItems = filtered.slice(startIdx, startIdx + pageSize);
+
+            grid.innerHTML = pageItems.map(p => {
                 const rating = p.averageRating || 0;
                 const desc = p.desc || p.description || '';
                 const discount = getDiscountForProduct(p);
@@ -911,14 +1125,12 @@ onAuthStateChanged(auth, async (user) => {
                 let discountedPrice = null;
                 let priceHtml = '';
                 let badgeHtml = '';
-                let percentTagHtml = '';
 
                 if (discount) {
                     discountedPrice = originalPrice * (1 - discount.discountPercent / 100);
                     const percent = Math.round(discount.discountPercent);
                     const origFormatted = formatPriceUSD(originalPrice);
                     const discFormatted = formatPriceUSD(discountedPrice);
-                    const origBDT = getBDT(originalPrice);
                     const discBDT = getBDT(discountedPrice);
                     priceHtml = `
                         <span class="original-price">${origFormatted}</span>
@@ -936,7 +1148,6 @@ onAuthStateChanged(auth, async (user) => {
                     `;
                 }
 
-                // ── HTML preview vs image ──
                 const hasHtml = p.htmlContent && p.htmlContent.length > 0;
                 let previewHtml = '';
                 if (hasHtml) {
@@ -985,6 +1196,7 @@ onAuthStateChanged(auth, async (user) => {
             }).join('');
 
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+            renderPagination(filtered.length);
         }
 
         // ── listen to products & discounts (single coordinated render) ──
@@ -1025,17 +1237,37 @@ onAuthStateChanged(auth, async (user) => {
         });
 
         const debouncedSearchRender = debounce(() => {
-            lastRenderKey = ''; // force render on user filter change
+            currentPage = 1;
+            lastRenderKey = '';
             scheduleProductRender();
         }, 250);
         searchInput.addEventListener('input', debouncedSearchRender);
-        categoryFilter.addEventListener('change', () => { lastRenderKey = ''; scheduleProductRender(); });
-        sortFilter.addEventListener('change', () => { lastRenderKey = ''; scheduleProductRender(); });
+        categoryFilter.addEventListener('change', () => {
+            currentPage = 1;
+            lastRenderKey = '';
+            scheduleProductRender();
+        });
+        sortFilter.addEventListener('change', () => {
+            currentPage = 1;
+            lastRenderKey = '';
+            scheduleProductRender();
+        });
+
+        perPageSelect?.addEventListener('change', () => {
+            const n = parseInt(perPageSelect.value, 10);
+            pageSize = [6, 9, 12].includes(n) ? n : 9;
+            currentPage = 1;
+            lastRenderKey = '';
+            scheduleProductRender();
+        });
 
         window.resetFilters = () => {
             searchInput.value = '';
             categoryFilter.value = 'all';
             sortFilter.value = 'price-asc';
+            if (perPageSelect) perPageSelect.value = '9';
+            pageSize = 9;
+            currentPage = 1;
             lastRenderKey = '';
             scheduleProductRender();
         };
@@ -1102,7 +1334,7 @@ onAuthStateChanged(auth, async (user) => {
             }
         };
 
-        console.log('🚀 Store page: Try Now opens demo in a new tab.');
+        console.log('🚀 Store page: pagination (default 9/page, options 6/9/12) + Try Now demo tab.');
     </script>
 </body>
 </html>
