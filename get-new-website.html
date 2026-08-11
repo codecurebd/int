@@ -62,18 +62,12 @@
             height: 200px;
             pointer-events: none;
         }
-        .product-card .img-wrapper iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            background: #ffffff;
-        }
         .product-card .img-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            background: #f0f2f5;
         }
         .product-card .card-body {
             padding: 1rem 0.75rem 0.75rem;
@@ -1140,25 +1134,15 @@ onAuthStateChanged(auth, async (user) => {
                     `;
                 }
 
-                const hasHtml = p.htmlContent && p.htmlContent.length > 0;
-                let previewHtml = '';
-                if (hasHtml) {
-                    const escaped = escapeHtmlAttr(p.htmlContent);
-                    previewHtml = `
-                        <iframe 
-                            srcdoc="${escaped}" 
-                            scrolling="no" 
-                            loading="lazy" 
-                            sandbox="allow-scripts allow-same-origin"
-                            style="width:100%; height:100%; border:none; display:block; background:#ffffff;"
-                        ></iframe>
-                    `;
-                } else {
-                    const fallbackImg = p.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image';
-                    previewHtml = `
-                        <img src="${fallbackImg}" alt="${p.name}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;" />
-                    `;
-                }
+                // Static image only on store grid (no full HTML iframe) — major performance win
+                const hasHtml = !!(p.htmlContent && String(p.htmlContent).trim().length);
+                const imgSrc = (p.imageUrl && String(p.imageUrl).trim())
+                    ? String(p.imageUrl).trim()
+                    : ('https://via.placeholder.com/600x400/eef2f7/64748b?text=' + encodeURIComponent(String(p.name || 'Package').slice(0, 28)));
+                const safeName = String(p.name || 'Product').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+                const previewHtml = `
+                    <img src="${imgSrc}" alt="${safeName}" loading="lazy" decoding="async" width="600" height="400" style="width:100%; height:100%; object-fit:cover; display:block; background:#f0f2f5;" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/eef2f7/64748b?text=No+Image';" />
+                `;
 
                 return `
               <div class="glass-card product-card fade-up">
@@ -1317,7 +1301,7 @@ onAuthStateChanged(auth, async (user) => {
             }
         };
 
-        console.log('🚀 Store page: fixed 9 products per page + pagination + Try Now demo tab.');
+        console.log('🚀 Store page: fixed 9/page + image-only cards (no iframe) + Try Now demo.');
     </script>
 </body>
 </html>
