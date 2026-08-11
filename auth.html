@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Sign In – CodeCureBD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tailwind.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b1220;
+      color: #1c1c1e;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .auth-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+    }
+
+    /* ── Left brand panel ── */
+    .auth-brand {
+      position: relative;
+      overflow: hidden;
+      padding: 2.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(0,102,255,0.45), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 80% 80%, rgba(139,92,246,0.4), transparent 50%),
+        linear-gradient(160deg, #0b1220 0%, #121a2f 45%, #1a1040 100%);
+      color: #fff;
+    }
+    .auth-brand::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 20%, transparent 75%);
+      pointer-events: none;
+    }
+    .brand-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .brand-orb.o1 { width: 280px; height: 280px; background: #0066FF; top: -60px; right: -40px; }
+    .brand-orb.o2 { width: 220px; height: 220px; background: #8B5CF6; bottom: 10%; left: -50px; opacity: 0.4; }
+
+    .brand-top { position: relative; z-index: 1; }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-logo img {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+    .brand-logo span {
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-mid {
+      position: relative;
+      z-index: 1;
+      max-width: 420px;
+      margin: 3rem 0;
+    }
+    .brand-mid h1 {
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .brand-mid h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #7dd3fc, #c4b5fd);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .brand-mid p {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 1.75rem;
+    }
+    .brand-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .brand-points li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.88);
+      font-weight: 500;
+    }
+    .brand-points li i {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #a5b4fc;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .brand-bottom {
+      position: relative;
+      z-index: 1;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ── Right form panel ── */
+    .auth-panel {
+      background: linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      position: relative;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      box-shadow:
+        0 4px 6px rgba(15, 23, 42, 0.02),
+        0 20px 50px rgba(15, 23, 42, 0.08);
+      padding: 2rem 1.75rem 1.75rem;
+    }
+    @media (min-width: 480px) {
+      .auth-card { padding: 2.25rem 2.15rem 2rem; }
+    }
+
+    .auth-card-header {
+      margin-bottom: 1.5rem;
+    }
+    .auth-card-header h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+      margin-bottom: 0.35rem;
+    }
+    .auth-card-header p {
+      font-size: 0.92rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      background: #eef2f7;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+    }
+    .auth-tab {
+      border: none;
+      background: transparent;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s;
+    }
+    .auth-tab.active {
+      background: #fff;
+      color: #0f172a;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    }
+    .auth-tab:hover:not(.active) { color: #0066FF; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 0.4rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      background: #fff;
+      outline: none;
+      font-family: inherit;
+      color: #0f172a;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus {
+      border-color: #0066FF;
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+    }
+    .form-input::placeholder { color: #94a3b8; }
+    .input-wrap { position: relative; }
+    .input-wrap .toggle-pass {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      font-size: 0.95rem;
+      transition: color 0.15s;
+    }
+    .input-wrap .toggle-pass:hover { color: #0066FF; }
+    .input-wrap .form-input { padding-right: 44px; }
+
+    .auth-link {
+      color: #0066FF;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .auth-link:hover { text-decoration: underline; }
+
+    .btn-primary {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 14px;
+      min-height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      box-shadow: 0 8px 24px rgba(0, 102, 255, 0.28);
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 102, 255, 0.35);
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-outline {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: #334155;
+      padding: 13px 18px;
+      border-radius: 14px;
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .btn-outline:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.25rem 0;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .msg {
+      margin-top: 0.85rem;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      text-align: center;
+      line-height: 1.45;
+      display: none;
+    }
+    .msg.error { display: block; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .msg.success { display: block; background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+    .auth-footer-note {
+      margin-top: 1.25rem;
+      text-align: center;
+      font-size: 0.88rem;
+      color: #64748b;
+    }
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1.25rem;
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .back-home:hover { color: #0066FF; }
+
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .field-row { display: none; }
+    .field-row.show { display: block; }
+    #forgotPanel { display: none; }
+    #forgotPanel.show { display: block; }
+    #mainPanel.hide { display: none; }
+
+    /* Tablet & below: stack layout; keep brand text on tablet */
+    @media (max-width: 900px) {
+      .auth-shell { grid-template-columns: 1fr; }
+      .auth-brand {
+        min-height: auto;
+        padding: 1.5rem 1.25rem 1.75rem;
+      }
+      .brand-mid { margin: 1.25rem 0 0.75rem; max-width: none; }
+      .brand-mid h1 { font-size: 1.45rem; }
+      .brand-mid p { font-size: 0.88rem; margin-bottom: 0.75rem; }
+      .brand-points { display: none; }
+      .brand-bottom { display: none; }
+      .auth-panel { padding: 0 1rem 2rem; margin-top: -12px; }
+      .auth-card {
+        border-radius: 24px 24px 28px 28px;
+      }
+    }
+
+    /* Mobile only: hide brand headline + description */
+    @media (max-width: 640px) {
+      .brand-mid { display: none !important; }
+      .auth-brand {
+        padding: 1.15rem 1.15rem 1.25rem;
+      }
+      .auth-panel { margin-top: -8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-shell">
+    <!-- Brand side -->
+    <aside class="auth-brand" aria-hidden="false">
+      <div class="brand-orb o1"></div>
+      <div class="brand-orb o2"></div>
+      <div class="brand-top">
+        <a href="index.html" class="brand-logo">
+          <img src="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" alt="CodeCureBD" />
+          <span>CodeCureBD</span>
+        </a>
+      </div>
+      <div class="brand-mid">
+        <h1>Build &amp; fix websites with <em>confidence</em></h1>
+        <p>Sign in to track orders, chat with support, manage fix requests, and unlock your dashboard.</p>
+        <ul class="brand-points">
+          <li><i class="fas fa-shield-halved"></i> Secure Firebase authentication</li>
+          <li><i class="fas fa-bolt"></i> Fast checkout &amp; order tracking</li>
+          <li><i class="fas fa-headset"></i> Real-time support chat</li>
+        </ul>
+      </div>
+      <div class="brand-bottom">© CodeCureBD · Trusted website packages for Bangladesh</div>
+    </aside>
+
+    <!-- Form side -->
+    <main class="auth-panel">
+      <div class="auth-card">
+        <div class="auth-card-header">
+          <h2 id="authTitle">Welcome back</h2>
+          <p id="authSubtitle">Sign in to continue to your account</p>
+        </div>
+
+        <div id="mainPanel">
+          <div class="auth-tabs" role="tablist">
+            <button type="button" class="auth-tab active" id="tabSignin" data-mode="signin">Sign In</button>
+            <button type="button" class="auth-tab" id="tabSignup" data-mode="signup">Sign Up</button>
+          </div>
+
+          <form id="authForm" autocomplete="on">
+            <div class="form-group field-row" id="nameField">
+              <label for="authName">Full Name *</label>
+              <input type="text" id="authName" class="form-input" placeholder="Your full name" autocomplete="name" />
+            </div>
+
+            <div class="form-group field-row" id="phoneField">
+              <label for="authPhone">Phone Number</label>
+              <input type="tel" id="authPhone" class="form-input" placeholder="+880 1XXX-XXXXXX" autocomplete="tel" />
+            </div>
+
+            <div class="form-group">
+              <label for="authEmail">Email *</label>
+              <input type="email" id="authEmail" class="form-input" placeholder="you@email.com" required autocomplete="email" />
+            </div>
+
+            <div class="form-group">
+              <label for="authPassword">Password *</label>
+              <div class="input-wrap">
+                <input type="password" id="authPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
+                <button type="button" class="toggle-pass" data-target="authPassword" aria-label="Show password"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+
+            <div class="form-group field-row" id="confirmPasswordField">
+              <label for="authConfirmPassword">Confirm Password *</label>
+              <div class="input-wrap">
+                <input type="password" id="authConfirmPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" />
+                <button type="button" class="toggle-pass" data-target="authConfirmPassword" aria-label="Show password"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+
+            <div id="forgotPasswordLink" style="text-align:right; margin:-4px 0 14px;">
+              <a href="#" id="forgotTrigger" class="auth-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-primary" id="authSubmitBtn">Sign In</button>
+          </form>
+
+          <div class="divider">or continue with</div>
+
+          <button type="button" class="btn-outline" id="googleBtn">
+            <i class="fab fa-google" style="color:#ea4335;"></i> Continue with Google
+          </button>
+
+          <p class="auth-footer-note" id="authToggleNote">
+            Don't have an account? <a href="#" id="authToggleLink" class="auth-link">Sign Up</a>
+          </p>
+        </div>
+
+        <!-- Forgot password panel -->
+        <div id="forgotPanel">
+          <p style="font-size:0.9rem;color:#64748b;margin-bottom:1.1rem;line-height:1.5;">
+            Enter your email and we’ll send a link to reset your password.
+          </p>
+          <form id="forgotPasswordForm">
+            <div class="form-group">
+              <label for="forgotEmail">Email Address *</label>
+              <input type="email" id="forgotEmail" class="form-input" placeholder="you@email.com" required autocomplete="email" />
+            </div>
+            <button type="submit" class="btn-primary" id="forgotSubmitBtn">
+              <i class="fas fa-paper-plane"></i> Send Reset Link
+            </button>
+            <button type="button" class="btn-outline" id="backToSignIn" style="margin-top:10px;">
+              ← Back to Sign In
+            </button>
+          </form>
+        </div>
+
+        <div id="authError" class="msg error"></div>
+        <div id="authSuccess" class="msg success"></div>
+
+        <div style="text-align:center;">
+          <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to home</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import {
+      auth, onAuthStateChanged, db, doc, getDoc, setDoc,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword,
+      sendPasswordResetEmail, sendEmailVerification,
+      signInWithPopup, googleProvider
+    } from './firebase-config.js';
+    import { setLoading } from './components.js';
+    const showToast = (msg, type='success') => { if (typeof window.showToast === 'function') window.showToast(msg, type); };
+
+    let currentAuthMode = 'signin'; // signin | signup | forgot
+
+    const params = new URLSearchParams(window.location.search);
+    const modeParam = (params.get('mode') || 'signin').toLowerCase();
+    if (['signin', 'signup', 'forgot'].includes(modeParam)) currentAuthMode = modeParam;
+
+    function safeRedirectTarget(raw) {
+      if (!raw) return 'index.html';
+      try {
+        // only allow relative same-site paths
+        if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('//')) return 'index.html';
+        if (raw.includes('..')) return 'index.html';
+        if (raw.includes('admin-')) return 'index.html';
+        return raw;
+      } catch {
+        return 'index.html';
+      }
+    }
+
+    const redirectTo = safeRedirectTarget(params.get('redirect') || sessionStorage.getItem('ccbd_auth_redirect') || 'index.html');
+
+    // If already signed in, bounce away
+    onAuthStateChanged(auth, (user) => {
+      if (user && currentAuthMode !== 'forgot') {
+        // small delay so toast can show after manual login
+      }
+    });
+
+    function clearMessages() {
+      const err = document.getElementById('authError');
+      const ok = document.getElementById('authSuccess');
+      if (err) { err.style.display = 'none'; err.textContent = ''; }
+      if (ok) { ok.style.display = 'none'; ok.textContent = ''; }
+    }
+
+    function showError(msg) {
+      const err = document.getElementById('authError');
+      if (!err) return;
+      err.textContent = '⚠️ ' + msg;
+      err.style.display = 'block';
+      document.getElementById('authSuccess').style.display = 'none';
+    }
+
+    function showSuccess(msg) {
+      const ok = document.getElementById('authSuccess');
+      if (!ok) return;
+      ok.innerHTML = msg;
+      ok.style.display = 'block';
+      document.getElementById('authError').style.display = 'none';
+    }
+
+    function updateUI() {
+      const title = document.getElementById('authTitle');
+      const subtitle = document.getElementById('authSubtitle');
+      const mainPanel = document.getElementById('mainPanel');
+      const forgotPanel = document.getElementById('forgotPanel');
+      const nameField = document.getElementById('nameField');
+      const phoneField = document.getElementById('phoneField');
+      const confirmField = document.getElementById('confirmPasswordField');
+      const forgotLink = document.getElementById('forgotPasswordLink');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const toggleNote = document.getElementById('authToggleNote');
+      const tabSignin = document.getElementById('tabSignin');
+      const tabSignup = document.getElementById('tabSignup');
+      const passInput = document.getElementById('authPassword');
+
+      clearMessages();
+
+      if (currentAuthMode === 'forgot') {
+        mainPanel.classList.add('hide');
+        forgotPanel.classList.add('show');
+        title.textContent = 'Reset password';
+        subtitle.textContent = 'We’ll email you a secure reset link';
+        document.title = 'Reset Password – CodeCureBD';
+        setTimeout(() => document.getElementById('forgotEmail')?.focus(), 50);
+        return;
+      }
+
+      mainPanel.classList.remove('hide');
+      forgotPanel.classList.remove('show');
+
+      tabSignin.classList.toggle('active', currentAuthMode === 'signin');
+      tabSignup.classList.toggle('active', currentAuthMode === 'signup');
+
+      if (currentAuthMode === 'signin') {
+        title.textContent = 'Welcome back';
+        subtitle.textContent = 'Sign in to continue to your account';
+        nameField.classList.remove('show');
+        phoneField.classList.remove('show');
+        confirmField.classList.remove('show');
+        forgotLink.style.display = 'block';
+        submitBtn.textContent = 'Sign In';
+        toggleNote.innerHTML = `Don't have an account? <a href="#" id="authToggleLink" class="auth-link">Sign Up</a>`;
+        if (passInput) passInput.autocomplete = 'current-password';
+        document.title = 'Sign In – CodeCureBD';
+      } else {
+        title.textContent = 'Create account';
+        subtitle.textContent = 'Join CodeCureBD in under a minute';
+        nameField.classList.add('show');
+        phoneField.classList.add('show');
+        confirmField.classList.add('show');
+        forgotLink.style.display = 'none';
+        submitBtn.textContent = 'Create Account';
+        toggleNote.innerHTML = `Already have an account? <a href="#" id="authToggleLink" class="auth-link">Sign In</a>`;
+        if (passInput) passInput.autocomplete = 'new-password';
+        document.title = 'Sign Up – CodeCureBD';
+      }
+
+      // rebind toggle link after innerHTML replace
+      document.getElementById('authToggleLink')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentAuthMode = currentAuthMode === 'signin' ? 'signup' : 'signin';
+        history.replaceState(null, '', `auth.html?mode=${currentAuthMode}${redirectTo && redirectTo !== 'index.html' ? '&redirect=' + encodeURIComponent(redirectTo) : ''}`);
+        updateUI();
+      });
+
+      setTimeout(() => {
+        const focusEl = currentAuthMode === 'signup'
+          ? document.getElementById('authName')
+          : document.getElementById('authEmail');
+        focusEl?.focus();
+      }, 50);
+    }
+
+    // Tabs
+    document.getElementById('tabSignin')?.addEventListener('click', () => {
+      currentAuthMode = 'signin';
+      history.replaceState(null, '', `auth.html?mode=signin${redirectTo !== 'index.html' ? '&redirect=' + encodeURIComponent(redirectTo) : ''}`);
+      updateUI();
+    });
+    document.getElementById('tabSignup')?.addEventListener('click', () => {
+      currentAuthMode = 'signup';
+      history.replaceState(null, '', `auth.html?mode=signup${redirectTo !== 'index.html' ? '&redirect=' + encodeURIComponent(redirectTo) : ''}`);
+      updateUI();
+    });
+
+    document.getElementById('forgotTrigger')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentAuthMode = 'forgot';
+      history.replaceState(null, '', `auth.html?mode=forgot`);
+      updateUI();
+    });
+    document.getElementById('backToSignIn')?.addEventListener('click', () => {
+      currentAuthMode = 'signin';
+      history.replaceState(null, '', `auth.html?mode=signin`);
+      updateUI();
+    });
+
+    // Password visibility
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.target;
+        const input = document.getElementById(id);
+        if (!input) return;
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (icon) icon.className = 'fas fa-eye-slash';
+        } else {
+          input.type = 'password';
+          if (icon) icon.className = 'fas fa-eye';
+        }
+      });
+    });
+
+    function goAfterAuth() {
+      sessionStorage.removeItem('ccbd_auth_redirect');
+      window.location.href = redirectTo || 'index.html';
+    }
+
+    document.getElementById('authForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessages();
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const name = document.getElementById('authName')?.value.trim() || '';
+      const phone = document.getElementById('authPhone')?.value.trim() || '';
+      const confirmPassword = document.getElementById('authConfirmPassword')?.value || '';
+      const submitBtn = document.getElementById('authSubmitBtn');
+
+      setLoading(submitBtn, true);
+
+      try {
+        if (currentAuthMode === 'signin') {
+          await signInWithEmailAndPassword(auth, email, password);
+          showToast('✅ Signed in successfully!', 'success');
+          goAfterAuth();
+        } else if (currentAuthMode === 'signup') {
+          if (!name) throw new Error('Please enter your full name');
+          if (password.length < 6) throw new Error('Password must be at least 6 characters');
+          if (password !== confirmPassword) throw new Error('Passwords do not match');
+
+          const userCred = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCred.user;
+
+          await setDoc(doc(db, 'users', user.uid), {
+            email,
+            displayName: name,
+            phone: phone || '',
+            role: 'user',
+            createdAt: new Date().toISOString(),
+            isActive: true,
+            emailVerified: false
+          });
+
+          try { await sendEmailVerification(user); } catch (ve) { console.warn('Verification email failed:', ve); }
+
+          showToast('✅ Account created successfully!', 'success');
+          goAfterAuth();
+        }
+      } catch (error) {
+        console.error(error);
+        let msg = error.message;
+        if (error.code === 'auth/email-already-in-use') msg = 'This email is already registered';
+        else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = 'Incorrect email or password';
+        else if (error.code === 'auth/user-not-found') msg = 'No account found with this email';
+        else if (error.code === 'auth/weak-password') msg = 'Password is too weak (min 6 characters)';
+        else if (error.code === 'auth/invalid-email') msg = 'Invalid email address';
+        else if (error.code === 'auth/too-many-requests') msg = 'Too many attempts. Try again later';
+        showError(msg);
+      } finally {
+        setLoading(submitBtn, false);
+      }
+    });
+
+    document.getElementById('forgotPasswordForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessages();
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!email) { showError('Please enter your email'); return; }
+
+      const btn = document.getElementById('forgotSubmitBtn');
+      setLoading(btn, true, 'Sending...');
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showSuccess('✅ Password reset link sent!<br>Check your inbox and spam folder.');
+        showToast('✅ Reset link sent to your email', 'success');
+      } catch (error) {
+        let msg = error.message;
+        if (error.code === 'auth/user-not-found') msg = 'No account found with this email';
+        else if (error.code === 'auth/invalid-email') msg = 'Invalid email address';
+        showError(msg);
+      } finally {
+        setLoading(btn, false);
+      }
+    });
+
+    document.getElementById('googleBtn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('googleBtn');
+      btn.disabled = true;
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists()) {
+          await setDoc(doc(db, 'users', user.uid), {
+            email: user.email || '',
+            displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+            photoURL: user.photoURL || '',
+            phone: '',
+            role: 'user',
+            createdAt: new Date().toISOString(),
+            isActive: true,
+            emailVerified: !!user.emailVerified,
+          });
+        }
+        showToast('✅ Signed in with Google', 'success');
+        goAfterAuth();
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        let msg = error.message || 'Sign-in failed';
+        if (error.code === 'auth/popup-closed-by-user') msg = 'Sign-in cancelled';
+        else if (error.code === 'auth/popup-blocked') msg = 'Popup blocked. Please allow popups.';
+        else if (error.code === 'auth/unauthorized-domain') msg = 'Domain not authorized in Firebase.';
+        else if (error.code === 'auth/operation-not-allowed') msg = 'Google sign-in is not enabled.';
+        showError(msg);
+        showToast('⚠️ ' + msg, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
