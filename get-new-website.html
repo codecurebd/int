@@ -69,6 +69,36 @@
             display: block;
             background: #f0f2f5;
         }
+        .product-thumb-fallback {
+            width: 100%;
+            height: 100%;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            text-align: center;
+            background: linear-gradient(145deg, #eef2ff 0%, #e0e7ff 45%, #f5f3ff 100%);
+            color: #4338ca;
+            box-sizing: border-box;
+        }
+        .product-thumb-fallback i {
+            font-size: 2rem;
+            opacity: 0.85;
+        }
+        .product-thumb-fallback span {
+            font-size: 0.9rem;
+            font-weight: 700;
+            line-height: 1.3;
+            max-width: 90%;
+            color: #312e81;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
         .product-card .card-body {
             padding: 1rem 0.75rem 0.75rem;
         }
@@ -1136,13 +1166,27 @@ onAuthStateChanged(auth, async (user) => {
 
                 // Static image only on store grid (no full HTML iframe) — major performance win
                 const hasHtml = !!(p.htmlContent && String(p.htmlContent).trim().length);
-                const imgSrc = (p.imageUrl && String(p.imageUrl).trim())
-                    ? String(p.imageUrl).trim()
-                    : ('https://via.placeholder.com/600x400/eef2f7/64748b?text=' + encodeURIComponent(String(p.name || 'Package').slice(0, 28)));
-                const safeName = String(p.name || 'Product').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-                const previewHtml = `
-                    <img src="${imgSrc}" alt="${safeName}" loading="lazy" decoding="async" width="600" height="400" style="width:100%; height:100%; object-fit:cover; display:block; background:#f0f2f5;" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400/eef2f7/64748b?text=No+Image';" />
-                `;
+                const safeName = String(p.name || 'Product')
+                    .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                const imgUrl = (p.imageUrl && String(p.imageUrl).trim()) ? String(p.imageUrl).trim() : '';
+                let previewHtml = '';
+                if (imgUrl) {
+                    previewHtml = `
+                    <img src="${imgUrl.replace(/"/g, '')}" alt="${safeName}" loading="lazy" decoding="async" width="600" height="400"
+                         style="width:100%; height:100%; object-fit:cover; display:block; background:#eef2f7;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="product-thumb-fallback" style="display:none;">
+                      <i class="fas fa-globe"></i>
+                      <span>${safeName}</span>
+                    </div>`;
+                } else {
+                    // Local CSS placeholder — no external network, always visible
+                    previewHtml = `
+                    <div class="product-thumb-fallback">
+                      <i class="fas fa-globe"></i>
+                      <span>${safeName}</span>
+                    </div>`;
+                }
 
                 return `
               <div class="glass-card product-card fade-up">
