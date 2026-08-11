@@ -2219,6 +2219,8 @@ document.addEventListener('keydown', (e) => {
 let currentAuthMode = 'signin'; // signin | signup | forgot
 
 export function renderAuthModal() {
+  // Auth is a dedicated page now — do not inject popup modal
+  return;
   if (document.getElementById('authModal')) return;
 
   const modalHTML = `
@@ -2485,17 +2487,17 @@ async function handleForgotPassword(e) {
 }
 
 window.openAuthModal = function(mode = 'signin') {
-  currentAuthMode = mode;
-  renderAuthModal();
-  updateAuthUI();
-  clearAuthMessages();
-  document.getElementById('authModal').classList.remove('hidden');
-  setTimeout(() => {
-    const firstInput = currentAuthMode === 'forgot'
-      ? document.getElementById('forgotEmail')
-      : document.getElementById('authEmail');
-    firstInput?.focus();
-  }, 100);
+  // Redirect to dedicated auth page (popup removed)
+  const m = (mode === 'signup' || mode === 'forgot' || mode === 'signin') ? mode : 'signin';
+  try {
+    const page = (window.location.pathname || '').split('/').pop() || 'index.html';
+    if (page && page !== 'auth.html') {
+      sessionStorage.setItem('ccbd_auth_redirect', page + (window.location.search || ''));
+    }
+  } catch (_) {}
+  let redirect = 'index.html';
+  try { redirect = sessionStorage.getItem('ccbd_auth_redirect') || 'index.html'; } catch (_) {}
+  window.location.href = 'auth.html?mode=' + encodeURIComponent(m) + '&redirect=' + encodeURIComponent(redirect);
 };
 
 window.closeAuthModal = function() {
