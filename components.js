@@ -2219,8 +2219,6 @@ document.addEventListener('keydown', (e) => {
 let currentAuthMode = 'signin'; // signin | signup | forgot
 
 export function renderAuthModal() {
-  // Auth UI is now on auth.html — popup disabled
-  return;
   if (document.getElementById('authModal')) return;
 
   const modalHTML = `
@@ -2487,22 +2485,20 @@ async function handleForgotPassword(e) {
 }
 
 window.openAuthModal = function(mode = 'signin') {
-  // Auth moved to dedicated page (auth.html) — no popup
-  const m = ['signin', 'signup', 'forgot'].includes(mode) ? mode : 'signin';
-  try {
-    const here = window.location.pathname.split('/').pop() || 'index.html';
-    if (here && here !== 'auth.html') {
-      sessionStorage.setItem('ccbd_auth_redirect', here + (window.location.search || ''));
-    }
-  } catch (_) {}
-  const redirect = encodeURIComponent(
-    (sessionStorage.getItem('ccbd_auth_redirect') || 'index.html')
-  );
-  window.location.href = `auth.html?mode=${m}&redirect=${redirect}`;
+  currentAuthMode = mode;
+  renderAuthModal();
+  updateAuthUI();
+  clearAuthMessages();
+  document.getElementById('authModal').classList.remove('hidden');
+  setTimeout(() => {
+    const firstInput = currentAuthMode === 'forgot'
+      ? document.getElementById('forgotEmail')
+      : document.getElementById('authEmail');
+    firstInput?.focus();
+  }, 100);
 };
 
 window.closeAuthModal = function() {
-  // no-op (popup removed)
   document.getElementById('authModal')?.classList.add('hidden');
 };
 
@@ -2606,7 +2602,7 @@ function _supportIsMessagesPage() {
 
 function _supportIsAdminPage() {
   const p = (window.location.pathname || '').toLowerCase();
-  return p.includes('admin-panel') || p.includes('admin-login');
+  return p.includes('admin-panel') || p.includes('admin-login') || p.includes('auth.html') || p.endsWith('/auth') || p.includes('/auth?');
 }
 
 function _injectSupportStyles() {
@@ -2995,5 +2991,5 @@ if (typeof document !== 'undefined') {
   }
 }
 
-console.log('✅ components.js: Auth page redirect + Auth Cache + Notifications + Support Widget loaded.');
+console.log('✅ components.js: Auth Modal + Auth Cache + Notifications + Support Widget loaded.');
 

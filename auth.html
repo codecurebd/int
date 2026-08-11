@@ -396,13 +396,43 @@
       }
     }
 
-    /* Mobile only: hide brand headline + description */
+    /* Mobile only: white header, hide brand copy, soft logo shadow */
     @media (max-width: 640px) {
-      .brand-mid { display: none !important; }
-      .auth-brand {
-        padding: 1.15rem 1.15rem 1.25rem;
+      body {
+        background: #ffffff !important;
       }
-      .auth-panel { margin-top: -8px; }
+      .auth-brand {
+        background: #ffffff !important;
+        padding: 1.1rem 1.15rem 0.85rem !important;
+        min-height: auto;
+      }
+      .auth-brand::before,
+      .brand-orb {
+        display: none !important;
+      }
+      .brand-mid,
+      .brand-points,
+      .brand-bottom {
+        display: none !important;
+      }
+      .brand-logo {
+        color: #0f172a;
+      }
+      .brand-logo span {
+        color: #0f172a;
+        text-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+      }
+      .brand-logo img {
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.14);
+      }
+      .auth-panel {
+        margin-top: 0;
+        padding: 0.5rem 1rem 2rem;
+        background: #ffffff;
+      }
+      .auth-card {
+        box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+      }
     }
   </style>
 </head>
@@ -422,9 +452,9 @@
         <h1>Build &amp; fix websites with <em>confidence</em></h1>
         <p>Sign in to track orders, chat with support, manage fix requests, and unlock your dashboard.</p>
         <ul class="brand-points">
-          <li><i class="fas fa-shield-halved"></i> Secure Firebase authentication</li>
+          <li><i class="fas fa-lock"></i> Secure Firebase authentication</li>
           <li><i class="fas fa-bolt"></i> Fast checkout &amp; order tracking</li>
-          <li><i class="fas fa-headset"></i> Real-time support chat</li>
+          <li><i class="fas fa-comments"></i> Real-time support chat</li>
         </ul>
       </div>
       <div class="brand-bottom">© CodeCureBD · Trusted website packages for Bangladesh</div>
