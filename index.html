@@ -659,11 +659,20 @@
     #topBannerAd {
       display: none;
       width: 100%;
-      background: #0f172a;
+      background: #f2f4f7; /* light bg — no black sides */
       text-align: center;
       line-height: 0;
       position: relative;
       z-index: 40;
+      /* sit below fixed navbar (h-[72px] / md:h-[80px]) */
+      margin-top: 72px;
+      padding: 6px 0;
+    }
+    @media (min-width: 768px) {
+      #topBannerAd {
+        margin-top: 80px;
+        padding: 8px 0;
+      }
     }
     #topBannerAd.visible { display: block; }
     #topBannerAd a { display: block; }
@@ -674,11 +683,12 @@
       max-height: 90px;
       object-fit: contain;
       margin: 0 auto;
+      display: block;
     }
     @media (max-width: 640px) {
       #topBannerAd img {
-        max-width: 300px;
-        max-height: 50px;
+        max-width: 100%;
+        max-height: 60px;
       }
     }
 
