@@ -1993,6 +1993,8 @@
             <button class="nav-item" data-tab="fixrequests"><i class="fas fa-wrench"></i> Fix Requests</button>
             <button class="nav-item" data-tab="ratings"><i class="fas fa-star"></i> Ratings</button>
             <button class="nav-item" data-tab="discounts"><i class="fas fa-tags"></i> Discounts</button>
+            <button class="nav-item" data-tab="bannerad"><i class="fas fa-ad"></i> Banner Ad</button>
+            <button class="nav-item" data-tab="campaign"><i class="fas fa-bullhorn"></i> Campaign</button>
             <button class="nav-item" data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
             <button class="nav-item" data-tab="supportchat"><i class="fas fa-comments"></i> Support Chat</button>
         </div>
@@ -2420,6 +2422,111 @@
             </div>
 
             <!-- SETTINGS -->
+
+            <!-- ===== BANNER AD ===== -->
+            <div id="tab-bannerad" class="tab-content">
+                <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Banner Ad</h2>
+                <p class="text-sm text-gray-500 mb-4">Top banner on the landing page. Desktop 728×90 · Mobile 300×50. Leave empty to hide.</p>
+                <div class="glass-card max-w-xl">
+                    <div id="bannerPreviewBox" class="mb-4 hidden">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Current banner</p>
+                        <img id="bannerPreviewImg" src="" alt="Banner" class="w-full rounded-xl border border-gray-200 max-h-32 object-contain bg-gray-50" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Upload banner image</label>
+                        <input type="file" id="bannerFileInput" accept="image/*" class="form-input" />
+                        <p class="text-xs text-gray-400 mt-1">Recommended: 728×90 (leaderboard). Crop tool opens after select.</p>
+                    </div>
+                    <div id="bannerCropArea" class="hidden mb-4">
+                        <div class="relative bg-gray-900 rounded-xl overflow-hidden" style="max-height:280px;">
+                            <img id="bannerCropImg" src="" alt="Crop" style="max-width:100%; display:block; margin:0 auto;" />
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <label class="text-xs text-gray-600">Target:
+                                <select id="bannerCropTarget" class="form-input form-input-sm inline-block w-auto ml-1">
+                                    <option value="728x90">Desktop 728×90</option>
+                                    <option value="300x50">Mobile 300×50</option>
+                                </select>
+                            </label>
+                            <button type="button" id="bannerCropApply" class="btn-primary text-sm py-2 px-4"><i class="fas fa-crop"></i> Crop &amp; Upload</button>
+                            <button type="button" id="bannerCropCancel" class="btn-outline text-sm py-2 px-4">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" id="bannerRemoveBtn" class="btn-outline text-sm py-2 px-4 text-red-600"><i class="fas fa-trash"></i> Remove Banner</button>
+                    </div>
+                    <p id="bannerStatus" class="text-sm mt-3 text-gray-500"></p>
+                </div>
+            </div>
+
+            <!-- ===== CAMPAIGN ===== -->
+            <div id="tab-campaign" class="tab-content">
+                <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Campaign</h2>
+                <p class="text-sm text-gray-500 mb-4">Only one active campaign at a time. Users pay ৳500 advance from the campaign page.</p>
+
+                <div class="glass-card mb-6 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-3" id="campaignFormTitle">Create Campaign</h3>
+                    <form id="campaignAdminForm" class="space-y-3">
+                        <input type="hidden" id="campaignEditId" value="" />
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+                            <input type="text" id="campTitle" class="form-input" required placeholder="Basic E-commerce Special" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="campDesc" rows="3" class="form-input" placeholder="Short description..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Original Price (BDT)</label>
+                                <input type="number" id="campOriginalPrice" class="form-input" min="0" placeholder="15000" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Price (BDT) *</label>
+                                <input type="number" id="campPrice" class="form-input" min="0" required placeholder="1999" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Special Price (BDT)</label>
+                                <input type="number" id="campSpecialPrice" class="form-input" min="0" placeholder="999" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Total Slots *</label>
+                                <input type="number" id="campTotalSlots" class="form-input" min="1" value="12" required />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Special Slots</label>
+                                <input type="number" id="campSpecialSlots" class="form-input" min="0" value="3" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Advance (BDT)</label>
+                                <input type="number" id="campAdvance" class="form-input" min="1" value="500" />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Features (one per line)</label>
+                            <textarea id="campFeatures" rows="4" class="form-input" placeholder="Responsive design&#10;SEO ready&#10;24h delivery"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Image</label>
+                            <input type="file" id="campImageFile" accept="image/*" class="form-input" />
+                            <input type="hidden" id="campImageUrl" value="" />
+                            <img id="campImagePreview" class="mt-2 rounded-xl max-h-40 hidden border" alt="" />
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="submit" class="btn-primary" id="campSubmitBtn"><i class="fas fa-save"></i> Save Campaign</button>
+                            <button type="button" id="campCancelEdit" class="btn-outline hidden">Cancel Edit</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="glass-card">
+                    <h3 class="text-lg font-semibold mb-3">Campaigns</h3>
+                    <div id="campaignAdminList" class="space-y-3 text-sm text-gray-500">Loading…</div>
+                </div>
+            </div>
+
             <div id="tab-settings" class="tab-content">
                 <h2 class="text-2xl font-bold" style="color:#1c1c1e;">Settings</h2>
 
@@ -2664,12 +2771,12 @@
         import {
             auth, db,
             collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc,
-            onSnapshot, query, where, serverTimestamp,
+            onSnapshot, query, where, serverTimestamp, increment,
             signOut, onAuthStateChanged,
             EmailAuthProvider, reauthenticateWithCredential,
             adminCreateUser, adminDeleteUser
         } from './firebase-config.js';
-        import { setLoading } from './components.js';
+        import { setLoading, uploadImage } from './components.js';
 
         // ===== DOM =====
         const loader = document.getElementById('adminLoader');
@@ -5618,6 +5725,311 @@
             }
             initMessenger();
 
+
+            // ==============================================================
+            // BANNER AD + CAMPAIGN ADMIN
+            // ==============================================================
+            (function initBannerAndCampaign() {
+                const bannerStatus = document.getElementById('bannerStatus');
+                const bannerPreviewBox = document.getElementById('bannerPreviewBox');
+                const bannerPreviewImg = document.getElementById('bannerPreviewImg');
+                let bannerCropObjectUrl = null;
+                let bannerSourceFile = null;
+
+                async function loadBanner() {
+                    try {
+                        const snap = await getDoc(doc(db, 'settings', 'bannerAd'));
+                        if (snap.exists() && snap.data().imageUrl) {
+                            bannerPreviewImg.src = snap.data().imageUrl;
+                            bannerPreviewBox.classList.remove('hidden');
+                            if (bannerStatus) bannerStatus.textContent = 'Banner is active on the landing page.';
+                        } else {
+                            bannerPreviewBox.classList.add('hidden');
+                            if (bannerStatus) bannerStatus.textContent = 'No banner set.';
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        if (bannerStatus) bannerStatus.textContent = 'Error loading banner.';
+                    }
+                }
+                loadBanner();
+
+                // Simple crop: draw image into canvas at target size (center-crop)
+                function cropToSize(imgEl, tw, th) {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = tw;
+                    canvas.height = th;
+                    const ctx = canvas.getContext('2d');
+                    const sw = imgEl.naturalWidth;
+                    const sh = imgEl.naturalHeight;
+                    const scale = Math.max(tw / sw, th / sh);
+                    const rw = sw * scale;
+                    const rh = sh * scale;
+                    const ox = (tw - rw) / 2;
+                    const oy = (th - rh) / 2;
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, tw, th);
+                    ctx.drawImage(imgEl, ox, oy, rw, rh);
+                    return new Promise((resolve, reject) => {
+                        canvas.toBlob((blob) => {
+                            if (!blob) reject(new Error('Crop failed'));
+                            else resolve(blob);
+                        }, 'image/jpeg', 0.92);
+                    });
+                }
+
+                document.getElementById('bannerFileInput')?.addEventListener('change', (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        showToast('Please select an image', 'warning');
+                        return;
+                    }
+                    bannerSourceFile = file;
+                    if (bannerCropObjectUrl) URL.revokeObjectURL(bannerCropObjectUrl);
+                    bannerCropObjectUrl = URL.createObjectURL(file);
+                    const cropImg = document.getElementById('bannerCropImg');
+                    cropImg.src = bannerCropObjectUrl;
+                    document.getElementById('bannerCropArea').classList.remove('hidden');
+                });
+
+                document.getElementById('bannerCropCancel')?.addEventListener('click', () => {
+                    document.getElementById('bannerCropArea').classList.add('hidden');
+                    document.getElementById('bannerFileInput').value = '';
+                    bannerSourceFile = null;
+                });
+
+                document.getElementById('bannerCropApply')?.addEventListener('click', async () => {
+                    const cropImg = document.getElementById('bannerCropImg');
+                    if (!cropImg?.src) return;
+                    const target = document.getElementById('bannerCropTarget')?.value || '728x90';
+                    const [tw, th] = target.split('x').map(Number);
+                    try {
+                        if (bannerStatus) bannerStatus.textContent = 'Cropping & uploading…';
+                        // wait for image decode
+                        await cropImg.decode?.().catch(() => {});
+                        const blob = await cropToSize(cropImg, tw, th);
+                        const file = new File([blob], `banner-${tw}x${th}.jpg`, { type: 'image/jpeg' });
+                        const url = await uploadImage(file);
+                        await setDoc(doc(db, 'settings', 'bannerAd'), {
+                            imageUrl: url,
+                            width: tw,
+                            height: th,
+                            active: true,
+                            updatedAt: serverTimestamp()
+                        }, { merge: true });
+                        bannerPreviewImg.src = url;
+                        bannerPreviewBox.classList.remove('hidden');
+                        document.getElementById('bannerCropArea').classList.add('hidden');
+                        document.getElementById('bannerFileInput').value = '';
+                        if (bannerStatus) bannerStatus.textContent = '✅ Banner saved.';
+                        showToast('✅ Banner uploaded', 'success');
+                    } catch (err) {
+                        console.error(err);
+                        showToast('⚠️ ' + err.message, 'error');
+                        if (bannerStatus) bannerStatus.textContent = 'Upload failed.';
+                    }
+                });
+
+                document.getElementById('bannerRemoveBtn')?.addEventListener('click', async () => {
+                    const ok = confirm('Remove the landing page banner?');
+                    if (!ok) return;
+                    try {
+                        await setDoc(doc(db, 'settings', 'bannerAd'), {
+                            imageUrl: '',
+                            active: false,
+                            updatedAt: serverTimestamp()
+                        }, { merge: true });
+                        bannerPreviewBox.classList.add('hidden');
+                        bannerPreviewImg.src = '';
+                        if (bannerStatus) bannerStatus.textContent = 'Banner removed.';
+                        showToast('✅ Banner removed', 'success');
+                    } catch (err) {
+                        showToast('⚠️ ' + err.message, 'error');
+                    }
+                });
+
+                // ----- Campaign -----
+                const campList = document.getElementById('campaignAdminList');
+                const campForm = document.getElementById('campaignAdminForm');
+
+                async function renderCampaignList() {
+                    if (!campList) return;
+                    try {
+                        const snap = await getDocs(collection(db, 'campaigns'));
+                        if (snap.empty) {
+                            campList.innerHTML = '<p class="text-gray-400">No campaigns yet.</p>';
+                            return;
+                        }
+                        let html = '';
+                        snap.forEach(d => {
+                            const c = d.data();
+                            const status = c.status || 'draft';
+                            const remaining = c.remainingSlots ?? c.totalSlots ?? 0;
+                            html += `
+                              <div class="p-3 rounded-xl border border-gray-100 bg-white flex flex-wrap justify-between gap-2 items-center">
+                                <div>
+                                  <div class="font-semibold text-gray-900">${(c.title || '').replace(/</g,'&lt;')}</div>
+                                  <div class="text-xs text-gray-500">Status: <strong>${status}</strong> · Slots left: ${remaining}/${c.totalSlots || 0} · ৳${c.campaignPrice || 0}</div>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                  ${status !== 'active' ? `<button type="button" class="btn-primary text-xs py-1 px-3" data-act="activate" data-id="${d.id}">Activate</button>` : `<button type="button" class="btn-outline text-xs py-1 px-3" data-act="close" data-id="${d.id}">Close</button>`}
+                                  <button type="button" class="btn-outline text-xs py-1 px-3" data-act="edit" data-id="${d.id}">Edit</button>
+                                  <button type="button" class="btn-outline text-xs py-1 px-3 text-red-600" data-act="delete" data-id="${d.id}">Delete</button>
+                                </div>
+                              </div>`;
+                        });
+                        campList.innerHTML = html;
+                        campList.querySelectorAll('[data-act]').forEach(btn => {
+                            btn.addEventListener('click', () => handleCampAction(btn.dataset.act, btn.dataset.id));
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        campList.innerHTML = '<p class="text-red-500">Error loading campaigns.</p>';
+                    }
+                }
+                renderCampaignList();
+
+                document.getElementById('campImageFile')?.addEventListener('change', async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                        showToast('Uploading image…', 'info');
+                        const url = await uploadImage(file);
+                        document.getElementById('campImageUrl').value = url;
+                        const prev = document.getElementById('campImagePreview');
+                        prev.src = url;
+                        prev.classList.remove('hidden');
+                        showToast('✅ Image uploaded', 'success');
+                    } catch (err) {
+                        showToast('⚠️ ' + err.message, 'error');
+                    }
+                });
+
+                document.getElementById('campCancelEdit')?.addEventListener('click', () => {
+                    campForm.reset();
+                    document.getElementById('campaignEditId').value = '';
+                    document.getElementById('campImageUrl').value = '';
+                    document.getElementById('campImagePreview').classList.add('hidden');
+                    document.getElementById('campaignFormTitle').textContent = 'Create Campaign';
+                    document.getElementById('campCancelEdit').classList.add('hidden');
+                    document.getElementById('campTotalSlots').value = 12;
+                    document.getElementById('campSpecialSlots').value = 3;
+                    document.getElementById('campAdvance').value = 500;
+                });
+
+                campForm?.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const editId = document.getElementById('campaignEditId').value;
+                    const title = document.getElementById('campTitle').value.trim();
+                    const description = document.getElementById('campDesc').value.trim();
+                    const originalPrice = Number(document.getElementById('campOriginalPrice').value) || 0;
+                    const campaignPrice = Number(document.getElementById('campPrice').value) || 0;
+                    const specialPrice = Number(document.getElementById('campSpecialPrice').value) || 0;
+                    const totalSlots = Number(document.getElementById('campTotalSlots').value) || 12;
+                    const specialSlots = Number(document.getElementById('campSpecialSlots').value) || 0;
+                    const advanceAmount = Number(document.getElementById('campAdvance').value) || 500;
+                    const featuresRaw = document.getElementById('campFeatures').value || '';
+                    const features = featuresRaw.split('\n').map(s => s.trim()).filter(Boolean);
+                    const imageUrl = document.getElementById('campImageUrl').value.trim();
+
+                    if (!title || !campaignPrice) {
+                        showToast('Title and campaign price required', 'warning');
+                        return;
+                    }
+                    const btn = document.getElementById('campSubmitBtn');
+                    setLoading(btn, true);
+                    try {
+                        if (editId) {
+                            const ref = doc(db, 'campaigns', editId);
+                            const prev = await getDoc(ref);
+                            const prevData = prev.exists() ? prev.data() : {};
+                            const used = (prevData.totalSlots || 0) - (prevData.remainingSlots ?? prevData.totalSlots ?? 0);
+                            const remainingSlots = Math.max(0, totalSlots - used);
+                            await updateDoc(ref, {
+                                title, description, originalPrice, campaignPrice, specialPrice,
+                                totalSlots, specialSlots, advanceAmount, features, imageUrl,
+                                remainingSlots,
+                                updatedAt: serverTimestamp()
+                            });
+                            showToast('✅ Campaign updated', 'success');
+                        } else {
+                            await addDoc(collection(db, 'campaigns'), {
+                                title, description, originalPrice, campaignPrice, specialPrice,
+                                totalSlots, specialSlots, specialRemaining: specialSlots,
+                                remainingSlots: totalSlots, advanceAmount, features, imageUrl,
+                                status: 'draft',
+                                createdAt: serverTimestamp(),
+                                updatedAt: serverTimestamp()
+                            });
+                            showToast('✅ Campaign created', 'success');
+                        }
+                        document.getElementById('campCancelEdit').click();
+                        renderCampaignList();
+                    } catch (err) {
+                        showToast('⚠️ ' + err.message, 'error');
+                    } finally {
+                        setLoading(btn, false);
+                    }
+                });
+
+                async function handleCampAction(act, id) {
+                    if (!id) return;
+                    try {
+                        if (act === 'delete') {
+                            if (!confirm('Delete this campaign?')) return;
+                            await deleteDoc(doc(db, 'campaigns', id));
+                            showToast('Deleted', 'success');
+                            renderCampaignList();
+                            return;
+                        }
+                        if (act === 'activate') {
+                            // Close other actives
+                            const snap = await getDocs(query(collection(db, 'campaigns'), where('status', '==', 'active')));
+                            const ops = [];
+                            snap.forEach(d => {
+                                if (d.id !== id) ops.push(updateDoc(doc(db, 'campaigns', d.id), { status: 'closed', updatedAt: serverTimestamp() }));
+                            });
+                            await Promise.all(ops);
+                            await updateDoc(doc(db, 'campaigns', id), { status: 'active', updatedAt: serverTimestamp() });
+                            showToast('✅ Campaign activated', 'success');
+                            renderCampaignList();
+                            return;
+                        }
+                        if (act === 'close') {
+                            await updateDoc(doc(db, 'campaigns', id), { status: 'closed', updatedAt: serverTimestamp() });
+                            showToast('Campaign closed', 'success');
+                            renderCampaignList();
+                            return;
+                        }
+                        if (act === 'edit') {
+                            const snap = await getDoc(doc(db, 'campaigns', id));
+                            if (!snap.exists()) return;
+                            const c = snap.data();
+                            document.getElementById('campaignEditId').value = id;
+                            document.getElementById('campTitle').value = c.title || '';
+                            document.getElementById('campDesc').value = c.description || '';
+                            document.getElementById('campOriginalPrice').value = c.originalPrice || '';
+                            document.getElementById('campPrice').value = c.campaignPrice || '';
+                            document.getElementById('campSpecialPrice').value = c.specialPrice || '';
+                            document.getElementById('campTotalSlots').value = c.totalSlots || 12;
+                            document.getElementById('campSpecialSlots').value = c.specialSlots || 0;
+                            document.getElementById('campAdvance').value = c.advanceAmount || 500;
+                            document.getElementById('campFeatures').value = (c.features || []).join('\n');
+                            document.getElementById('campImageUrl').value = c.imageUrl || '';
+                            const prev = document.getElementById('campImagePreview');
+                            if (c.imageUrl) { prev.src = c.imageUrl; prev.classList.remove('hidden'); }
+                            else prev.classList.add('hidden');
+                            document.getElementById('campaignFormTitle').textContent = 'Edit Campaign';
+                            document.getElementById('campCancelEdit').classList.remove('hidden');
+                            document.getElementById('tab-campaign')?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    } catch (err) {
+                        showToast('⚠️ ' + err.message, 'error');
+                    }
+                }
+            })();
+
             // ==============================================================
             // LOGOUT & TAB
             // ==============================================================
@@ -5655,6 +6067,8 @@
                         }, 100);
                     }
                     if (tab === 'users') renderUsersPage(allUsers);
+                    if (tab === 'bannerad') { /* banner already live */ }
+                    if (tab === 'campaign') { try { document.getElementById('campaignAdminList') && null; } catch(_){} }
                     if (tab === 'orders') renderOrdersTable(allOrders);
                     if (tab === 'products') {
                         renderProductView();

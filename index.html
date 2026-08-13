@@ -654,11 +654,44 @@
       border-radius: 40px;
       margin-bottom: 0.75rem;
     }
+  
+    /* ===== TOP BANNER AD ===== */
+    #topBannerAd {
+      display: none;
+      width: 100%;
+      background: #0f172a;
+      text-align: center;
+      line-height: 0;
+      position: relative;
+      z-index: 40;
+    }
+    #topBannerAd.visible { display: block; }
+    #topBannerAd a { display: block; }
+    #topBannerAd img {
+      width: 100%;
+      max-width: 728px;
+      height: auto;
+      max-height: 90px;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      #topBannerAd img {
+        max-width: 300px;
+        max-height: 50px;
+      }
+    }
+
   </style>
 </head>
 <body class="landing-page">
   <div class="page-wrapper">
     <div id="navbar-placeholder"></div>
+    <div id="topBannerAd" aria-label="Promotional banner">
+      <a href="campaign.html" id="topBannerLink">
+        <img id="topBannerImg" src="" alt="Campaign banner" width="728" height="90" loading="eager" />
+      </a>
+    </div>
 
     <main class="main-content">
       <!-- ===== HERO (full-bleed under transparent nav) ===== -->
@@ -1397,6 +1430,27 @@ onAuthStateChanged(auth, async (user) => {
       }
 
       requestAnimationFrame(tick);
+    })();
+
+
+    // ===== TOP BANNER AD (from settings/bannerAd) =====
+    (async function loadTopBanner() {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'bannerAd'));
+        if (snap.exists()) {
+          const d = snap.data();
+          if (d.active !== false && d.imageUrl) {
+            const wrap = document.getElementById('topBannerAd');
+            const img = document.getElementById('topBannerImg');
+            if (img && wrap) {
+              img.src = d.imageUrl;
+              wrap.classList.add('visible');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Banner load skipped:', err);
+      }
     })();
 
     console.log('🏠 Landing page loaded — hero typing animation active');

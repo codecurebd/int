@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Campaign Offer – CodeCureBD</title>
+  <meta name="description" content="Limited special campaign offer from CodeCureBD. Join now with advance payment." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tailwind.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background: #f0f4f9;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .campaign-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(0,102,255,0.12), transparent 50%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(139,92,246,0.12), transparent 50%),
+        linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 8px 40px rgba(0,102,255,0.06);
+    }
+    .campaign-hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+      line-height: 1.15;
+    }
+    .slot-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .slot-badge.closed {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+    .price-box {
+      background: linear-gradient(135deg, rgba(0,102,255,0.06), rgba(139,92,246,0.06));
+      border: 1px solid rgba(0,102,255,0.12);
+      border-radius: 18px;
+      padding: 1.25rem 1.5rem;
+    }
+    .price-box .old {
+      text-decoration: line-through;
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+    .price-box .new {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #16a34a;
+    }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: #334155;
+    }
+    .feature-list li i {
+      color: #16a34a;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .participant-list {
+      max-height: 320px;
+      overflow-y: auto;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .participant-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .participant-item:last-child { border-bottom: none; }
+    .participant-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .empty-campaign {
+      text-align: center;
+      padding: 4rem 1.5rem;
+    }
+    .empty-campaign i {
+      font-size: 4rem;
+      opacity: 0.25;
+      color: #64748b;
+    }
+    .campaign-img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .btn-join {
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 52px;
+      box-shadow: 0 6px 24px rgba(0,102,255,0.25);
+      transition: 0.25s;
+    }
+    .btn-join:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(0,102,255,0.35);
+    }
+    .btn-join:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    @media (max-width: 640px) {
+      .campaign-hero { padding: 1.5rem 1.15rem; border-radius: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-16 pt-2">
+        <div id="campaignRoot">
+          <!-- Loading skeleton -->
+          <div class="campaign-hero mb-8 animate-pulse">
+            <div class="h-8 bg-gray-200 rounded w-2/3 mb-4"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script type="module">
+    import {
+      auth, db, collection, doc, getDoc, getDocs, addDoc, updateDoc,
+      query, where, onSnapshot, serverTimestamp, increment, onAuthStateChanged
+    } from './firebase-config.js';
+    import {
+      renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderCartSidebar, setLoading, renderPaymentModal, openPaymentModal,
+      renderAuthModal
+    } from './components.js';
+
+    renderNavbar();
+    renderAuthModal();
+    renderFooter();
+    renderCartSidebar();
+    renderPaymentModal();
+    updateCartBadge();
+
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container') || document.body;
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
+    };
+
+    let activeCampaign = null;
+    let currentUser = null;
+    let participants = [];
+    let alreadyJoined = false;
+    let usdRate = 125;
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderEmpty() {
+      const root = document.getElementById('campaignRoot');
+      root.innerHTML = `
+        <div class="empty-campaign glass-card">
+          <i class="fas fa-bullhorn"></i>
+          <h2 class="text-2xl font-bold text-gray-900 mt-4">No Active Campaign</h2>
+          <p class="text-gray-500 mt-2 max-w-md mx-auto">There is no special campaign running right now. Check back later or explore our regular packages.</p>
+          <a href="get-new-website.html" class="btn-primary mt-6 inline-flex">
+            <i class="fas fa-store"></i> Browse Store
+          </a>
+        </div>
+      `;
+      document.title = 'No Campaign – CodeCureBD';
+    }
+
+    function renderCampaign(c) {
+      const root = document.getElementById('campaignRoot');
+      const remaining = Number(c.remainingSlots ?? c.totalSlots ?? 0);
+      const total = Number(c.totalSlots ?? 12);
+      const closed = c.status === 'closed' || remaining <= 0;
+      const specialLeft = Number(c.specialRemaining ?? 0);
+      const features = Array.isArray(c.features) ? c.features : [];
+      const advance = Number(c.advanceAmount ?? 500);
+
+      document.title = `${c.title || 'Campaign'} – CodeCureBD`;
+
+      const featuresHtml = features.length
+        ? `<ul class="feature-list mt-4">${features.map(f => `<li><i class="fas fa-check-circle"></i><span>${escapeHtml(f)}</span></li>`).join('')}</ul>`
+        : '';
+
+      const imgHtml = c.imageUrl
+        ? `<img src="${escapeHtml(c.imageUrl)}" alt="${escapeHtml(c.title)}" class="campaign-img mb-6" loading="lazy" />`
+        : '';
+
+      root.innerHTML = `
+        <section class="campaign-hero mb-8">
+          ${imgHtml}
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex-1 min-w-[240px]">
+              <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-blue-600 mb-2">
+                <i class="fas fa-fire"></i> Limited Campaign
+              </span>
+              <h1>${escapeHtml(c.title || 'Special Campaign')}</h1>
+              <p class="text-gray-500 mt-3 leading-relaxed">${escapeHtml(c.description || '')}</p>
+            </div>
+            <div class="slot-badge ${closed ? 'closed' : ''}">
+              <i class="fas fa-${closed ? 'lock' : 'users'}"></i>
+              ${closed ? 'Campaign Closed' : `${remaining} / ${total} slots left`}
+            </div>
+          </div>
+
+          <div class="price-box mt-6">
+            <div class="flex flex-wrap items-end gap-3">
+              ${c.originalPrice ? `<span class="old">৳${Number(c.originalPrice).toLocaleString('en-BD')}</span>` : ''}
+              <span class="new">৳${Number(c.campaignPrice || 0).toLocaleString('en-BD')}</span>
+              ${c.specialPrice && specialLeft > 0 ? `<span class="text-sm font-semibold text-amber-600">First ${specialLeft} get ৳${Number(c.specialPrice).toLocaleString('en-BD')}</span>` : ''}
+            </div>
+            <p class="text-sm text-gray-500 mt-2">
+              <i class="fas fa-hand-holding-usd text-blue-500 mr-1"></i>
+              Pay only <strong>৳${advance}</strong> advance now. Rest after confirmation.
+            </p>
+          </div>
+
+          ${featuresHtml}
+
+          <div class="mt-6">
+            <button type="button" id="joinCampaignBtn" class="btn-join" ${closed || alreadyJoined ? 'disabled' : ''}>
+              <i class="fas fa-${alreadyJoined ? 'check' : closed ? 'ban' : 'rocket'}"></i>
+              ${alreadyJoined ? 'You already joined' : closed ? 'Campaign Closed' : `Join Campaign — Pay ৳${advance} Advance`}
+            </button>
+            ${!currentUser ? '<p class="text-sm text-center text-gray-500 mt-2">You must be signed in to join.</p>' : ''}
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xl font-bold text-gray-900">Participants</h2>
+            <span class="text-sm text-gray-500" id="participantCount">${participants.length} joined</span>
+          </div>
+          <div class="participant-list" id="participantList">
+            ${renderParticipantsHtml()}
+          </div>
+        </section>
+      `;
+
+      document.getElementById('joinCampaignBtn')?.addEventListener('click', handleJoin);
+    }
+
+    function renderParticipantsHtml() {
+      if (!participants.length) {
+        return `<div class="p-6 text-center text-gray-400 text-sm">No one has joined yet. Be the first!</div>`;
+      }
+      return participants.map((p, i) => {
+        const name = p.userName || p.displayName || 'User';
+        const letter = name.charAt(0).toUpperCase();
+        const time = p.createdAt?.toDate?.()
+          ? p.createdAt.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : '';
+        return `
+          <div class="participant-item">
+            <div class="participant-avatar">${letter}</div>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold text-gray-900 text-sm">${escapeHtml(name)}</div>
+              <div class="text-xs text-gray-400">${time || 'Recently'}</div>
+            </div>
+            <span class="text-xs font-semibold text-green-600">#${i + 1}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleJoin() {
+      if (!currentUser) {
+        if (typeof window.openAuthModal === 'function') window.openAuthModal('signin');
+        else window.location.href = 'auth.html?mode=signin&redirect=campaign.html';
+        return;
+      }
+      if (!activeCampaign) return;
+      if (alreadyJoined) {
+        showToast('You already joined this campaign.', 'info');
+        return;
+      }
+      if (activeCampaign.status === 'closed' || (activeCampaign.remainingSlots ?? 0) <= 0) {
+        showToast('This campaign is closed.', 'warning');
+        return;
+      }
+
+      const advance = Number(activeCampaign.advanceAmount ?? 500);
+      const advanceUSD = advance / usdRate;
+
+      // Load payment settings then open modal in campaign mode
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'payment'));
+        const settings = snap.exists() ? snap.data() : {};
+        if (settings.usdRate && Number(settings.usdRate) > 0) usdRate = Number(settings.usdRate);
+
+        // Use existing payment modal with campaign-specific payload
+        if (typeof window.openCampaignPaymentModal === 'function') {
+          window.openCampaignPaymentModal(activeCampaign, advance, advance / usdRate, settings);
+        } else {
+          // Fallback: openPaymentModal with custom flag
+          openPaymentModal({
+            type: 'campaign',
+            campaignId: activeCampaign.id,
+            campaignTitle: activeCampaign.title,
+            totalUSD: advance / usdRate,
+            totalBDT: advance,
+            amountBDT: advance,
+            amountUSD: advance / usdRate,
+            paymentType: 'advance',
+            dueAmountBDT: Math.max(0, Number(activeCampaign.campaignPrice || 0) - advance),
+            dueAmountUSD: Math.max(0, (Number(activeCampaign.campaignPrice || 0) - advance) / usdRate),
+            items: [{
+              id: activeCampaign.id,
+              name: activeCampaign.title || 'Campaign',
+              price: advance / usdRate,
+              quantity: 1,
+              isCampaign: true
+            }]
+          });
+        }
+      } catch (err) {
+        showToast('⚠️ ' + err.message, 'error');
+      }
+    }
+
+    async function loadUsdRate() {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'payment'));
+        if (snap.exists() && snap.data().usdRate) {
+          usdRate = Number(snap.data().usdRate) || 125;
+        }
+      } catch (_) {}
+    }
+
+    function listenCampaign() {
+      // Single active campaign: status == 'active'
+      const q = query(collection(db, 'campaigns'), where('status', '==', 'active'));
+      onSnapshot(q, async (snap) => {
+        if (snap.empty) {
+          activeCampaign = null;
+          renderEmpty();
+          return;
+        }
+        // Take the first active (admin should only keep one)
+        const d = snap.docs[0];
+        activeCampaign = { id: d.id, ...d.data() };
+        await checkIfJoined();
+        await loadParticipants();
+        renderCampaign(activeCampaign);
+      }, (err) => {
+        console.error(err);
+        renderEmpty();
+      });
+    }
+
+    async function checkIfJoined() {
+      alreadyJoined = false;
+      if (!currentUser || !activeCampaign) return;
+      try {
+        const q = query(
+          collection(db, 'orders'),
+          where('userId', '==', currentUser.uid),
+          where('campaignId', '==', activeCampaign.id)
+        );
+        const snap = await getDocs(q);
+        alreadyJoined = !snap.empty;
+      } catch (err) {
+        console.warn('checkIfJoined:', err);
+      }
+    }
+
+    async function loadParticipants() {
+      participants = [];
+      if (!activeCampaign) return;
+      try {
+        const q = query(
+          collection(db, 'orders'),
+          where('campaignId', '==', activeCampaign.id)
+        );
+        const snap = await getDocs(q);
+        snap.forEach(d => {
+          const data = d.data();
+          if (data.status === 'cancelled') return;
+          participants.push({
+            id: d.id,
+            userName: data.userName || data.customerName || data.displayName || 'User',
+            createdAt: data.createdAt,
+            status: data.status
+          });
+        });
+        participants.sort((a, b) => {
+          const ta = a.createdAt?.toDate?.()?.getTime() || 0;
+          const tb = b.createdAt?.toDate?.()?.getTime() || 0;
+          return ta - tb;
+        });
+      } catch (err) {
+        console.warn('loadParticipants:', err);
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      let name = null;
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          name = userDoc.exists() ? userDoc.data().displayName : user.email?.split('@')[0];
+        } catch (_) {}
+      }
+      updateNavbarAuth(user, name);
+      if (activeCampaign) {
+        await checkIfJoined();
+        renderCampaign(activeCampaign);
+      }
+    });
+
+    await loadUsdRate();
+    listenCampaign();
+
+    console.log('📢 Campaign page loaded');
+  </script>
+</body>
+</html>

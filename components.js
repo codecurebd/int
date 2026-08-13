@@ -2,7 +2,7 @@
 import { 
   auth, onAuthStateChanged, signOut, db, doc, getDoc, setDoc,
   updateDoc, serverTimestamp, collection, addDoc, query, where, onSnapshot,
-  deleteDoc, getDocs,
+  deleteDoc, getDocs, increment,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendPasswordResetEmail, sendEmailVerification,
   signInWithPopup, googleProvider
@@ -1522,7 +1522,7 @@ export function renderPaymentModal() {
         return;
       }
 
-      // Normal checkout (full or advance) - existing logic
+      // ===== CAMPAIGN CHECKOUT =====
       const pending = window._pendingCheckoutData;
       if (!pending) {
         showToast('Checkout data missing. Please try again.', 'error');
@@ -1530,7 +1530,8 @@ export function renderPaymentModal() {
       }
 
       const method = document.getElementById('paymentMethodSelect').value;
-      const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
+      const paymentTypeEl = document.querySelector('input[name="paymentType"]:checked');
+      const paymentType = pending.type === 'campaign' ? 'advance' : (paymentTypeEl?.value || 'full');
       const txnId = document.getElementById('transactionId').value.trim();
       const senderNumber = document.getElementById('paymentSenderNumber').value.trim();
       const errorDiv = document.getElementById('paymentError');
@@ -1579,10 +1580,109 @@ export function renderPaymentModal() {
       }
 
       const rate = Number(_paymentSettings.usdRate) > 0 ? Number(_paymentSettings.usdRate) : 125;
+
+      // ===== CAMPAIGN ORDER PATH =====
+      if (pending.type === 'campaign' && pending.campaignId) {
+        const advanceBDT = Number(pending.amountBDT) || Number(pending.totalBDT) || 500;
+        const advanceUSD = Number((advanceBDT / rate).toFixed(2));
+        const campaignPrice = Number(pending.campaignPrice) || 0;
+        const dueBDT = Math.max(0, campaignPrice - advanceBDT);
+        const dueUSD = Number((dueBDT / rate).toFixed(2));
+        const btn = document.getElementById('paymentSubmitBtn');
+        setLoading(btn, true, 'Confirm Payment');
+
+        try {
+          // Re-check slots
+          const campRef = doc(db, 'campaigns', pending.campaignId);
+          const campSnap = await getDoc(campRef);
+          if (!campSnap.exists()) throw new Error('Campaign not found.');
+          const camp = campSnap.data();
+          if (camp.status === 'closed' || (camp.remainingSlots ?? 0) <= 0) {
+            throw new Error('This campaign is closed or full.');
+          }
+
+          // Prevent duplicate join
+          const dupQ = query(
+            collection(db, 'orders'),
+            where('userId', '==', auth.currentUser.uid),
+            where('campaignId', '==', pending.campaignId)
+          );
+          const dupSnap = await getDocs(dupQ);
+          if (!dupSnap.empty) throw new Error('You already joined this campaign.');
+
+          let userName = auth.currentUser.email?.split('@')[0] || 'User';
+          try {
+            const uDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+            if (uDoc.exists() && uDoc.data().displayName) userName = uDoc.data().displayName;
+          } catch (_) {}
+
+          const isSpecial = (camp.specialRemaining ?? 0) > 0;
+          const orderData = {
+            userId: auth.currentUser.uid,
+            userEmail: auth.currentUser.email || '',
+            userName,
+            campaignId: pending.campaignId,
+            campaignTitle: pending.campaignTitle || camp.title || 'Campaign',
+            orderType: 'campaign',
+            items: [{
+              id: pending.campaignId,
+              name: pending.campaignTitle || camp.title || 'Campaign',
+              price: advanceUSD,
+              quantity: 1,
+              isCampaign: true
+            }],
+            total: advanceUSD,
+            campaignPriceBDT: campaignPrice,
+            status: 'pending',
+            paymentMethod: method,
+            paymentType: 'advance',
+            transactionId: txnId,
+            senderNumber: senderNumber,
+            amountUSD: advanceUSD,
+            amountBDT: advanceBDT,
+            dueAmountUSD: dueUSD,
+            dueAmountBDT: dueBDT,
+            usdRate: rate,
+            packageType: isSpecial ? 'special' : 'normal',
+            createdAt: serverTimestamp()
+          };
+          if (method === 'USDT') orderData.senderAddress = senderNumber;
+
+          await addDoc(collection(db, 'orders'), orderData);
+
+          // Decrement slots
+          const updates = {
+            remainingSlots: increment(-1),
+            updatedAt: serverTimestamp()
+          };
+          if (isSpecial) updates.specialRemaining = increment(-1);
+          await updateDoc(campRef, updates);
+
+          // Auto-close if full
+          const afterSnap = await getDoc(campRef);
+          if (afterSnap.exists() && (afterSnap.data().remainingSlots ?? 0) <= 0) {
+            await updateDoc(campRef, { status: 'closed', closedAt: serverTimestamp() });
+          }
+
+          showToast('✅ Campaign joined! Order placed. Admin will verify soon.', 'success');
+          window.closePaymentModal();
+          window._pendingCheckoutData = null;
+          setTimeout(() => { window.location.href = 'my-orders.html'; }, 1500);
+        } catch (err) {
+          console.error('Campaign payment error:', err);
+          errorDiv.textContent = '⚠️ ' + err.message;
+          errorDiv.classList.remove('hidden');
+          showToast('⚠️ ' + err.message, 'error');
+        } finally {
+          setLoading(btn, false);
+        }
+        return;
+      }
+
+      // ===== NORMAL CHECKOUT (full or advance) =====
       const totalUSD = Number(_paymentOrderTotalUSD) || 0;
       const totalBDT = Math.round(totalUSD * rate);
 
-      // Calculations for Advance vs Full
       let paidAmountBDT = totalBDT;
       let dueAmountBDT = 0;
       let paidAmountUSD = totalUSD;
@@ -1602,7 +1702,7 @@ export function renderPaymentModal() {
         const orderData = {
           userId: pending.user.uid,
           userEmail: pending.user.email,
-          items: pending.cart.map(item => ({
+          items: (pending.cart || []).map(item => ({
             id: item.id,
             name: item.name,
             price: item.price,
@@ -1612,7 +1712,7 @@ export function renderPaymentModal() {
           total: pending.total,
           status: 'pending',
           paymentMethod: method,
-          paymentType: paymentType, // 'full' or 'advance'
+          paymentType: paymentType,
           transactionId: txnId,
           senderNumber: senderNumber,
           amountUSD: paidAmountUSD,
@@ -1627,18 +1727,14 @@ export function renderPaymentModal() {
           orderData.senderAddress = senderNumber;
         }
 
-        const docRef = await addDoc(collection(db, 'orders'), orderData);
-        const orderId = docRef.id;
+        await addDoc(collection(db, 'orders'), orderData);
 
         showToast('✅ Payment confirmed! Order placed. Admin will verify soon.', 'success');
         window.closePaymentModal();
         
-        // --- CLEAR CART (LOCAL + FIRESTORE) ---
         localStorage.removeItem('cart');
         updateCartPopupUI();
         updateCartBadge();
-
-        // 🔥 CRITICAL FIX: Clear Firestore cart to prevent sync from restoring it
         await updateCartInFirestore(pending.user.uid, []);
 
         if (typeof window.toggleCart === 'function') window.toggleCart();
@@ -1668,7 +1764,7 @@ export function openPaymentModal(data) {
 
   window._pendingCheckoutData = data;
   _paymentSettings = data.settings || {};
-  _paymentOrderTotalUSD = Number(data.total) || 0;
+  _paymentOrderTotalUSD = Number(data.total) || Number(data.totalUSD) || 0;
 
   if (!(_paymentSettings.usdRate > 0)) _paymentSettings.usdRate = 125;
   if (!_paymentSettings.usdt) {
@@ -1677,6 +1773,27 @@ export function openPaymentModal(data) {
 
   // Reset due mode
   document.getElementById('paymentModal').dataset.duemode = 'false';
+
+  // Campaign mode: force advance only
+  if (data && data.type === 'campaign') {
+    const fullOpt = document.querySelector('input[name="paymentType"][value="full"]');
+    const advOpt = document.querySelector('input[name="paymentType"][value="advance"]');
+    if (fullOpt) {
+      fullOpt.closest('label')?.classList.add('hidden');
+      fullOpt.disabled = true;
+    }
+    if (advOpt) {
+      advOpt.checked = true;
+      advOpt.closest('label')?.classList.remove('hidden');
+    }
+  } else {
+    const fullOpt = document.querySelector('input[name="paymentType"][value="full"]');
+    if (fullOpt) {
+      fullOpt.disabled = false;
+      fullOpt.closest('label')?.classList.remove('hidden');
+    }
+  }
+
   // Enable advance radio
   document.querySelectorAll('input[name="paymentType"]').forEach(el => {
     if (el.value === 'advance') {
@@ -1760,18 +1877,85 @@ window.openDuePaymentModal = function(orderId, dueUSD, dueBDT, settings, orderDa
   document.getElementById('paymentModal').classList.remove('hidden');
 };
 
+// ================================================================
+// ✅ CAMPAIGN PAYMENT (fixed ৳500 advance)
+// ================================================================
+window.openCampaignPaymentModal = function(campaign, advanceBDT, advanceUSD, settings) {
+  if (!document.getElementById('paymentModal')) {
+    showToast('Payment system not ready. Please refresh.', 'error');
+    return;
+  }
+  if (!auth.currentUser) {
+    showToast('Please sign in to join the campaign.', 'warning');
+    if (typeof window.openAuthModal === 'function') window.openAuthModal('signin');
+    return;
+  }
+
+  const rate = (settings && Number(settings.usdRate) > 0) ? Number(settings.usdRate) : 125;
+  const advBDT = Number(advanceBDT) || 500;
+  const advUSD = Number(advanceUSD) || Number((advBDT / rate).toFixed(2));
+
+  window._pendingCheckoutData = {
+    type: 'campaign',
+    campaignId: campaign.id,
+    campaignTitle: campaign.title || 'Campaign',
+    campaignPrice: Number(campaign.campaignPrice) || 0,
+    amountBDT: advBDT,
+    amountUSD: advUSD,
+    totalBDT: advBDT,
+    totalUSD: advUSD,
+    total: advUSD,
+    settings: settings || {},
+    user: auth.currentUser
+  };
+
+  _paymentSettings = settings || {};
+  if (!(_paymentSettings.usdRate > 0)) _paymentSettings.usdRate = rate;
+  _paymentOrderTotalUSD = advUSD;
+
+  // Force advance only
+  const fullOpt = document.querySelector('input[name="paymentType"][value="full"]');
+  const advOpt = document.querySelector('input[name="paymentType"][value="advance"]');
+  if (fullOpt) {
+    fullOpt.disabled = true;
+    if (fullOpt.closest('label')) fullOpt.closest('label').style.display = 'none';
+  }
+  if (advOpt) {
+    advOpt.disabled = false;
+    advOpt.checked = true;
+    if (advOpt.closest('label')) advOpt.closest('label').style.display = '';
+  }
+
+  document.getElementById('paymentModal').dataset.duemode = 'false';
+  document.getElementById('paymentOrderId').value = 'Campaign: ' + (campaign.title || campaign.id);
+  document.getElementById('paymentTotalUSD').textContent = '$' + advUSD.toFixed(2);
+  document.getElementById('paymentTotalBDTRow')?.classList.remove('hidden');
+  const bdtEl = document.getElementById('paymentTotalBDT');
+  if (bdtEl) bdtEl.textContent = '৳' + advBDT.toFixed(0);
+  const rateNote = document.getElementById('paymentRateNote');
+  if (rateNote) {
+    rateNote.classList.remove('hidden');
+    rateNote.textContent = `Campaign advance: ৳${advBDT} ($${advUSD.toFixed(2)} at 1 USD = ৳${rate})`;
+  }
+
+  document.getElementById('paymentMethodSelect').value = '';
+  document.getElementById('paymentSenderNumber').value = '';
+  document.getElementById('transactionId').value = '';
+  document.getElementById('paymentError')?.classList.add('hidden');
+  document.getElementById('paymentMethodDetails')?.classList.add('hidden');
+  document.getElementById('paymentModal').classList.remove('hidden');
+};
+
 window.closePaymentModal = function() {
   const el = document.getElementById('paymentModal');
   if (el) {
     el.classList.add('hidden');
     el.dataset.duemode = 'false';
   }
-  // Re-enable advance radio if disabled
+  // Re-enable payment type radios
   document.querySelectorAll('input[name="paymentType"]').forEach(el => {
-    if (el.value === 'advance') {
-      el.disabled = false;
-      el.closest('label').style.display = '';
-    }
+    el.disabled = false;
+    if (el.closest('label')) el.closest('label').style.display = '';
   });
   // Clear due data
   window._duePaymentData = null;
