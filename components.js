@@ -1667,7 +1667,7 @@ export function renderPaymentModal() {
           showToast('✅ Campaign joined! Order placed. Admin will verify soon.', 'success');
           window.closePaymentModal();
           window._pendingCheckoutData = null;
-          setTimeout(() => { window.location.href = 'my-orders.html'; }, 1500);
+          setTimeout(() => { window.location.href = 'campaign.html'; }, 1500);
         } catch (err) {
           console.error('Campaign payment error:', err);
           errorDiv.textContent = '⚠️ ' + err.message;

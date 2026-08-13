@@ -974,6 +974,8 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       const status = statusFilter.value;
 
       filteredOrders = allOrders.filter(o => {
+        // Campaign orders are shown on campaign.html only (My Entry)
+        if (o.orderType === 'campaign' || o.campaignId) return false;
         if (search) {
           const id = o.id?.toLowerCase() || '';
           if (!id.includes(search)) return false;
