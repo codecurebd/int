@@ -656,31 +656,21 @@
     }
   
     /* ===== TOP BANNER AD ===== */
-    /* Floats below fixed navbar over the hero — no extra layout space, no colored bar */
+    /* In-flow inside hero gap above trust badges — scrolls with page, transparent, no colored bar */
     #topBannerAd {
       display: none;
-      position: fixed;
-      top: 72px; /* right under navbar (h-[72px]) */
-      left: 0;
-      right: 0;
       width: 100%;
       background: transparent;
       text-align: center;
       line-height: 0;
-      z-index: 40; /* below navbar (z-50) */
-      pointer-events: none;
-      padding: 4px 8px 0;
-    }
-    @media (min-width: 768px) {
-      #topBannerAd {
-        top: 80px; /* navbar h-[80px] on md+ */
-        padding: 6px 12px 0;
-      }
+      position: relative;
+      z-index: 2;
+      margin: 0 auto 1rem;
+      padding: 0 8px;
     }
     #topBannerAd.visible { display: block; }
     #topBannerAd a {
       display: inline-block;
-      pointer-events: auto;
       max-width: 100%;
     }
     #topBannerAd img {
@@ -694,6 +684,9 @@
       border-radius: 6px;
     }
     @media (max-width: 640px) {
+      #topBannerAd {
+        margin-bottom: 0.75rem;
+      }
       #topBannerAd img {
         max-width: 100%;
         max-height: 50px;
@@ -705,11 +698,6 @@
 <body class="landing-page">
   <div class="page-wrapper">
     <div id="navbar-placeholder"></div>
-    <div id="topBannerAd" aria-label="Promotional banner">
-      <a href="campaign.html" id="topBannerLink">
-        <img id="topBannerImg" src="" alt="Campaign banner" width="728" height="90" loading="eager" />
-      </a>
-    </div>
 
     <main class="main-content">
       <!-- ===== HERO (full-bleed under transparent nav) ===== -->
@@ -720,6 +708,13 @@
           <div class="hero-orb o3"></div>
         </div>
         <div class="hero-inner">
+          <!-- Top banner ad sits in the gap above trust badges (scrolls with page) -->
+          <div id="topBannerAd" aria-label="Promotional banner">
+            <a href="campaign.html" id="topBannerLink">
+              <img id="topBannerImg" src="" alt="Campaign banner" width="728" height="90" loading="eager" />
+            </a>
+          </div>
+
           <div class="flex flex-wrap justify-center gap-3 mb-7 fade-up">
             <span class="trust-badge pulse"><i class="fas fa-shield-alt text-blue-500"></i> 100% Secure</span>
             <span class="trust-badge"><i class="fas fa-clock text-green-500"></i> 24/7 Support</span>
