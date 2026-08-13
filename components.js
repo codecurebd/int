@@ -1986,12 +1986,26 @@ window.updatePaymentMethodUI = function() {
   const totalUSD = Number(_paymentOrderTotalUSD) || 0;
   const totalBDT = Math.round(totalUSD * rate);
 
+  // Campaign advance uses the amount set on the campaign; regular products still use ৳500
+  const pending = window._pendingCheckoutData;
+  const isCampaign = pending && pending.type === 'campaign';
+  const campaignAdvanceBDT = isCampaign
+    ? (Number(pending.amountBDT) || Number(pending.totalBDT) || 500)
+    : 500;
+  const campaignAdvanceUSD = isCampaign
+    ? (Number(pending.amountUSD) || Number((campaignAdvanceBDT / rate).toFixed(2)))
+    : Number((500 / rate).toFixed(2));
+  // For campaign, order total (full price) may differ from advance
+  const campaignFullBDT = isCampaign
+    ? (Number(pending.campaignPrice) || campaignAdvanceBDT)
+    : totalBDT;
+
   let payableBDT = totalBDT;
   let payableUSD = totalUSD;
 
   if (paymentType === 'advance' && !isDueMode) {
-    payableBDT = 500;
-    payableUSD = Number((500 / rate).toFixed(2));
+    payableBDT = campaignAdvanceBDT;
+    payableUSD = campaignAdvanceUSD;
   }
 
   if (method === 'bKash' || method === 'Nagad') {
@@ -2000,7 +2014,7 @@ window.updatePaymentMethodUI = function() {
     if (isDueMode) {
       bdtText = '৳' + totalBDT.toLocaleString('en-BD') + ' (Due)';
     } else if (paymentType === 'advance') {
-      bdtText = '৳500 (Advance)';
+      bdtText = '৳' + payableBDT.toLocaleString('en-BD') + ' (Advance)';
     } else {
       bdtText = '৳' + totalBDT.toLocaleString('en-BD');
     }
@@ -2010,8 +2024,9 @@ window.updatePaymentMethodUI = function() {
     if (isDueMode) {
       rateNote.textContent = `Due Payment: Send exactly ৳${totalBDT.toLocaleString('en-BD')}`;
     } else if (paymentType === 'advance') {
-      const dueBDT = Math.max(0, totalBDT - 500);
-      rateNote.textContent = `Advance Payment: ৳500 · Remaining Due: ৳${dueBDT.toLocaleString('en-BD')} (Pay after work)`;
+      const dueBase = isCampaign ? campaignFullBDT : totalBDT;
+      const dueBDT = Math.max(0, dueBase - payableBDT);
+      rateNote.textContent = `Advance Payment: ৳${payableBDT.toLocaleString('en-BD')} · Remaining Due: ৳${dueBDT.toLocaleString('en-BD')} (Pay after work)`;
     } else {
       rateNote.textContent = `Rate: 1 USD = ৳${rate} · Send exactly ৳${totalBDT.toLocaleString('en-BD')}`;
     }
