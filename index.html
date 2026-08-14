@@ -59,12 +59,21 @@
     /* ===== SCROLL ANIMATION ===== */
     .fade-up {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translate3d(0, 20px, 0);
+      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
     }
     .fade-up.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(0, 0, 0);
+      will-change: auto;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
     }
 
     /* ===== BACK TO TOP ===== */
@@ -114,35 +123,46 @@
       pointer-events: none;
       overflow: hidden;
       z-index: 0;
+      contain: strict;
     }
     .hero-section .hero-orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(72px);
-      opacity: 0.5;
-      animation: orbFloat 16s ease-in-out infinite;
+      /* lighter blur + GPU layer for smoother scroll */
+      filter: blur(48px);
+      opacity: 0.45;
+      will-change: transform;
+      transform: translateZ(0);
+      animation: orbFloat 18s ease-in-out infinite;
+      animation-play-state: running;
+    }
+    .hero-section.orbs-paused .hero-orb {
+      animation-play-state: paused;
     }
     .hero-section .hero-orb.o1 {
-      width: 380px; height: 380px;
-      background: rgba(37, 99, 235, 0.22);
-      top: -100px; left: -80px;
+      width: 320px; height: 320px;
+      background: rgba(37, 99, 235, 0.2);
+      top: -80px; left: -60px;
     }
     .hero-section .hero-orb.o2 {
-      width: 300px; height: 300px;
-      background: rgba(124, 58, 237, 0.18);
-      top: 8%; right: -60px;
+      width: 260px; height: 260px;
+      background: rgba(124, 58, 237, 0.16);
+      top: 8%; right: -50px;
       animation-delay: -5s;
     }
     .hero-section .hero-orb.o3 {
-      width: 220px; height: 220px;
-      background: rgba(14, 165, 233, 0.14);
+      width: 180px; height: 180px;
+      background: rgba(14, 165, 233, 0.12);
       bottom: 12%; left: 18%;
       animation-delay: -9s;
     }
     @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(20px, -24px) scale(1.06); }
-      66% { transform: translate(-16px, 14px) scale(0.96); }
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      33% { transform: translate3d(16px, -18px, 0) scale(1.04); }
+      66% { transform: translate3d(-12px, 10px, 0) scale(0.97); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-section .hero-orb { animation: none; }
     }
     .hero-section::before {
       content: '';
@@ -292,9 +312,7 @@
     }
 
     .trust-badge {
-      background: rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.92);
       padding: 0.45rem 0.95rem;
       border-radius: 999px;
       border: 1px solid rgba(15, 23, 42, 0.06);
@@ -325,12 +343,10 @@
 
     /* Right panel — action card */
     .hero-action-card {
-      background: rgba(255, 255, 255, 0.85);
+      background: #ffffff;
       border: 1px solid rgba(15, 23, 42, 0.06);
       border-radius: 24px;
       padding: 1.75rem 1.5rem;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
     }
     .hero-action-card h3 {
@@ -411,24 +427,23 @@
       margin-top: 2.5rem !important;
     }
     #featuredPackages .glass-card {
-      background: rgba(255, 255, 255, 0.85);
+      background: #ffffff;
       border-color: rgba(15, 23, 42, 0.06);
       color: #1e293b;
     }
 
     /* ===== GLASS CARD ===== */
     .glass-card {
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.7);
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.06);
       border-radius: 16px;
       padding: 1.5rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
-      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .glass-card:hover {
-      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
-      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.06);
+      transform: translate3d(0, -3px, 0);
     }
 
     /* ===== FEATURED PRODUCT CARD ===== */
@@ -697,9 +712,8 @@
       border: 1.5px solid rgba(60,60,67,0.06);
       border-radius: 14px;
       font-size: 0.95rem;
-      background: rgba(255,255,255,0.6);
-      backdrop-filter: blur(4px);
-      transition: all 0.25s ease;
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
       outline: none;
       font-family: 'Inter', sans-serif;
     }
@@ -832,6 +846,18 @@
       .hero-section { padding: 5rem 0.85rem 2rem; }
       .trust-badge { font-size: 0.72rem; padding: 0.35rem 0.75rem; }
       .hero-stat-row { gap: 0.4rem; }
+    }
+
+    /* ===== PERFORMANCE ===== */
+    #services, #how-it-works, #why-us, #stats, #testimonials, #faq, #contact, #cta {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 500px;
+    }
+    .hero-section {
+      contain: layout style;
+    }
+    img, iframe {
+      content-visibility: auto;
     }
 
     /* section soft entrance */
@@ -1177,23 +1203,37 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // one-shot — less work while scrolling
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     });
 
-    // ===== BACK TO TOP =====
+    // ===== BACK TO TOP + pause hero orbs when off-screen (perf) =====
     const scrollBtn = document.getElementById('scrollTopBtn');
+    const heroSection = document.querySelector('.hero-section');
+    let scrollTicking = false;
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 400) {
-        scrollBtn.classList.add('show');
-      } else {
-        scrollBtn.classList.remove('show');
-      }
-    });
+      if (scrollTicking) return;
+      scrollTicking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY || window.pageYOffset;
+        if (y > 400) scrollBtn.classList.add('show');
+        else scrollBtn.classList.remove('show');
+        // Pause expensive orb animation once hero is scrolled past
+        if (heroSection) {
+          if (y > (heroSection.offsetHeight || 600)) {
+            heroSection.classList.add('orbs-paused');
+          } else {
+            heroSection.classList.remove('orbs-paused');
+          }
+        }
+        scrollTicking = false;
+      });
+    }, { passive: true });
     scrollBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
