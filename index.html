@@ -176,38 +176,32 @@
     }
     .hero-eyebrow i { font-size: 0.7rem; }
     .hero-section .hero-title {
-      font-size: clamp(1.85rem, 5vw, 4.25rem);
+      font-size: clamp(2rem, 5.2vw, 3.75rem);
       font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
       color: #0f172a;
-      /* Always reserve exactly 2 lines → CTA buttons stay fixed while typing */
-      min-height: calc(1.2em * 2);
-      height: calc(1.2em * 2);
+      /* Fixed 2-line height so CTA buttons don't jump during typing */
+      min-height: calc(1.15em * 2);
+      height: calc(1.15em * 2);
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto;
       width: 100%;
-      max-width: 20rem;
+      max-width: 52rem;
       overflow: hidden;
-    }
-    @media (min-width: 640px) {
-      .hero-section .hero-title {
-        max-width: 36rem;
-      }
     }
     @media (max-width: 380px) {
       .hero-section .hero-title {
-        font-size: 1.65rem;
-        min-height: calc(1.2em * 2);
-        height: calc(1.2em * 2);
+        font-size: 1.7rem;
+        min-height: calc(1.15em * 2);
+        height: calc(1.15em * 2);
       }
     }
     .hero-section .hero-title .typed-text {
-      background: linear-gradient(135deg, #0066FF, #8B5CF6, #F59E0B);
+      background: linear-gradient(115deg, #1d4ed8 0%, #4f46e5 42%, #7c3aed 72%, #db2777 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
