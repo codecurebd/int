@@ -4,6 +4,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta name="color-scheme" content="light" />
   <title>Website Development Bangladesh | Custom Website & Fix Service | CodeCureBD</title>
 <meta name="description" content="Professional website development, fixing & e-commerce solutions in Bangladesh. Fast delivery within 24-48 hours. BKash, Nagad & USDT payment accepted. 100+ projects delivered.">
 <meta name="keywords" content="website development bangladesh, website design dhaka, website fix bangladesh, buy website in bd, website purchase bd, e-commerce website bkash, e-commerce website nagad, e-commerce website bd, ecommerce website bangladesh, custom website bangladesh">
@@ -25,12 +26,23 @@
   <style>
     /* ===== BASE ===== */
     * { box-sizing: border-box; }
+    :root, html {
+      color-scheme: light only;
+    }
     body {
-      background: #f2f4f7;
+      background: #f2f4f7 !important;
+      color: #1a1a2e;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
       padding: 0;
       min-height: 100vh;
+    }
+    /* Prevent system dark mode from inverting page colors */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #f2f4f7 !important;
+        color: #1a1a2e !important;
+      }
     }
 
     /* ✅ Fix: remove main-content top gap so hero goes under transparent navbar */
@@ -155,7 +167,7 @@
       flex-direction: column;
     }
 
-    /* Banner — full width, enhanced */
+    /* Banner — match live site size (728×90 style) */
     #topBannerAd {
       display: none;
       width: 100%;
@@ -165,13 +177,13 @@
       position: relative;
       z-index: 2;
       margin: 0 0 1.75rem;
-      padding: 0;
+      padding: 0 8px;
     }
     #topBannerAd.visible { display: block; }
     #topBannerAd a {
-      display: block;
+      display: inline-block;
       max-width: 100%;
-      border-radius: 14px;
+      border-radius: 6px;
       overflow: hidden;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.1),
@@ -187,19 +199,20 @@
         0 0 80px rgba(37, 99, 235, 0.22);
     }
     #topBannerAd img {
-      width: 100%;
-      max-width: 100%;
+      width: auto;
+      max-width: min(728px, 100%);
       height: auto;
-      max-height: 96px;
-      object-fit: cover;
+      max-height: 90px;
+      object-fit: contain;
       object-position: center;
       display: block;
-      border-radius: 14px;
+      margin: 0 auto;
+      border-radius: 6px;
     }
     @media (max-width: 640px) {
       #topBannerAd { margin-bottom: 1.25rem; }
-      #topBannerAd img { max-height: 64px; border-radius: 10px; }
-      #topBannerAd a { border-radius: 10px; }
+      #topBannerAd img { max-width: 100%; max-height: 50px; border-radius: 4px; }
+      #topBannerAd a { border-radius: 4px; }
     }
 
     /* Split grid: left copy · right actions */
@@ -242,14 +255,16 @@
       letter-spacing: -0.04em;
       line-height: 1.12;
       color: #f8fafc;
-      min-height: 0;
-      height: auto;
-      display: block;
+      /* Fixed 2-line height so layout below doesn't jump during typing */
+      min-height: calc(1.12em * 2);
+      height: calc(1.12em * 2);
+      display: flex;
+      align-items: center;
       text-align: left;
       margin: 0;
       width: 100%;
       max-width: none;
-      overflow: visible;
+      overflow: hidden;
     }
     .hero-section .hero-title .typed-text {
       background: linear-gradient(120deg, #60a5fa 0%, #a78bfa 45%, #f472b6 100%);
@@ -790,7 +805,10 @@
         gap: 1.75rem;
       }
       .hero-left { text-align: center; }
-      .hero-section .hero-title { text-align: center; }
+      .hero-section .hero-title {
+        text-align: center;
+        justify-content: center;
+      }
       .hero-section .hero-sub {
         margin-left: auto;
         margin-right: auto;
