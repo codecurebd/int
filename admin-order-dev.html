@@ -87,10 +87,6 @@
       background: #1e293b; border: 1px solid #334155; border-radius: 18px; padding: 2rem;
       max-width: 400px; width: 100%; text-align: center;
     }
-    .gate-card input {
-      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155;
-      background: #0f172a; color: #fff; margin: 12px 0; outline: none;
-    }
     .msg-img { max-width: 180px; border-radius: 8px; display: block; margin-bottom: 4px; }
     .topbar {
       display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
@@ -102,29 +98,22 @@
   </style>
 </head>
 <body>
-  <!-- Admin gate -->
   <div id="adminGate" class="gate">
     <div class="gate-card">
       <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0066FF,#8B5CF6);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
         <i class="fas fa-shield-alt text-white text-xl"></i>
       </div>
-      <h2 class="text-xl font-bold text-white mb-1">Admin verification</h2>
-      <p class="text-sm text-slate-400 mb-2">Confirm admin access to open development tools for this order.</p>
-      <p id="gateStatus" class="text-sm text-slate-500">Checking session…</p>
-      <div id="gateForm" class="hidden">
-        <input type="email" id="gateEmail" placeholder="Admin email" autocomplete="username" />
-        <input type="password" id="gatePassword" placeholder="Password" autocomplete="current-password" />
-        <button type="button" class="btn-dev w-full justify-center" id="gateBtn" style="width:100%;">
-          <i class="fas fa-unlock"></i> Enter Development
-        </button>
-        <p id="gateError" class="text-red-400 text-sm mt-2 hidden"></p>
+      <h2 class="text-xl font-bold text-white mb-1" id="gateTitle">Verifying access…</h2>
+      <p id="gateStatus" class="text-sm text-slate-400">Please wait</p>
+      <div id="gateDenied" class="hidden mt-4">
+        <p class="text-red-400 text-sm mb-3">Access denied. Admin only.</p>
+        <a href="admin-login.html" class="btn-dev" style="display:inline-flex;">Admin Login</a>
+        <a href="admin-panel.html" class="btn-ghost" style="display:inline-flex;margin-left:8px;">Panel</a>
       </div>
-      <a href="admin-panel.html" class="text-sm text-blue-400 mt-4 inline-block">← Admin Panel</a>
     </div>
   </div>
 
-  <div id="devApp" class="dev-layout hidden">
-    <!-- Files sidebar -->
+  <div id="devApp" class="dev-layout" style="display:none;">
     <aside class="dev-sidebar">
       <div class="flex items-center justify-between gap-2">
         <strong class="text-white text-sm">Project files</strong>
@@ -139,10 +128,9 @@
         </label>
       </div>
       <div id="fileList" class="flex-1 overflow-y-auto space-y-1 mt-2"></div>
-      <p class="text-xs text-slate-500">Files stored as text in Firestore. User can preview via Visit Site.</p>
+      <p class="text-xs text-slate-500">Files stored as text in Firestore. User previews via Visit Site.</p>
     </aside>
 
-    <!-- Editor + progress -->
     <main class="dev-main">
       <div class="topbar">
         <div>
@@ -164,24 +152,23 @@
           </div>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Status label</label>
-            <input type="text" id="progressStatus" class="form-input" style="background:#0f172a;color:#fff;border-color:#334155;min-height:40px;padding:8px 12px;" placeholder="e.g. Designing homepage" />
+            <input type="text" id="progressStatus" style="background:#0f172a;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;min-height:40px;" placeholder="e.g. Designing homepage" />
           </div>
         </div>
         <label class="text-xs text-slate-400 block mt-2 mb-1">Note to customer</label>
-        <textarea id="progressNote" rows="2" class="form-input" style="background:#0f172a;color:#fff;border-color:#334155;" placeholder="Short update for the customer…"></textarea>
+        <textarea id="progressNote" rows="2" style="width:100%;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;" placeholder="Short update for the customer…"></textarea>
         <button type="button" class="btn-dev mt-2" id="btnSaveProgress"><i class="fas fa-check"></i> Update progress</button>
       </div>
 
       <div class="panel">
         <h3>File editor</h3>
         <div class="flex flex-wrap gap-2 mb-2">
-          <input type="text" id="filePathInput" class="form-input flex-1" style="background:#0f172a;color:#fff;border-color:#334155;min-height:40px;" placeholder="path e.g. index.html or css/style.css" />
+          <input type="text" id="filePathInput" style="flex:1;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;min-height:40px;" placeholder="path e.g. index.html" />
         </div>
         <textarea id="fileEditor" class="editor-area" placeholder="Select or create a file…" spellcheck="false"></textarea>
       </div>
     </main>
 
-    <!-- Chat -->
     <section class="dev-chat-col">
       <div style="padding:12px 14px;border-bottom:1px solid #1e293b;">
         <div class="font-semibold text-white text-sm"><i class="fas fa-comments mr-1"></i> Customer chat</div>
@@ -203,16 +190,9 @@
 
   <script type="module">
     import {
-      auth, db, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where,
-      onSnapshot, addDoc, serverTimestamp, onAuthStateChanged, getDocs,
-      signInWithEmailAndPassword
+      auth, db, doc, getDoc, updateDoc, deleteDoc, collection, query, where,
+      onSnapshot, addDoc, serverTimestamp, onAuthStateChanged
     } from './firebase-config.js';
-
-    // uploadImage loaded only when sending an image (avoids blocking on components.js)
-    async function uploadImage(file) {
-      const mod = await import('./components.js');
-      return mod.uploadImage(file);
-    }
 
     window.showToast = (message, type = 'success') => {
       let c = document.getElementById('toast-container');
@@ -224,8 +204,12 @@
       setTimeout(() => t.remove(), 4000);
     };
 
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('id') || '';
+    async function uploadImage(file) {
+      const mod = await import('./components.js');
+      return mod.uploadImage(file);
+    }
+
+    const orderId = new URLSearchParams(window.location.search).get('id') || '';
     let adminUser = null;
     let orderData = null;
     let files = [];
@@ -243,21 +227,22 @@
       return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(t) || t.includes('res.cloudinary.com');
     }
 
-    async function requireAdmin(user) {
-      const ud = await getDoc(doc(db, 'users', user.uid));
-      if (!ud.exists() || ud.data().role !== 'admin') return false;
-      return true;
+    function showApp() {
+      document.getElementById('adminGate').style.display = 'none';
+      document.getElementById('devApp').style.display = 'grid';
     }
 
-    function showApp() {
-      document.getElementById('adminGate').classList.add('hidden');
-      document.getElementById('devApp').classList.remove('hidden');
+    function showDenied(msg) {
+      document.getElementById('gateTitle').textContent = 'Access denied';
+      document.getElementById('gateStatus').textContent = msg || 'Admin only.';
+      document.getElementById('gateDenied').classList.remove('hidden');
+      document.getElementById('devApp').style.display = 'none';
     }
 
     function renderFileList() {
       const el = document.getElementById('fileList');
       if (!files.length) {
-        el.innerHTML = '<p class="text-xs text-slate-500 px-2">No files yet. Create index.html to enable Visit Site.</p>';
+        el.innerHTML = '<p class="text-xs text-slate-500 px-2">No files yet. Create index.html for Visit Site.</p>';
         return;
       }
       el.innerHTML = files.map(f => `
@@ -299,6 +284,7 @@
     }
 
     function listenFiles() {
+      if (!orderId) return;
       if (unsubFiles) try { unsubFiles(); } catch (_) {}
       const q = query(collection(db, 'devFiles'), where('orderId', '==', orderId));
       unsubFiles = onSnapshot(q, (snap) => {
@@ -312,105 +298,8 @@
           document.getElementById('btnSaveFile').disabled = true;
           document.getElementById('activeFileName').textContent = 'No file selected';
         }
-      });
+      }, (err) => console.warn('files listener', err));
     }
-
-    document.getElementById('btnNewFile')?.addEventListener('click', async () => {
-      const path = prompt('File path (e.g. index.html)', 'index.html');
-      if (!path) return;
-      const name = path.split('/').pop();
-      try {
-        const ref = await addDoc(collection(db, 'devFiles'), {
-          orderId,
-          fileName: name,
-          path,
-          content: name.toLowerCase() === 'index.html'
-            ? '<!DOCTYPE html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>Preview</title>\n</head>\n<body>\n  <h1>Hello from CodeCureBD</h1>\n</body>\n</html>'
-            : '',
-          updatedAt: serverTimestamp(),
-          uploadedBy: adminUser?.uid || 'admin'
-        });
-        activeFileId = ref.id;
-        showToast('File created', 'success');
-      } catch (err) { showToast(err.message, 'error'); }
-    });
-
-    document.getElementById('btnSaveFile')?.addEventListener('click', async () => {
-      if (!activeFileId) return;
-      const path = document.getElementById('filePathInput').value.trim() || 'file.txt';
-      const content = document.getElementById('fileEditor').value;
-      const name = path.split('/').pop();
-      try {
-        await updateDoc(doc(db, 'devFiles', activeFileId), {
-          path, fileName: name, content, updatedAt: serverTimestamp()
-        });
-        // Mark preview ready if index exists
-        const hasIndex = files.some(f => /index\.html?/i.test(f.fileName || f.path || '')) || /index\.html?/i.test(name);
-        if (hasIndex) {
-          await updateDoc(doc(db, 'orders', orderId), { previewReady: true, updatedAt: serverTimestamp() });
-        }
-        showToast('Saved', 'success');
-      } catch (err) { showToast(err.message, 'error'); }
-    });
-
-    document.getElementById('uploadMulti')?.addEventListener('change', async (e) => {
-      const list = Array.from(e.target.files || []);
-      if (!list.length) return;
-      for (const file of list) {
-        try {
-          const text = await file.text();
-          await addDoc(collection(db, 'devFiles'), {
-            orderId,
-            fileName: file.name,
-            path: file.name,
-            content: text,
-            updatedAt: serverTimestamp(),
-            uploadedBy: adminUser?.uid || 'admin',
-            size: file.size
-          });
-        } catch (err) {
-          showToast(file.name + ': ' + err.message, 'error');
-        }
-      }
-      e.target.value = '';
-      showToast('Upload finished', 'success');
-    });
-
-    document.getElementById('progressRange')?.addEventListener('input', (e) => {
-      document.getElementById('pctLabel').textContent = e.target.value;
-    });
-
-    document.getElementById('btnSaveProgress')?.addEventListener('click', async () => {
-      const pct = Number(document.getElementById('progressRange').value) || 0;
-      const status = document.getElementById('progressStatus').value.trim();
-      const note = document.getElementById('progressNote').value.trim();
-      try {
-        await updateDoc(doc(db, 'orders', orderId), {
-          progressPercent: pct,
-          progressStatus: status,
-          progressNote: note,
-          developmentActive: true,
-          updatedAt: serverTimestamp()
-        });
-        showToast('Progress updated for customer', 'success');
-      } catch (err) { showToast(err.message, 'error'); }
-    });
-
-    document.getElementById('btnPreview')?.addEventListener('click', () => {
-      const byName = {};
-      files.forEach(f => { byName[f.path || f.fileName] = f.content || ''; });
-      let key = Object.keys(byName).find(k => /(^|\/)index\.html?$/i.test(k));
-      if (!key) key = Object.keys(byName).find(k => /\.html?$/i.test(k));
-      if (!key) { showToast('No HTML file', 'warning'); return; }
-      let html = byName[key];
-      if (!/<html/i.test(html)) {
-        html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${html}</body></html>`;
-      }
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
-    });
 
     function renderChat(msgs) {
       const body = document.getElementById('chatBody');
@@ -442,6 +331,7 @@
     }
 
     function listenChat() {
+      if (!orderId) return;
       if (unsubChat) try { unsubChat(); } catch (_) {}
       const q = query(collection(db, 'devMessages'), where('orderId', '==', orderId));
       unsubChat = onSnapshot(q, (snap) => {
@@ -450,14 +340,154 @@
         msgs.sort((a, b) => (a.timestamp?.toDate?.()?.getTime() || 0) - (b.timestamp?.toDate?.()?.getTime() || 0));
         renderChat(msgs);
       }, (err) => {
-        document.getElementById('chatBody').innerHTML = `<div class="text-red-400 text-sm p-3">${escapeHtml(err.message)}</div>`;
+        document.getElementById('chatBody').innerHTML =
+          `<div class="text-red-400 text-sm p-3">${escapeHtml(err.message)}</div>`;
       });
     }
+
+    async function loadOrderData() {
+      if (!orderId) {
+        document.getElementById('sidebarOrderMeta').textContent = 'No order id in URL';
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, 'orders', orderId));
+        if (!snap.exists()) {
+          document.getElementById('sidebarOrderMeta').textContent = 'Order not found';
+          return;
+        }
+        orderData = { id: snap.id, ...snap.data() };
+        document.getElementById('pageTitle').textContent = `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
+        document.getElementById('sidebarOrderMeta').textContent =
+          `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
+        document.getElementById('progressRange').value = Number(orderData.progressPercent) || 0;
+        document.getElementById('pctLabel').textContent = String(Number(orderData.progressPercent) || 0);
+        document.getElementById('progressStatus').value = orderData.progressStatus || '';
+        document.getElementById('progressNote').value = orderData.progressNote || '';
+        document.getElementById('chatUserLabel').textContent =
+          orderData.userEmail || orderData.userId || 'User';
+        if (orderData.userId) {
+          getDoc(doc(db, 'users', orderData.userId)).then((u) => {
+            if (u.exists()) {
+              const n = u.data().displayName || u.data().email;
+              if (n) document.getElementById('chatUserLabel').textContent = n;
+            }
+          }).catch(() => {});
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('sidebarOrderMeta').textContent =
+          'Could not load order: ' + (err.message || '');
+      }
+    }
+
+    document.getElementById('btnNewFile')?.addEventListener('click', async () => {
+      const path = prompt('File path (e.g. index.html)', 'index.html');
+      if (!path || !orderId) return;
+      const name = path.split('/').pop();
+      try {
+        const ref = await addDoc(collection(db, 'devFiles'), {
+          orderId,
+          fileName: name,
+          path,
+          content: /index\.html?/i.test(name)
+            ? `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preview</title>
+</head>
+<body>
+  <h1>Hello from CodeCureBD</h1>
+</body>
+</html>`
+            : '',
+          updatedAt: serverTimestamp(),
+          uploadedBy: adminUser?.uid || 'admin'
+        });
+        activeFileId = ref.id;
+        showToast('File created', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    });
+
+    document.getElementById('btnSaveFile')?.addEventListener('click', async () => {
+      if (!activeFileId) return;
+      const path = document.getElementById('filePathInput').value.trim() || 'file.txt';
+      const content = document.getElementById('fileEditor').value;
+      const name = path.split('/').pop();
+      try {
+        await updateDoc(doc(db, 'devFiles', activeFileId), {
+          path, fileName: name, content, updatedAt: serverTimestamp()
+        });
+        if (/index\.html?/i.test(name) && orderId) {
+          await updateDoc(doc(db, 'orders', orderId), { previewReady: true, updatedAt: serverTimestamp() });
+        }
+        showToast('Saved', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    });
+
+    document.getElementById('uploadMulti')?.addEventListener('change', async (e) => {
+      const list = Array.from(e.target.files || []);
+      if (!list.length || !orderId) return;
+      for (const file of list) {
+        try {
+          const content = await file.text();
+          await addDoc(collection(db, 'devFiles'), {
+            orderId,
+            fileName: file.name,
+            path: file.name,
+            content,
+            updatedAt: serverTimestamp(),
+            uploadedBy: adminUser?.uid || 'admin',
+            size: file.size
+          });
+        } catch (err) {
+          showToast(file.name + ': ' + err.message, 'error');
+        }
+      }
+      e.target.value = '';
+      showToast('Upload finished', 'success');
+    });
+
+    document.getElementById('progressRange')?.addEventListener('input', (e) => {
+      document.getElementById('pctLabel').textContent = e.target.value;
+    });
+
+    document.getElementById('btnSaveProgress')?.addEventListener('click', async () => {
+      if (!orderId) return;
+      try {
+        await updateDoc(doc(db, 'orders', orderId), {
+          progressPercent: Number(document.getElementById('progressRange').value) || 0,
+          progressStatus: document.getElementById('progressStatus').value.trim(),
+          progressNote: document.getElementById('progressNote').value.trim(),
+          developmentActive: true,
+          updatedAt: serverTimestamp()
+        });
+        showToast('Progress updated', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    });
+
+    document.getElementById('btnPreview')?.addEventListener('click', () => {
+      const byName = {};
+      files.forEach(f => { byName[f.path || f.fileName] = f.content || ''; });
+      let key = Object.keys(byName).find(k => /(^|\/)index\.html?$/i.test(k));
+      if (!key) key = Object.keys(byName).find(k => /\.html?$/i.test(k));
+      if (!key) { showToast('No HTML file', 'warning'); return; }
+      let html = byName[key];
+      if (!/<html/i.test(html)) {
+        html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${html}</body></html>`;
+      }
+      const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    });
 
     async function sendChat() {
       const input = document.getElementById('chatInput');
       const text = (input.value || '').trim();
       if (!text && !pendingChatImage) return;
+      if (!orderId) return;
       const btn = document.getElementById('chatSend');
       btn.disabled = true;
       try {
@@ -497,163 +527,28 @@
       if (f) { pendingChatImage = f; showToast('Image attached — press send', 'info'); }
     });
 
-    function withTimeout(promise, ms, label) {
-      return Promise.race([
-        promise,
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(label + ' timed out after ' + ms + 'ms')), ms)
-        )
-      ]);
-    }
-
-    async function loadOrderAndStart() {
-      const status = document.getElementById('gateStatus');
-      try {
-        console.log('[dev] orderId =', orderId);
-        if (!orderId) {
-          if (status) status.textContent = 'Missing order id in URL. Open from Admin → Orders → Dev';
-          return;
-        }
-        if (status) status.textContent = 'Loading order ' + orderId.slice(0, 8) + '…';
-
-        const snap = await withTimeout(
-          getDoc(doc(db, 'orders', orderId)),
-          12000,
-          'getDoc(orders)'
-        );
-
-        if (!snap.exists()) {
-          if (status) status.textContent = 'Order not found: ' + orderId;
-          return;
-        }
-
-        orderData = { id: snap.id, ...snap.data() };
-        console.log('[dev] order loaded', orderData.status);
-
-        document.getElementById('pageTitle').textContent =
-          `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
-        document.getElementById('sidebarOrderMeta').textContent =
-          `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
-        document.getElementById('progressRange').value = Number(orderData.progressPercent) || 0;
-        document.getElementById('pctLabel').textContent = String(Number(orderData.progressPercent) || 0);
-        document.getElementById('progressStatus').value = orderData.progressStatus || '';
-        document.getElementById('progressNote').value = orderData.progressNote || '';
-
-        // Non-blocking user label
-        if (orderData.userId) {
-          document.getElementById('chatUserLabel').textContent =
-            orderData.userEmail || orderData.userId;
-          getDoc(doc(db, 'users', orderData.userId)).then((u) => {
-            if (u.exists()) {
-              const name = u.data().displayName || u.data().email;
-              if (name) document.getElementById('chatUserLabel').textContent = name;
-            }
-          }).catch(() => {});
-        }
-
-        showApp();
-        try { listenFiles(); } catch (e) { console.warn('listenFiles', e); }
-        try { listenChat(); } catch (e) { console.warn('listenChat', e); }
-      } catch (err) {
-        console.error('loadOrderAndStart', err);
-        const msg = err && err.message ? err.message : String(err);
-        if (status) {
-          status.innerHTML = 'Error loading order:<br><span style="font-size:0.8rem;word-break:break-all;">'
-            + msg.replace(/</g, '&lt;') + '</span>';
-          status.style.color = '#f87171';
-        }
-        const form = document.getElementById('gateForm');
-        if (form) {
-          form.classList.remove('hidden');
-          const btn = document.getElementById('gateBtn');
-          if (btn) {
-            btn.innerHTML = '<i class="fas fa-redo"></i> Retry';
-            btn.onclick = () => {
-              status.style.color = '';
-              status.textContent = 'Retrying…';
-              loadOrderAndStart();
-            };
-          }
-        }
-        // Common hint
-        if (/permission|insufficient|PERMISSION/i.test(msg)) {
-          showToast('Firestore permission denied — publish rules & ensure role=admin', 'error');
-        } else if (/timed out/i.test(msg)) {
-          showToast('Firestore request timed out — check network / Firebase config', 'error');
-        } else {
-          showToast('Failed: ' + msg, 'error');
-        }
-      }
-    }
-
-    document.getElementById('gateBtn')?.addEventListener('click', async () => {
-      const email = document.getElementById('gateEmail').value.trim();
-      const password = document.getElementById('gatePassword').value;
-      const err = document.getElementById('gateError');
-      err.classList.add('hidden');
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        if (!(await requireAdmin(cred.user))) {
-          err.textContent = 'Not an admin account';
-          err.classList.remove('hidden');
-          return;
-        }
-        adminUser = cred.user;
-        await loadOrderAndStart();
-      } catch (e) {
-        err.textContent = e.message;
-        err.classList.remove('hidden');
-      }
-    });
-
-    // Same as admin-panel: if admin already logged in → enter page automatically.
-    // Only non-admin / logged-out users see the login form.
+    // Same as admin-panel: role check only — no password form
     onAuthStateChanged(auth, async (user) => {
-      const status = document.getElementById('gateStatus');
-      const form = document.getElementById('gateForm');
       if (!user) {
-        status.textContent = 'Sign in as admin';
-        form.classList.remove('hidden');
+        showDenied('Not signed in.');
         return;
       }
-      status.textContent = 'Checking admin role…';
-      const ok = await requireAdmin(user);
-      if (!ok) {
-        status.textContent = 'This account is not admin. Sign in with an admin account.';
-        form.classList.remove('hidden');
-        document.getElementById('gateEmail').value = '';
-        document.getElementById('gatePassword').value = '';
-        return;
-      }
-      // Admin session already active — no extra password needed
-      adminUser = user;
-      status.textContent = 'Verified — loading…';
-      form.classList.add('hidden');
-      // Safety: if still on gate after 8s, show retry
-      const safety = setTimeout(() => {
-        if (!document.getElementById('devApp').classList.contains('hidden')) return;
-        status.textContent = 'Still loading… Check console / order id in URL.';
-        status.style.color = '#fbbf24';
-        form.classList.remove('hidden');
-        const btn = document.getElementById('gateBtn');
-        if (btn) {
-          btn.innerHTML = '<i class="fas fa-redo"></i> Retry';
-          btn.onclick = () => loadOrderAndStart();
-        }
-      }, 8000);
       try {
-        await loadOrderAndStart();
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists() || userDoc.data().role !== 'admin') {
+          showDenied('This account is not admin.');
+          return;
+        }
+        adminUser = user;
+        showApp();
+        loadOrderData();
+        listenFiles();
+        listenChat();
       } catch (err) {
         console.error(err);
-        status.textContent = 'Error: ' + (err.message || String(err));
-        status.style.color = '#f87171';
-        form.classList.remove('hidden');
-      } finally {
-        clearTimeout(safety);
+        showDenied('Error verifying access.');
       }
     });
-
-    console.log('🛠️ Admin order development (basic structure)');
   </script>
 </body>
 </html>
