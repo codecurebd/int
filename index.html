@@ -1373,7 +1373,7 @@ onAuthStateChanged(auth, async (user) => {
       let html = '';
       for (let i = 0; i < count; i++) {
         html += `
-          <div class="skeleton-card fade-up">
+          <div class="skeleton-card fade-up visible">
             <div class="skeleton-img"></div>
             <div class="skeleton-body">
               <div class="skeleton-line medium"></div>
@@ -1384,7 +1384,7 @@ onAuthStateChanged(auth, async (user) => {
         `;
       }
       packagesContainer.innerHTML = html;
-      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      // Featured packages are in the hero — show immediately without waiting for scroll
     }
     renderSkeletons();
 
@@ -1479,7 +1479,7 @@ onAuthStateChanged(auth, async (user) => {
           }
 
           html += `
-            <div class="glass-card featured-card fade-up">
+            <div class="glass-card featured-card fade-up visible">
               <div class="img-wrapper">
                 ${previewHtml}
               </div>
@@ -1495,7 +1495,7 @@ onAuthStateChanged(auth, async (user) => {
           `;
         });
         packagesContainer.innerHTML = html;
-        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        // Featured products are in the hero section — force visible on load (no scroll required)
       } catch (err) {
         console.error('Error loading featured products:', err);
         packagesContainer.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error loading products.</p>`;

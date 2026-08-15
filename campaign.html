@@ -137,10 +137,17 @@
     }
     .campaign-img {
       width: 100%;
-      max-height: 320px;
-      object-fit: cover;
+      max-height: 380px;
+      object-fit: contain; /* full image visible — no top/bottom text crop */
+      object-position: center;
       border-radius: 16px;
       border: 1px solid rgba(0,0,0,0.05);
+      background: #0b1220;
+    }
+    @media (max-width: 640px) {
+      .campaign-img {
+        max-height: 220px;
+      }
     }
     .btn-join {
       width: 100%;
@@ -230,6 +237,8 @@
     let alreadyJoined = false;
     let myCampaignOrder = null; // user's order for this campaign (if any)
     let usdRate = 125;
+    let unsubParticipants = null; // live listener for participant list
+    let unsubMyOrder = null; // live listener for current user's campaign order
 
     function escapeHtml(str) {
       return String(str || '')
@@ -349,11 +358,14 @@
         if (e.target.id === 'myEntryModal') e.target.classList.add('hidden');
       });
       document.getElementById('viewMyEntryBtn')?.addEventListener('click', openMyEntryDetail);
+      document.getElementById('payRemainingBtn')?.addEventListener('click', handlePayRemaining);
     }
 
     function renderMyEntryCard(o) {
       const status = o.status || 'pending';
       const paidBDT = Number(o.amountBDT) || 0;
+      const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
+      const payEnabled = !!o.remainingPaymentEnabled && dueBDT > 0;
       const date = o.createdAt?.toDate?.() || (o.createdAt ? new Date(o.createdAt) : null);
       const dateStr = date
         ? date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -365,6 +377,12 @@
         cancelled: 'bg-red-50 text-red-700'
       }[status] || 'bg-gray-50 text-gray-600';
 
+      const payBtnHtml = payEnabled
+        ? `<button type="button" id="payRemainingBtn" class="btn-join text-sm py-2.5 px-4 shrink-0" style="min-height:42px;width:auto;box-shadow:0 4px 16px rgba(22,163,74,0.25);background:linear-gradient(135deg,#16a34a,#059669);">
+             <i class="fas fa-credit-card"></i> Pay Remaining ৳${dueBDT.toLocaleString('en-BD')}
+           </button>`
+        : '';
+
       return `
         <section class="mb-6 glass-card" style="padding:1.15rem 1.25rem; border:1px solid rgba(0,102,255,0.15); background:linear-gradient(135deg,#eff6ff 0%,#f8fafc 100%);">
           <div class="flex flex-wrap items-center justify-between gap-3">
@@ -374,17 +392,22 @@
                   <i class="fas fa-ticket-alt mr-1"></i> My Entry
                 </span>
                 <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusColor}">${escapeHtml(status)}</span>
+                ${payEnabled ? '<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-50 text-green-700">Payment due</span>' : ''}
               </div>
               <p class="text-sm text-gray-700 mt-1.5">
                 Paid <strong class="text-gray-900">৳${paidBDT.toLocaleString('en-BD')}</strong>
                 <span class="text-gray-400 mx-1">·</span>
                 <span class="text-gray-500">${dateStr}</span>
               </p>
+              ${payEnabled ? `<p class="text-sm text-amber-700 mt-1 font-semibold"><i class="fas fa-exclamation-circle"></i> Remaining due: ৳${dueBDT.toLocaleString('en-BD')}</p>` : ''}
               ${o.transactionId ? `<p class="text-xs text-gray-400 mt-0.5">Txn: ${escapeHtml(o.transactionId)}</p>` : ''}
             </div>
-            <button type="button" id="viewMyEntryBtn" class="btn-primary text-sm py-2 px-4 shrink-0">
-              <i class="fas fa-eye"></i> Details
-            </button>
+            <div class="flex flex-wrap gap-2 shrink-0">
+              ${payBtnHtml}
+              <button type="button" id="viewMyEntryBtn" class="btn-primary text-sm py-2 px-4">
+                <i class="fas fa-eye"></i> Details
+              </button>
+            </div>
           </div>
         </section>
       `;
@@ -400,6 +423,11 @@
       const status = o.status || 'pending';
       const paidBDT = Number(o.amountBDT) || 0;
       const paidUSD = Number(o.amountUSD) || 0;
+      const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
+      // Always derive USD from BDT + current settings rate (ignore stale stored USD)
+      const rateForDue = (Number(usdRate) > 0 ? Number(usdRate) : (Number(o.usdRate) > 0 ? Number(o.usdRate) : 125));
+      const dueUSD = dueBDT > 0 ? Math.round((dueBDT / rateForDue) * 100) / 100 : 0;
+      const payEnabled = !!o.remainingPaymentEnabled && dueBDT > 0;
       const date = o.createdAt?.toDate?.() || (o.createdAt ? new Date(o.createdAt) : null);
       const dateStr = date
         ? date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -424,6 +452,10 @@
           <span class="font-bold text-green-700">৳${paidBDT.toLocaleString('en-BD')}${paidUSD ? ` ($${paidUSD.toFixed(2)})` : ''}</span>
         </div>
         <div class="flex justify-between py-2 border-b border-gray-100">
+          <span class="text-gray-500">Remaining Due</span>
+          <span class="font-semibold ${payEnabled ? 'text-amber-700' : 'text-gray-900'}">${dueBDT > 0 ? `৳${dueBDT.toLocaleString('en-BD')}${dueUSD ? ` ($${dueUSD.toFixed(2)})` : ''}` : '—'}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
           <span class="text-gray-500">Payment Method</span>
           <span class="font-semibold text-gray-900">${escapeHtml(o.paymentMethod || '—')}</span>
         </div>
@@ -439,11 +471,56 @@
           <span class="text-gray-500">Joined At</span>
           <span class="font-semibold text-gray-900">${dateStr}</span>
         </div>
-        <p class="text-xs text-gray-400 mt-3 leading-relaxed">
-          Final package price may vary (special / normal slots). Admin will confirm your final amount after verification. Only the advance you paid is shown here.
-        </p>
+        ${payEnabled ? `
+          <div class="mt-4 p-3 rounded-xl bg-green-50 border border-green-100">
+            <p class="text-sm text-green-800 font-semibold mb-2"><i class="fas fa-credit-card"></i> Admin has requested remaining payment</p>
+            <p class="text-xs text-green-700 mb-3">Please pay <strong>৳${dueBDT.toLocaleString('en-BD')}</strong> to complete your order.</p>
+            <button type="button" id="payRemainingModalBtn" class="btn-join" style="min-height:44px;background:linear-gradient(135deg,#16a34a,#059669);">
+              <i class="fas fa-credit-card"></i> Pay ৳${dueBDT.toLocaleString('en-BD')} Now
+            </button>
+          </div>
+        ` : `
+          <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+            Final amount is confirmed by admin after work is done. You will get a Pay Remaining option here when it is ready.
+          </p>
+        `}
       `;
       modal.classList.remove('hidden');
+      document.getElementById('payRemainingModalBtn')?.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        handlePayRemaining();
+      });
+    }
+
+    async function handlePayRemaining() {
+      const o = myCampaignOrder;
+      if (!o || !o.id) return;
+      if (!o.remainingPaymentEnabled) {
+        showToast('No remaining payment request from admin yet.', 'info');
+        return;
+      }
+      // BDT is source of truth — never trust a stale stored USD
+      const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
+      if (dueBDT <= 0) {
+        showToast('Due amount is not set yet.', 'warning');
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'payment'));
+        const settings = snap.exists() ? snap.data() : {};
+        if (settings.usdRate && Number(settings.usdRate) > 0) usdRate = Number(settings.usdRate);
+        const rate = usdRate > 0 ? usdRate : 125;
+        const finalBDT = dueBDT;
+        const finalUSD = Math.round((finalBDT / rate) * 100) / 100;
+
+        if (typeof window.openDuePaymentModal === 'function') {
+          window.openDuePaymentModal(o.id, finalUSD, finalBDT, { ...settings, usdRate: rate }, o);
+        } else {
+          showToast('Payment system not ready. Please refresh.', 'error');
+        }
+      } catch (err) {
+        showToast('⚠️ ' + (err.message || 'Failed to open payment'), 'error');
+      }
     }
 
     function renderParticipantsHtml() {
@@ -503,13 +580,14 @@
             type: 'campaign',
             campaignId: activeCampaign.id,
             campaignTitle: activeCampaign.title,
+            campaignPrice: Number(activeCampaign.campaignPrice) || 0,
             totalUSD: advance / usdRate,
             totalBDT: advance,
             amountBDT: advance,
             amountUSD: advance / usdRate,
             paymentType: 'advance',
-            dueAmountBDT: Math.max(0, Number(activeCampaign.campaignPrice || 0) - advance),
-            dueAmountUSD: Math.max(0, (Number(activeCampaign.campaignPrice || 0) - advance) / usdRate),
+            dueAmountBDT: 0,
+            dueAmountUSD: 0,
             items: [{
               id: activeCampaign.id,
               name: activeCampaign.title || 'Campaign',
@@ -533,30 +611,160 @@
       } catch (_) {}
     }
 
+    function stopParticipantsListener() {
+      if (typeof unsubParticipants === 'function') {
+        try { unsubParticipants(); } catch (_) {}
+        unsubParticipants = null;
+      }
+    }
+
+    function extractParticipantName(data) {
+      if (!data || typeof data !== 'object') return 'User';
+      const raw =
+        data.userName ||
+        data.customerName ||
+        data.displayName ||
+        data.name ||
+        data.fullName ||
+        data.customer?.name ||
+        data.user?.displayName ||
+        (data.userEmail ? String(data.userEmail).split('@')[0] : '') ||
+        (data.email ? String(data.email).split('@')[0] : '') ||
+        '';
+      const name = String(raw || '').trim();
+      return name || 'User';
+    }
+
+    function applyParticipantsFromDocs(docs) {
+      const list = [];
+      docs.forEach(d => {
+        const data = typeof d.data === 'function' ? d.data() : d;
+        const id = d.id || data.id || '';
+        if (data.status === 'cancelled') return;
+        // Ensure order belongs to this campaign when campaignId is present
+        if (activeCampaign && data.campaignId && data.campaignId !== activeCampaign.id) return;
+
+        list.push({
+          id,
+          userName: extractParticipantName(data),
+          createdAt: data.createdAt,
+          status: data.status
+        });
+      });
+      list.sort((a, b) => {
+        const ta = a.createdAt?.toDate?.()?.getTime?.() || (a.createdAt ? new Date(a.createdAt).getTime() : 0) || 0;
+        const tb = b.createdAt?.toDate?.()?.getTime?.() || (b.createdAt ? new Date(b.createdAt).getTime() : 0) || 0;
+        return ta - tb;
+      });
+      participants = list;
+      updateParticipantsUI();
+    }
+
+    function updateParticipantsUI() {
+      const listEl = document.getElementById('participantList');
+      const countEl = document.getElementById('participantCount');
+      if (listEl) listEl.innerHTML = renderParticipantsHtml();
+      if (countEl) countEl.textContent = `${participants.length} joined`;
+    }
+
+    function listenParticipants(campaignId) {
+      stopParticipantsListener();
+      participants = [];
+      if (!campaignId) {
+        updateParticipantsUI();
+        return;
+      }
+
+      const q = query(
+        collection(db, 'orders'),
+        where('campaignId', '==', campaignId)
+      );
+
+      unsubParticipants = onSnapshot(q, (snap) => {
+        applyParticipantsFromDocs(snap.docs);
+      }, async (err) => {
+        console.warn('listenParticipants (live) failed:', err?.code || err?.message || err);
+        // Fallback: one-shot getDocs
+        try {
+          const snap = await getDocs(q);
+          applyParticipantsFromDocs(snap.docs);
+        } catch (err2) {
+          console.warn('loadParticipants fallback failed:', err2?.code || err2?.message || err2);
+          // Last resort: denormalized list on campaign document
+          if (Array.isArray(activeCampaign?.participants) && activeCampaign.participants.length) {
+            participants = activeCampaign.participants.map((p, i) => ({
+              id: p.id || String(i),
+              userName: extractParticipantName(p),
+              createdAt: p.createdAt || null,
+              status: p.status || 'pending'
+            }));
+            updateParticipantsUI();
+          }
+        }
+      });
+    }
+
     function listenCampaign() {
       // Single active campaign: status == 'active'
       const q = query(collection(db, 'campaigns'), where('status', '==', 'active'));
       onSnapshot(q, async (snap) => {
         if (snap.empty) {
+          stopParticipantsListener();
           activeCampaign = null;
+          participants = [];
           renderEmpty();
           return;
         }
         // Take the first active (admin should only keep one)
         const d = snap.docs[0];
-        activeCampaign = { id: d.id, ...d.data() };
+        const next = { id: d.id, ...d.data() };
+        const campaignChanged = !activeCampaign || activeCampaign.id !== next.id;
+        activeCampaign = next;
         await checkIfJoined();
-        await loadParticipants();
+        if (campaignChanged) {
+          listenParticipants(activeCampaign.id);
+        } else if (Array.isArray(activeCampaign.participants) && !participants.length) {
+          participants = activeCampaign.participants.map((p, i) => ({
+            id: p.id || String(i),
+            userName: extractParticipantName(p),
+            createdAt: p.createdAt || null,
+            status: p.status || 'pending'
+          }));
+        }
         renderCampaign(activeCampaign);
+        updateParticipantsUI();
       }, (err) => {
         console.error(err);
+        stopParticipantsListener();
         renderEmpty();
       });
+    }
+
+    function stopMyOrderListener() {
+      if (typeof unsubMyOrder === 'function') {
+        try { unsubMyOrder(); } catch (_) {}
+        unsubMyOrder = null;
+      }
+    }
+
+    function listenMyOrder(orderId) {
+      stopMyOrderListener();
+      if (!orderId) return;
+      unsubMyOrder = onSnapshot(doc(db, 'orders', orderId), (snap) => {
+        if (!snap.exists()) return;
+        myCampaignOrder = { id: snap.id, ...snap.data() };
+        alreadyJoined = true;
+        if (activeCampaign) {
+          renderCampaign(activeCampaign);
+          updateParticipantsUI();
+        }
+      }, (err) => console.warn('listenMyOrder:', err?.code || err?.message || err));
     }
 
     async function checkIfJoined() {
       alreadyJoined = false;
       myCampaignOrder = null;
+      stopMyOrderListener();
       if (!currentUser || !activeCampaign) return;
       try {
         const q = query(
@@ -569,40 +777,57 @@
         if (!snap.empty) {
           const d = snap.docs[0];
           myCampaignOrder = { id: d.id, ...d.data() };
+          listenMyOrder(d.id);
         }
       } catch (err) {
         console.warn('checkIfJoined:', err);
+        // Fallback for older orders that may lack campaignId
+        try {
+          const q2 = query(
+            collection(db, 'orders'),
+            where('userId', '==', currentUser.uid)
+          );
+          const snap2 = await getDocs(q2);
+          for (const d of snap2.docs) {
+            const data = d.data();
+            if (data.status === 'cancelled') continue;
+            const match =
+              data.campaignId === activeCampaign.id ||
+              (data.type === 'campaign' && (
+                data.campaignTitle === activeCampaign.title ||
+                data.items?.[0]?.id === activeCampaign.id
+              ));
+            if (match) {
+              alreadyJoined = true;
+              myCampaignOrder = { id: d.id, ...data };
+              listenMyOrder(d.id);
+              break;
+            }
+          }
+        } catch (err2) {
+          console.warn('checkIfJoined fallback:', err2);
+        }
       }
     }
 
-    async function loadParticipants() {
-      participants = [];
-      if (!activeCampaign) return;
-      try {
-        const q = query(
-          collection(db, 'orders'),
-          where('campaignId', '==', activeCampaign.id)
-        );
-        const snap = await getDocs(q);
-        snap.forEach(d => {
-          const data = d.data();
-          if (data.status === 'cancelled') return;
-          participants.push({
-            id: d.id,
-            userName: data.userName || data.customerName || data.displayName || 'User',
-            createdAt: data.createdAt,
-            status: data.status
-          });
+    // Refresh when user returns after payment (modal / other tab)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && activeCampaign) {
+        checkIfJoined().then(() => {
+          if (activeCampaign) renderCampaign(activeCampaign);
+          updateParticipantsUI();
         });
-        participants.sort((a, b) => {
-          const ta = a.createdAt?.toDate?.()?.getTime() || 0;
-          const tb = b.createdAt?.toDate?.()?.getTime() || 0;
-          return ta - tb;
-        });
-      } catch (err) {
-        console.warn('loadParticipants:', err);
       }
-    }
+    });
+
+    // components.js / payment modal can call this after successful campaign payment
+    window.refreshCampaignPage = async () => {
+      if (!activeCampaign) return;
+      await checkIfJoined();
+      if (!unsubParticipants) listenParticipants(activeCampaign.id);
+      renderCampaign(activeCampaign);
+      updateParticipantsUI();
+    };
 
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
@@ -616,7 +841,9 @@
       updateNavbarAuth(user, name);
       if (activeCampaign) {
         await checkIfJoined();
+        if (!unsubParticipants) listenParticipants(activeCampaign.id);
         renderCampaign(activeCampaign);
+        updateParticipantsUI();
       }
     });
 
