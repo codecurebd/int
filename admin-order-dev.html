@@ -536,7 +536,6 @@
           return;
         }
         adminUser = cred.user;
-        sessionStorage.setItem('ccbd_dev_ok', '1');
         await loadOrderAndStart();
       } catch (e) {
         err.textContent = e.message;
@@ -544,6 +543,8 @@
       }
     });
 
+    // Same as admin-panel: if admin already logged in → enter page automatically.
+    // Only non-admin / logged-out users see the login form.
     onAuthStateChanged(auth, async (user) => {
       const status = document.getElementById('gateStatus');
       const form = document.getElementById('gateForm');
@@ -552,29 +553,20 @@
         form.classList.remove('hidden');
         return;
       }
+      status.textContent = 'Checking admin role…';
       const ok = await requireAdmin(user);
       if (!ok) {
-        status.textContent = 'This account is not admin';
+        status.textContent = 'This account is not admin. Sign in with an admin account.';
         form.classList.remove('hidden');
+        document.getElementById('gateEmail').value = '';
+        document.getElementById('gatePassword').value = '';
         return;
       }
+      // Admin session already active — no extra password needed
       adminUser = user;
-      // Soft gate: if already admin session, enter; still show confirm once per tab optional
-      if (sessionStorage.getItem('ccbd_dev_ok') === '1') {
-        status.textContent = 'Verified';
-        await loadOrderAndStart();
-      } else {
-        status.textContent = 'Admin session found. Click to enter or re-authenticate.';
-        form.classList.remove('hidden');
-        document.getElementById('gateEmail').value = user.email || '';
-        // One-click enter for existing admin
-        const btn = document.getElementById('gateBtn');
-        btn.innerHTML = '<i class="fas fa-unlock"></i> Continue as Admin';
-        btn.onclick = async () => {
-          sessionStorage.setItem('ccbd_dev_ok', '1');
-          await loadOrderAndStart();
-        };
-      }
+      status.textContent = 'Verified — loading…';
+      form.classList.add('hidden');
+      await loadOrderAndStart();
     });
 
     console.log('🛠️ Admin order development (basic structure)');
