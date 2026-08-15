@@ -207,7 +207,12 @@
       onSnapshot, addDoc, serverTimestamp, onAuthStateChanged, getDocs,
       signInWithEmailAndPassword
     } from './firebase-config.js';
-    import { uploadImage } from './components.js';
+
+    // uploadImage loaded only when sending an image (avoids blocking on components.js)
+    async function uploadImage(file) {
+      const mod = await import('./components.js');
+      return mod.uploadImage(file);
+    }
 
     window.showToast = (message, type = 'success') => {
       let c = document.getElementById('toast-container');
@@ -492,48 +497,92 @@
       if (f) { pendingChatImage = f; showToast('Image attached — press send', 'info'); }
     });
 
+    function withTimeout(promise, ms, label) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(label + ' timed out after ' + ms + 'ms')), ms)
+        )
+      ]);
+    }
+
     async function loadOrderAndStart() {
       const status = document.getElementById('gateStatus');
       try {
+        console.log('[dev] orderId =', orderId);
         if (!orderId) {
-          if (status) status.textContent = 'Missing order id (?id=...) in URL';
+          if (status) status.textContent = 'Missing order id in URL. Open from Admin → Orders → Dev';
           return;
         }
-        if (status) status.textContent = 'Loading order…';
-        const snap = await getDoc(doc(db, 'orders', orderId));
+        if (status) status.textContent = 'Loading order ' + orderId.slice(0, 8) + '…';
+
+        const snap = await withTimeout(
+          getDoc(doc(db, 'orders', orderId)),
+          12000,
+          'getDoc(orders)'
+        );
+
         if (!snap.exists()) {
           if (status) status.textContent = 'Order not found: ' + orderId;
           return;
         }
+
         orderData = { id: snap.id, ...snap.data() };
-        document.getElementById('pageTitle').textContent = `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
+        console.log('[dev] order loaded', orderData.status);
+
+        document.getElementById('pageTitle').textContent =
+          `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
         document.getElementById('sidebarOrderMeta').textContent =
           `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
         document.getElementById('progressRange').value = Number(orderData.progressPercent) || 0;
         document.getElementById('pctLabel').textContent = String(Number(orderData.progressPercent) || 0);
         document.getElementById('progressStatus').value = orderData.progressStatus || '';
         document.getElementById('progressNote').value = orderData.progressNote || '';
+
+        // Non-blocking user label
         if (orderData.userId) {
-          try {
-            const u = await getDoc(doc(db, 'users', orderData.userId));
-            const name = u.exists() ? (u.data().displayName || u.data().email) : orderData.userEmail;
-            document.getElementById('chatUserLabel').textContent = name || orderData.userId;
-          } catch (_) {
-            document.getElementById('chatUserLabel').textContent = orderData.userEmail || orderData.userId;
-          }
+          document.getElementById('chatUserLabel').textContent =
+            orderData.userEmail || orderData.userId;
+          getDoc(doc(db, 'users', orderData.userId)).then((u) => {
+            if (u.exists()) {
+              const name = u.data().displayName || u.data().email;
+              if (name) document.getElementById('chatUserLabel').textContent = name;
+            }
+          }).catch(() => {});
         }
+
         showApp();
         try { listenFiles(); } catch (e) { console.warn('listenFiles', e); }
         try { listenChat(); } catch (e) { console.warn('listenChat', e); }
       } catch (err) {
         console.error('loadOrderAndStart', err);
+        const msg = err && err.message ? err.message : String(err);
         if (status) {
-          status.textContent = 'Error: ' + (err.message || String(err));
+          status.innerHTML = 'Error loading order:<br><span style="font-size:0.8rem;word-break:break-all;">'
+            + msg.replace(/</g, '&lt;') + '</span>';
           status.style.color = '#f87171';
         }
         const form = document.getElementById('gateForm');
-        if (form) form.classList.remove('hidden');
-        showToast('Failed to open development: ' + (err.message || 'unknown'), 'error');
+        if (form) {
+          form.classList.remove('hidden');
+          const btn = document.getElementById('gateBtn');
+          if (btn) {
+            btn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+            btn.onclick = () => {
+              status.style.color = '';
+              status.textContent = 'Retrying…';
+              loadOrderAndStart();
+            };
+          }
+        }
+        // Common hint
+        if (/permission|insufficient|PERMISSION/i.test(msg)) {
+          showToast('Firestore permission denied — publish rules & ensure role=admin', 'error');
+        } else if (/timed out/i.test(msg)) {
+          showToast('Firestore request timed out — check network / Firebase config', 'error');
+        } else {
+          showToast('Failed: ' + msg, 'error');
+        }
       }
     }
 
