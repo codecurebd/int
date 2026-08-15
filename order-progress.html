@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Order Progress – CodeCureBD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tailwind.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #f0f4f9; font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
+    .progress-wrap { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
+    .progress-hero {
+      background: linear-gradient(145deg, #fff 0%, #f8fafc 100%);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+    }
+    .progress-track {
+      height: 12px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-top: 10px;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, #0066FF, #8B5CF6);
+      transition: width 0.5s ease;
+    }
+    .dev-chat-shell {
+      display: flex; flex-direction: column; height: min(62vh, 520px); min-height: 360px;
+      background: #fff; border-radius: 18px; border: 1px solid rgba(0,0,0,0.06);
+      overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    .dev-chat-header {
+      padding: 12px 16px; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff;
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    }
+    .dev-chat-header .av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dev-chat-body {
+      flex: 1; overflow-y: auto; padding: 14px; background: #f8fafc;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .dev-row { display: flex; flex-direction: column; width: fit-content; max-width: min(78%, 420px); }
+    .dev-row.sent { align-self: flex-end; align-items: flex-end; margin-left: auto; }
+    .dev-row.recv { align-self: flex-start; align-items: flex-start; }
+    .dev-bubble {
+      padding: 8px 12px; border-radius: 14px; font-size: 0.9rem; line-height: 1.45;
+      white-space: pre-wrap; word-break: normal; overflow-wrap: break-word;
+    }
+    .dev-row.sent .dev-bubble {
+      background: linear-gradient(135deg, #0066FF, #5856D6); color: #fff; border-bottom-right-radius: 4px;
+    }
+    .dev-row.recv .dev-bubble {
+      background: #fff; border: 1px solid rgba(0,0,0,0.06); color: #1e293b; border-bottom-left-radius: 4px;
+    }
+    .dev-time { font-size: 0.65rem; color: #94a3b8; margin-top: 2px; padding: 0 4px; }
+    .dev-chat-footer {
+      padding: 10px 12px; border-top: 1px solid rgba(0,0,0,0.05); background: #fff;
+      display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
+    }
+    .dev-chat-footer textarea {
+      flex: 1; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 10px 12px;
+      font-size: 0.9rem; resize: none; max-height: 100px; min-height: 42px; outline: none;
+      font-family: inherit; background: #f8fafc;
+    }
+    .dev-chat-footer textarea:focus { border-color: #0066FF; background: #fff; }
+    .dev-send {
+      width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dev-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .dev-file-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: none; background: #f1f5f9;
+      color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .dev-file-btn:hover { color: #0066FF; background: #e0e7ff; }
+    .visit-card {
+      background: #fff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05);
+      padding: 1.25rem; margin-top: 1rem;
+    }
+    .preview-frame-wrap {
+      margin-top: 12px; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;
+      background: #0b1220; min-height: 280px; display: none;
+    }
+    .preview-frame-wrap.open { display: block; }
+    .preview-frame-wrap iframe { width: 100%; height: 420px; border: none; background: #fff; }
+    .file-chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+      background: #f1f5f9; border-radius: 8px; font-size: 0.75rem; color: #334155; margin: 2px;
+    }
+    .img-preview-row { display: none; align-items: center; gap: 8px; padding: 4px 0; }
+    .img-preview-row.show { display: flex; }
+    .img-preview-row img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; }
+    .msg-img { max-width: 220px; border-radius: 10px; display: block; margin-bottom: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+    <main class="main-content">
+      <div class="progress-wrap pt-2">
+        <div class="flex items-center gap-2 mb-4">
+          <a href="my-orders.html" class="btn-outline text-sm py-2 px-4" style="min-height:auto;">
+            <i class="fas fa-arrow-left"></i> My Orders
+          </a>
+          <h1 class="text-2xl font-bold text-gray-900">Order Progress</h1>
+        </div>
+
+        <div id="loadingState" class="progress-hero animate-pulse">
+          <div class="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
+          <div class="h-3 bg-gray-200 rounded w-full"></div>
+        </div>
+
+        <div id="errorState" class="hidden progress-hero text-center py-10">
+          <i class="fas fa-exclamation-circle text-4xl text-red-400 mb-3"></i>
+          <p class="text-gray-600" id="errorMsg">Could not load order.</p>
+          <a href="my-orders.html" class="btn-primary mt-4 inline-flex text-sm">Back to orders</a>
+        </div>
+
+        <div id="mainState" class="hidden">
+          <!-- Progress -->
+          <section class="progress-hero mb-4">
+            <div class="flex flex-wrap justify-between gap-3 items-start">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wide text-blue-600 mb-1">
+                  <i class="fas fa-code"></i> Development
+                </p>
+                <h2 class="text-xl font-bold text-gray-900" id="orderTitle">Order</h2>
+                <p class="text-sm text-gray-500 mt-1" id="orderMeta"></p>
+              </div>
+              <div class="text-right">
+                <span class="text-3xl font-extrabold text-gray-900" id="progressPct">0%</span>
+                <p class="text-xs text-gray-500" id="progressLabel">Not started</p>
+              </div>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <p class="text-sm text-gray-600 mt-3" id="progressNote"></p>
+          </section>
+
+          <!-- Visit Site -->
+          <section class="visit-card mb-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-gray-900"><i class="fas fa-globe text-blue-500 mr-1"></i> Visit Site</h3>
+                <p class="text-sm text-gray-500 mt-0.5">Live preview of files uploaded by the developer</p>
+              </div>
+              <button type="button" id="visitSiteBtn" class="btn-primary text-sm py-2 px-4" disabled>
+                <i class="fas fa-external-link-alt"></i> Open Preview
+              </button>
+            </div>
+            <div id="fileList" class="mt-3 flex flex-wrap gap-1"></div>
+            <div class="preview-frame-wrap" id="previewWrap">
+              <iframe id="previewFrame" title="Site preview" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+          </section>
+
+          <!-- Developer Chat -->
+          <section>
+            <h3 class="font-bold text-gray-900 mb-2">
+              <i class="fas fa-laptop-code text-purple-500 mr-1"></i> Chat with Developer
+            </h3>
+            <div class="dev-chat-shell">
+              <div class="dev-chat-header">
+                <div class="av"><i class="fas fa-user-tie"></i></div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-sm">Web Developer</div>
+                  <div class="text-xs opacity-80">Order development chat</div>
+                </div>
+              </div>
+              <div class="dev-chat-body" id="devChatBody">
+                <div class="text-center text-gray-400 text-sm py-8">Loading messages…</div>
+              </div>
+              <div class="img-preview-row px-3" id="imgPreviewRow">
+                <img id="imgPreviewThumb" alt="" />
+                <button type="button" id="imgPreviewClear" class="text-red-500 text-sm"><i class="fas fa-times"></i></button>
+              </div>
+              <div class="dev-chat-footer">
+                <label class="dev-file-btn" title="Attach image">
+                  <i class="fas fa-image"></i>
+                  <input type="file" id="devFileInput" accept="image/*" hidden />
+                </label>
+                <textarea id="devChatInput" rows="1" placeholder="Message the developer…"></textarea>
+                <button type="button" class="dev-send" id="devSendBtn" aria-label="Send">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <div id="footer-placeholder"></div>
+  </div>
+  <div id="toast-container"></div>
+
+  <script type="module">
+    import {
+      auth, db, doc, getDoc, collection, query, where, onSnapshot,
+      addDoc, updateDoc, serverTimestamp, onAuthStateChanged, getDocs
+    } from './firebase-config.js';
+    import {
+      renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderCartSidebar, renderAuthModal, setLoading, uploadImage
+    } from './components.js';
+
+    renderNavbar();
+    renderAuthModal();
+    renderFooter();
+    renderCartSidebar();
+    updateCartBadge();
+
+    window.showToast = (message, type = 'success') => {
+      const container = document.getElementById('toast-container') || document.body;
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4000);
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('id') || '';
+    let currentUser = null;
+    let orderData = null;
+    let unsubMsgs = null;
+    let unsubOrder = null;
+    let pendingImage = null;
+    let filesCache = [];
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function isImageUrl(str) {
+      if (!str) return false;
+      const t = String(str).trim();
+      return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(t) || t.includes('res.cloudinary.com');
+    }
+
+    function showError(msg) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('mainState').classList.add('hidden');
+      document.getElementById('errorState').classList.remove('hidden');
+      document.getElementById('errorMsg').textContent = msg || 'Error';
+    }
+
+    function updateProgressUI(o) {
+      const pct = Math.min(100, Math.max(0, Number(o.progressPercent) || 0));
+      document.getElementById('progressPct').textContent = pct + '%';
+      document.getElementById('progressFill').style.width = pct + '%';
+      const labels = {
+        0: 'Not started',
+        25: 'In progress',
+        50: 'Halfway',
+        75: 'Almost done',
+        100: 'Completed'
+      };
+      let label = o.progressStatus || labels[0];
+      if (!o.progressStatus) {
+        if (pct >= 100) label = labels[100];
+        else if (pct >= 75) label = labels[75];
+        else if (pct >= 50) label = labels[50];
+        else if (pct >= 1) label = labels[25];
+      }
+      document.getElementById('progressLabel').textContent = label;
+      document.getElementById('progressNote').textContent = o.progressNote || 'Updates from the developer will appear here.';
+      const short = (orderId || '').slice(0, 8).toUpperCase();
+      document.getElementById('orderTitle').textContent = `Order #${short}`;
+      const items = (o.items || []).map(i => i.name).filter(Boolean).slice(0, 3).join(', ');
+      document.getElementById('orderMeta').textContent = items ? items : (o.status || 'pending');
+    }
+
+    async function loadFiles() {
+      const listEl = document.getElementById('fileList');
+      const visitBtn = document.getElementById('visitSiteBtn');
+      try {
+        const q = query(collection(db, 'devFiles'), where('orderId', '==', orderId));
+        const snap = await getDocs(q);
+        filesCache = [];
+        snap.forEach(d => filesCache.push({ id: d.id, ...d.data() }));
+        filesCache.sort((a, b) => (a.path || a.fileName || '').localeCompare(b.path || b.fileName || ''));
+
+        if (!filesCache.length) {
+          listEl.innerHTML = '<span class="text-xs text-gray-400">No files uploaded yet.</span>';
+          visitBtn.disabled = true;
+          return;
+        }
+        listEl.innerHTML = filesCache.map(f =>
+          `<span class="file-chip"><i class="fas fa-file-code"></i> ${escapeHtml(f.path || f.fileName || 'file')}</span>`
+        ).join('');
+        const hasIndex = filesCache.some(f =>
+          /^(index\.html|index\.htm)$/i.test(f.fileName || '') ||
+          /^(index\.html|index\.htm)$/i.test((f.path || '').split('/').pop() || '')
+        );
+        visitBtn.disabled = !hasIndex && filesCache.length === 0;
+        // Allow preview if any html exists
+        const anyHtml = filesCache.some(f => /\.html?$/i.test(f.fileName || f.path || ''));
+        visitBtn.disabled = !anyHtml;
+      } catch (err) {
+        console.warn('loadFiles', err);
+        listEl.innerHTML = '<span class="text-xs text-red-400">Could not load files</span>';
+        visitBtn.disabled = true;
+      }
+    }
+
+    function buildPreviewHtml() {
+      const byName = {};
+      filesCache.forEach(f => {
+        const name = (f.path || f.fileName || 'file').replace(/^\//, '');
+        byName[name] = f.content || '';
+      });
+      let indexKey = Object.keys(byName).find(k => /(^|\/)index\.html?$/i.test(k));
+      if (!indexKey) indexKey = Object.keys(byName).find(k => /\.html?$/i.test(k));
+      if (!indexKey) return null;
+      let html = byName[indexKey];
+      // Inline simple relative css/js of same folder (basic)
+      Object.keys(byName).forEach(name => {
+        if (/\.css$/i.test(name)) {
+          const re = new RegExp(`href=["']${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'gi');
+          html = html.replace(re, '');
+          if (!html.includes('</head>')) html = `<style>${byName[name]}</style>` + html;
+          else html = html.replace('</head>', `<style>${byName[name]}</style></head>`);
+        }
+        if (/\.js$/i.test(name) && !/src=["']https?:/i.test(byName[name])) {
+          const re = new RegExp(`src=["']${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'gi');
+          html = html.replace(re, '');
+          if (!html.includes('</body>')) html = html + `<script>${byName[name]}<\/script>`;
+          else html = html.replace('</body>', `<script>${byName[name]}<\/script></body>`);
+        }
+      });
+      if (!/<html/i.test(html)) {
+        html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>${html}</body></html>`;
+      }
+      return html;
+    }
+
+    document.getElementById('visitSiteBtn')?.addEventListener('click', () => {
+      const html = buildPreviewHtml();
+      if (!html) {
+        showToast('No HTML file to preview yet', 'warning');
+        return;
+      }
+      const wrap = document.getElementById('previewWrap');
+      const frame = document.getElementById('previewFrame');
+      wrap.classList.add('open');
+      frame.srcdoc = html;
+      // Also offer new tab
+      try {
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch (_) {}
+    });
+
+    function renderMsgs(msgs) {
+      const body = document.getElementById('devChatBody');
+      if (!msgs.length) {
+        body.innerHTML = `<div class="text-center text-gray-400 text-sm py-8">
+          <i class="fas fa-comments text-2xl opacity-40 block mb-2"></i>
+          No messages yet. Ask the developer about your site.
+        </div>`;
+        return;
+      }
+      let html = '';
+      msgs.forEach(m => {
+        const isSent = m.fromUserId === currentUser?.uid;
+        const ts = m.timestamp?.toDate?.() || null;
+        const time = ts ? ts.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+        const raw = String(m.content || '');
+        const lines = raw.split('\n');
+        let text = [];
+        let img = null;
+        lines.forEach(l => {
+          const t = l.trim();
+          if (isImageUrl(t)) img = t;
+          else if (t) text.push(l);
+        });
+        if (!img && isImageUrl(raw.trim())) { img = raw.trim(); text = []; }
+        let content = '';
+        if (img) content += `<img class="msg-img" src="${escapeHtml(img)}" alt="Attachment" loading="lazy" onclick="window.open('${escapeHtml(img)}','_blank')" />`;
+        if (text.length) content += escapeHtml(text.join('\n'));
+        if (!content) content = '<span style="opacity:0.6">(empty)</span>';
+        html += `<div class="dev-row ${isSent ? 'sent' : 'recv'}">
+          <div class="dev-bubble">${content}</div>
+          <div class="dev-time">${time}</div>
+        </div>`;
+      });
+      body.innerHTML = html;
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function listenMessages() {
+      if (unsubMsgs) try { unsubMsgs(); } catch (_) {}
+      const convId = `dev_${orderId}`;
+      const q1 = query(collection(db, 'devMessages'), where('orderId', '==', orderId));
+      unsubMsgs = onSnapshot(q1, (snap) => {
+        const msgs = [];
+        snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
+        msgs.sort((a, b) => {
+          const ta = a.timestamp?.toDate?.()?.getTime() || 0;
+          const tb = b.timestamp?.toDate?.()?.getTime() || 0;
+          return ta - tb;
+        });
+        renderMsgs(msgs);
+        // mark developer messages read
+        msgs.filter(m => m.fromUserId === 'developer' && !m.read).forEach(async (m) => {
+          try {
+            await updateDoc(doc(db, 'devMessages', m.id), { read: true, readAt: serverTimestamp() });
+          } catch (_) {}
+        });
+      }, (err) => {
+        console.warn(err);
+        document.getElementById('devChatBody').innerHTML =
+          `<div class="text-center text-red-400 text-sm py-6">${escapeHtml(err.message)}</div>`;
+      });
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('devChatInput');
+      const btn = document.getElementById('devSendBtn');
+      const text = (input.value || '').trim();
+      if (!text && !pendingImage) return;
+      if (!currentUser || !orderId) return;
+      btn.disabled = true;
+      try {
+        let imageUrl = null;
+        if (pendingImage) {
+          imageUrl = await uploadImage(pendingImage);
+          clearImagePreview();
+        }
+        let content = text;
+        if (imageUrl) content = text ? (text + '\n' + imageUrl) : imageUrl;
+        await addDoc(collection(db, 'devMessages'), {
+          orderId,
+          conversationId: `dev_${orderId}`,
+          fromUserId: currentUser.uid,
+          toUserId: 'developer',
+          content,
+          timestamp: serverTimestamp(),
+          read: false,
+          participants: [currentUser.uid, 'developer']
+        });
+        input.value = '';
+        input.style.height = 'auto';
+      } catch (err) {
+        showToast('⚠️ ' + (err.message || 'Send failed'), 'error');
+      } finally {
+        btn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function clearImagePreview() {
+      pendingImage = null;
+      document.getElementById('imgPreviewRow').classList.remove('show');
+      document.getElementById('imgPreviewThumb').src = '';
+      document.getElementById('devFileInput').value = '';
+    }
+
+    document.getElementById('devSendBtn')?.addEventListener('click', sendMessage);
+    document.getElementById('devChatInput')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    document.getElementById('devChatInput')?.addEventListener('input', (e) => {
+      e.target.style.height = 'auto';
+      e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
+    });
+    document.getElementById('devFileInput')?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select an image', 'warning');
+        return;
+      }
+      pendingImage = file;
+      const url = URL.createObjectURL(file);
+      document.getElementById('imgPreviewThumb').src = url;
+      document.getElementById('imgPreviewRow').classList.add('show');
+    });
+    document.getElementById('imgPreviewClear')?.addEventListener('click', clearImagePreview);
+
+    async function boot(user) {
+      if (!orderId) {
+        showError('No order selected.');
+        return;
+      }
+      currentUser = user;
+      try {
+        const ref = doc(db, 'orders', orderId);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          showError('Order not found.');
+          return;
+        }
+        orderData = { id: snap.id, ...snap.data() };
+        if (orderData.userId !== user.uid) {
+          showError('You do not have access to this order.');
+          return;
+        }
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('mainState').classList.remove('hidden');
+        updateProgressUI(orderData);
+        listenMessages();
+        await loadFiles();
+
+        if (unsubOrder) try { unsubOrder(); } catch (_) {}
+        unsubOrder = onSnapshot(ref, (s) => {
+          if (!s.exists()) return;
+          orderData = { id: s.id, ...s.data() };
+          updateProgressUI(orderData);
+        });
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'Failed to load');
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'auth.html?mode=signin&redirect=' + encodeURIComponent('order-progress.html?id=' + orderId);
+        return;
+      }
+      let name = null;
+      try {
+        const ud = await getDoc(doc(db, 'users', user.uid));
+        name = ud.exists() ? ud.data().displayName : user.email?.split('@')[0];
+      } catch (_) {}
+      updateNavbarAuth(user, name);
+      boot(user);
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (unsubMsgs) unsubMsgs();
+      if (unsubOrder) unsubOrder();
+    });
+
+    console.log('📈 Order progress page (basic structure)');
+  </script>
+</body>
+</html>
