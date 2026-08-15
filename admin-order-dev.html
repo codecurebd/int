@@ -207,7 +207,7 @@
       onSnapshot, addDoc, serverTimestamp, onAuthStateChanged, getDocs,
       signInWithEmailAndPassword
     } from './firebase-config.js';
-    import { uploadImage, setLoading } from './components.js';
+    import { uploadImage } from './components.js';
 
     window.showToast = (message, type = 'success') => {
       let c = document.getElementById('toast-container');
@@ -493,34 +493,48 @@
     });
 
     async function loadOrderAndStart() {
-      if (!orderId) {
-        document.getElementById('gateStatus').textContent = 'Missing order id';
-        return;
-      }
-      const snap = await getDoc(doc(db, 'orders', orderId));
-      if (!snap.exists()) {
-        document.getElementById('gateStatus').textContent = 'Order not found';
-        return;
-      }
-      orderData = { id: snap.id, ...snap.data() };
-      document.getElementById('pageTitle').textContent = `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
-      document.getElementById('sidebarOrderMeta').textContent = `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
-      document.getElementById('progressRange').value = Number(orderData.progressPercent) || 0;
-      document.getElementById('pctLabel').textContent = String(Number(orderData.progressPercent) || 0);
-      document.getElementById('progressStatus').value = orderData.progressStatus || '';
-      document.getElementById('progressNote').value = orderData.progressNote || '';
-      if (orderData.userId) {
-        try {
-          const u = await getDoc(doc(db, 'users', orderData.userId));
-          const name = u.exists() ? (u.data().displayName || u.data().email) : orderData.userEmail;
-          document.getElementById('chatUserLabel').textContent = name || orderData.userId;
-        } catch (_) {
-          document.getElementById('chatUserLabel').textContent = orderData.userEmail || orderData.userId;
+      const status = document.getElementById('gateStatus');
+      try {
+        if (!orderId) {
+          if (status) status.textContent = 'Missing order id (?id=...) in URL';
+          return;
         }
+        if (status) status.textContent = 'Loading order…';
+        const snap = await getDoc(doc(db, 'orders', orderId));
+        if (!snap.exists()) {
+          if (status) status.textContent = 'Order not found: ' + orderId;
+          return;
+        }
+        orderData = { id: snap.id, ...snap.data() };
+        document.getElementById('pageTitle').textContent = `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
+        document.getElementById('sidebarOrderMeta').textContent =
+          `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
+        document.getElementById('progressRange').value = Number(orderData.progressPercent) || 0;
+        document.getElementById('pctLabel').textContent = String(Number(orderData.progressPercent) || 0);
+        document.getElementById('progressStatus').value = orderData.progressStatus || '';
+        document.getElementById('progressNote').value = orderData.progressNote || '';
+        if (orderData.userId) {
+          try {
+            const u = await getDoc(doc(db, 'users', orderData.userId));
+            const name = u.exists() ? (u.data().displayName || u.data().email) : orderData.userEmail;
+            document.getElementById('chatUserLabel').textContent = name || orderData.userId;
+          } catch (_) {
+            document.getElementById('chatUserLabel').textContent = orderData.userEmail || orderData.userId;
+          }
+        }
+        showApp();
+        try { listenFiles(); } catch (e) { console.warn('listenFiles', e); }
+        try { listenChat(); } catch (e) { console.warn('listenChat', e); }
+      } catch (err) {
+        console.error('loadOrderAndStart', err);
+        if (status) {
+          status.textContent = 'Error: ' + (err.message || String(err));
+          status.style.color = '#f87171';
+        }
+        const form = document.getElementById('gateForm');
+        if (form) form.classList.remove('hidden');
+        showToast('Failed to open development: ' + (err.message || 'unknown'), 'error');
       }
-      showApp();
-      listenFiles();
-      listenChat();
     }
 
     document.getElementById('gateBtn')?.addEventListener('click', async () => {
@@ -566,7 +580,28 @@
       adminUser = user;
       status.textContent = 'Verified — loading…';
       form.classList.add('hidden');
-      await loadOrderAndStart();
+      // Safety: if still on gate after 8s, show retry
+      const safety = setTimeout(() => {
+        if (!document.getElementById('devApp').classList.contains('hidden')) return;
+        status.textContent = 'Still loading… Check console / order id in URL.';
+        status.style.color = '#fbbf24';
+        form.classList.remove('hidden');
+        const btn = document.getElementById('gateBtn');
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+          btn.onclick = () => loadOrderAndStart();
+        }
+      }, 8000);
+      try {
+        await loadOrderAndStart();
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Error: ' + (err.message || String(err));
+        status.style.color = '#f87171';
+        form.classList.remove('hidden');
+      } finally {
+        clearTimeout(safety);
+      }
     });
 
     console.log('🛠️ Admin order development (basic structure)');
