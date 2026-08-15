@@ -801,6 +801,35 @@ function setActiveNavLink() {
 export function renderNavbar() {
   renderContactModal();
 
+  // Mobile: hide Get Started in top nav (keep Sign In only). Desktop (md+): show both.
+  if (!document.getElementById('navGetStartedStyle')) {
+    const gsStyle = document.createElement('style');
+    gsStyle.id = 'navGetStartedStyle';
+    gsStyle.textContent = `
+      #navGetStartedWrap.nav-get-started-wrap { display: none !important; }
+      #auth-buttons > button { margin-right: 0; }
+      @media (min-width: 768px) {
+        #navGetStartedWrap.nav-get-started-wrap {
+          display: inline-flex !important;
+          margin-left: 10px !important;
+        }
+        #auth-buttons > button {
+          margin-right: 2px !important;
+        }
+        #navGetStartedBtn {
+          font-size: 0.8125rem !important;
+          padding: 0.45rem 0.9rem !important;
+          line-height: 1.25 !important;
+          min-height: 0 !important;
+        }
+        #navGetStartedBtn i {
+          font-size: 0.7rem !important;
+        }
+      }
+    `;
+    document.head.appendChild(gsStyle);
+  }
+
   const navbarHTML = `
     <nav id="mainNavbar" class="fixed top-0 left-0 w-full z-50 h-[72px] md:h-[80px] flex items-center px-4 sm:px-8 lg:px-12 transition-all duration-300 ease-out glass shadow-sm border-b border-gray-100/30">
       <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
@@ -873,11 +902,13 @@ export function renderNavbar() {
             <div class="w-24 h-10 bg-gray-200 rounded-full animate-pulse hidden md:block"></div>
           </div>
 
-          <div id="auth-buttons" class="hidden flex items-center gap-2">
-            <button onclick="window.openAuthModal('signin')" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors px-3 py-2 rounded-lg hover:bg-blue-50/50">Sign In</button>
-            <button onclick="window.openAuthModal('signup')" class="btn-primary text-sm py-2.5 px-5 shadow-md shadow-blue-500/20 hover:shadow-blue-500/30">
-              <i class="fas fa-rocket text-xs"></i> Get Started
-            </button>
+          <div id="auth-buttons" class="hidden flex items-center gap-1.5 md:gap-2 ml-1 md:ml-2">
+            <button onclick="window.openAuthModal('signin')" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-blue-50/50 whitespace-nowrap leading-none md:mr-0.5">Sign In</button>
+            <span id="navGetStartedWrap" class="nav-get-started-wrap">
+              <button id="navGetStartedBtn" onclick="window.openAuthModal('signup')" class="btn-primary text-xs py-2 px-3.5 shadow-md shadow-blue-500/20 hover:shadow-blue-500/30 whitespace-nowrap inline-flex items-center gap-1.5">
+                <i class="fas fa-rocket text-[10px]"></i> Get Started
+              </button>
+            </span>
           </div>
 
           <div id="profile-section" class="relative hidden">
@@ -907,13 +938,21 @@ export function renderNavbar() {
         <a href="get-new-website.html" data-nav="store" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Store</a>
         <a href="fix-website.html" data-nav="fix" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Fix</a>
         <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Contact</a>
-        <hr class="my-2 border-gray-100" />
-        <a href="my-profile.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-user mr-3"></i> Profile</a>
-        <a href="my-orders.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-box mr-3"></i> Orders</a>
-        <a href="my-fix-requests.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-tools mr-3"></i> Fix Requests</a>
-        <a href="messages.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-comment-dots mr-3"></i> Support Chat</a>
-        <a href="admin-panel.html" id="mobileAdminPanelLink" class="hidden nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-blue-600 transition-colors"><i class="fas fa-shield-alt mr-3"></i> Admin Panel</a>
-        <a href="#" onclick="window.handleLogout()" class="nav-link py-3 px-4 rounded-xl hover:bg-red-50/50 font-medium text-red-500 transition-colors"><i class="fas fa-sign-out-alt mr-3"></i> Logout</a>
+        <div id="mobileAuthButtons" class="hidden flex flex-col gap-2 mt-2 pt-2 border-t border-gray-100">
+          <button type="button" onclick="window.openAuthModal('signin'); window.toggleMobileMenu();" class="w-full text-center text-sm font-medium text-gray-700 py-2.5 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors whitespace-nowrap">Sign In</button>
+          <button type="button" onclick="window.openAuthModal('signup'); window.toggleMobileMenu();" class="btn-primary w-full justify-center text-sm py-2.5 px-4 whitespace-nowrap">
+            <i class="fas fa-rocket text-xs"></i> Get Started
+          </button>
+        </div>
+        <div id="mobileUserLinks" class="hidden flex flex-col gap-1">
+          <hr class="my-2 border-gray-100" />
+          <a href="my-profile.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-user mr-3"></i> Profile</a>
+          <a href="my-orders.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-box mr-3"></i> Orders</a>
+          <a href="my-fix-requests.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-tools mr-3"></i> Fix Requests</a>
+          <a href="messages.html" class="nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-gray-700 transition-colors"><i class="fas fa-comment-dots mr-3"></i> Support Chat</a>
+          <a href="admin-panel.html" id="mobileAdminPanelLink" class="hidden nav-link py-3 px-4 rounded-xl hover:bg-blue-50/50 font-medium text-blue-600 transition-colors"><i class="fas fa-shield-alt mr-3"></i> Admin Panel</a>
+          <a href="#" onclick="window.handleLogout()" class="nav-link py-3 px-4 rounded-xl hover:bg-red-50/50 font-medium text-red-500 transition-colors"><i class="fas fa-sign-out-alt mr-3"></i> Logout</a>
+        </div>
       </div>
     </div>
   `;
@@ -1493,6 +1532,7 @@ export function renderPaymentModal() {
           const newDueBDT = Math.max(0, (currentOrder.dueAmountBDT || 0) - dueData.dueBDT);
           const newDueUSD = Math.max(0, (currentOrder.dueAmountUSD || 0) - dueData.dueUSD);
 
+          const duePaidFully = newDueBDT <= 0 && newDueUSD <= 0;
           await updateDoc(orderRef, {
             amountBDT: newPaidBDT,
             amountUSD: newPaidUSD,
@@ -1502,14 +1542,23 @@ export function renderPaymentModal() {
             senderNumber: senderNumber,
             paymentMethod: method,
             updatedAt: serverTimestamp(),
-            ...(newDueBDT === 0 ? { duePaidAt: serverTimestamp() } : {})
+            ...(duePaidFully ? {
+              duePaidAt: serverTimestamp(),
+              remainingPaymentEnabled: false,
+              remainingPaymentAmountBDT: 0,
+              remainingPaymentAmountUSD: 0,
+              paymentType: 'full'
+            } : {})
           });
 
           window.showToast('✅ Due payment successful! Order updated.', 'success');
           window.closePaymentModal();
           window._duePaymentData = null;
+          if (typeof window.refreshCampaignPage === 'function') {
+            try { await window.refreshCampaignPage(); } catch (_) {}
+          }
           // Refresh the page to update order list
-          setTimeout(() => window.location.reload(), 1500);
+          setTimeout(() => window.location.reload(), 1200);
 
         } catch (err) {
           console.error('Due payment error:', err);
@@ -1586,8 +1635,9 @@ export function renderPaymentModal() {
         const advanceBDT = Number(pending.amountBDT) || Number(pending.totalBDT) || 500;
         const advanceUSD = Number((advanceBDT / rate).toFixed(2));
         const campaignPrice = Number(pending.campaignPrice) || 0;
-        const dueBDT = Math.max(0, campaignPrice - advanceBDT);
-        const dueUSD = Number((dueBDT / rate).toFixed(2));
+        // Due is set manually by admin later — do NOT auto-calculate from campaign price
+        const dueBDT = 0;
+        const dueUSD = 0;
         const btn = document.getElementById('paymentSubmitBtn');
         setLoading(btn, true, 'Confirm Payment');
 
@@ -1624,6 +1674,8 @@ export function renderPaymentModal() {
             campaignId: pending.campaignId,
             campaignTitle: pending.campaignTitle || camp.title || 'Campaign',
             orderType: 'campaign',
+            type: 'campaign',
+            isCampaign: true,
             items: [{
               id: pending.campaignId,
               name: pending.campaignTitle || camp.title || 'Campaign',
@@ -1642,6 +1694,9 @@ export function renderPaymentModal() {
             amountBDT: advanceBDT,
             dueAmountUSD: dueUSD,
             dueAmountBDT: dueBDT,
+            remainingPaymentEnabled: false,
+            remainingPaymentAmountBDT: 0,
+            remainingPaymentAmountUSD: 0,
             usdRate: rate,
             packageType: isSpecial ? 'special' : 'normal',
             createdAt: serverTimestamp()
@@ -2264,6 +2319,8 @@ export function updateNavbarAuth(user, displayName, role = null) {
   const adminLink = document.getElementById('adminPanelLink');
   const mobileAdminLink = document.getElementById('mobileAdminPanelLink');
   const authRequiredActions = document.getElementById('authRequiredActions');
+  const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+  const mobileUserLinks = document.getElementById('mobileUserLinks');
 
   if (loadingEl) loadingEl.style.display = 'none';
 
@@ -2286,6 +2343,8 @@ export function updateNavbarAuth(user, displayName, role = null) {
 
     if (authBtns) authBtns.classList.add('hidden');
     if (profileSection) profileSection.classList.remove('hidden');
+    if (mobileAuthButtons) mobileAuthButtons.classList.add('hidden');
+    if (mobileUserLinks) mobileUserLinks.classList.remove('hidden');
     if (avatar) {
       // Keep default profile icon (do not use first letter)
       avatar.innerHTML = '<i class="fas fa-user"></i>';
@@ -2327,6 +2386,8 @@ export function updateNavbarAuth(user, displayName, role = null) {
       _lastAuthUid = null;
       if (authBtns) authBtns.classList.remove('hidden');
       if (profileSection) profileSection.classList.add('hidden');
+      if (mobileAuthButtons) mobileAuthButtons.classList.remove('hidden');
+      if (mobileUserLinks) mobileUserLinks.classList.add('hidden');
       if (adminLink) { adminLink.style.display = 'none'; adminLink.classList.add('hidden'); }
       if (mobileAdminLink) { mobileAdminLink.style.display = 'none'; mobileAdminLink.classList.add('hidden'); }
       stopAllNotifListeners();
