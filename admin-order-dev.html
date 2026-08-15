@@ -11,89 +11,255 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; background: #0f172a; color: #e2e8f0; font-family: 'Inter', sans-serif; min-height: 100vh; }
-    .dev-layout { display: grid; grid-template-columns: 280px 1fr 340px; min-height: 100vh; }
+    body {
+      margin: 0;
+      background: #f0f4f9;
+      color: #1c1c1e;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+    }
+    .dev-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr 340px;
+      min-height: 100vh;
+    }
     @media (max-width: 1100px) {
       .dev-layout { grid-template-columns: 1fr; }
-      .dev-sidebar, .dev-chat-col { max-height: 360px; }
+      .dev-sidebar, .dev-chat-col { max-height: 380px; }
     }
     .dev-sidebar {
-      background: #111827; border-right: 1px solid #1e293b; padding: 1rem;
-      display: flex; flex-direction: column; gap: 0.75rem; overflow-y: auto;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
     }
-    .dev-main { padding: 1rem 1.25rem; overflow-y: auto; background: #0b1220; }
+    .dev-main {
+      padding: 1rem 1.25rem;
+      overflow-y: auto;
+      background: #f0f4f9;
+    }
     .dev-chat-col {
-      background: #111827; border-left: 1px solid #1e293b;
-      display: flex; flex-direction: column; min-height: 0;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(28px);
+      border-left: 1px solid rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .panel {
-      background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 1rem;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 18px;
+      padding: 1rem 1.15rem;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
     }
-    .panel h3 { margin: 0 0 0.75rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; }
+    .panel h3 {
+      margin: 0 0 0.75rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      font-weight: 700;
+    }
     .file-row {
-      display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-      border-radius: 10px; cursor: pointer; font-size: 0.85rem; color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #334155;
     }
-    .file-row:hover, .file-row.active { background: #334155; color: #fff; }
+    .file-row:hover, .file-row.active {
+      background: rgba(0, 102, 255, 0.08);
+      color: #0f172a;
+    }
     .file-row .actions { margin-left: auto; display: flex; gap: 4px; opacity: 0.7; }
     .file-row .actions button {
-      background: none; border: none; color: #94a3b8; cursor: pointer; padding: 2px 6px; border-radius: 6px;
+      background: none; border: none; color: #64748b; cursor: pointer;
+      padding: 2px 6px; border-radius: 6px;
     }
-    .file-row .actions button:hover { color: #fff; background: #475569; }
+    .file-row .actions button:hover { color: #dc2626; background: rgba(220, 38, 38, 0.08); }
     .editor-area {
-      width: 100%; min-height: 360px; background: #020617; color: #e2e8f0;
-      border: 1px solid #334155; border-radius: 12px; padding: 12px;
+      width: 100%;
+      min-height: 360px;
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.82rem; line-height: 1.5; resize: vertical; outline: none;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
     }
+    .editor-area:focus { border-color: #0066FF; background: #fff; }
     .btn-dev {
-      background: linear-gradient(135deg, #0066FF, #8B5CF6); color: #fff; border: none;
-      padding: 8px 14px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #0066FF, #8B5CF6);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
     .btn-dev:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-ghost {
-      background: #334155; color: #e2e8f0; border: none; padding: 8px 12px;
-      border-radius: 10px; font-size: 0.85rem; cursor: pointer;
+      background: #fff;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
     }
-    .btn-ghost:hover { background: #475569; }
+    .btn-ghost:hover { background: #f1f5f9; border-color: #cbd5e1; }
     .progress-slider { width: 100%; accent-color: #0066FF; }
     .chat-body {
-      flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px;
-      background: #0f172a; min-height: 200px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      background: #f8fafc;
+      min-height: 200px;
     }
-    .c-row { display: flex; flex-direction: column; width: fit-content; max-width: 90%; }
-    .c-row.sent { align-self: flex-end; align-items: flex-end; }
-    .c-row.recv { align-self: flex-start; }
+    .c-row {
+      display: flex;
+      flex-direction: column;
+      width: fit-content;
+      max-width: min(85%, 320px);
+    }
+    .c-row.sent {
+      align-self: flex-end;
+      align-items: flex-end;
+      margin-left: auto;
+    }
+    .c-row.recv {
+      align-self: flex-start;
+      align-items: flex-start;
+      margin-right: auto;
+    }
+    .c-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+      padding: 0 4px;
+    }
+    .c-row.sent .c-label { color: #5856D6; }
+    .c-row.recv .c-label { color: #64748b; }
     .c-bubble {
-      padding: 8px 11px; border-radius: 12px; font-size: 0.85rem; white-space: pre-wrap;
-      word-break: normal; overflow-wrap: break-word;
+      padding: 8px 12px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      word-break: normal;
+      overflow-wrap: break-word;
     }
-    .c-row.sent .c-bubble { background: linear-gradient(135deg, #0066FF, #5856D6); color: #fff; }
-    .c-row.recv .c-bubble { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
-    .c-time { font-size: 0.6rem; color: #64748b; margin-top: 2px; }
+    .c-row.sent .c-bubble {
+      background: linear-gradient(135deg, #0066FF, #5856D6);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .c-row.recv .c-bubble {
+      background: #fff;
+      color: #1e293b;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .c-time {
+      font-size: 0.6rem;
+      color: #94a3b8;
+      margin-top: 2px;
+      padding: 0 4px;
+    }
     .chat-foot {
-      padding: 10px; border-top: 1px solid #1e293b; display: flex; gap: 8px; align-items: flex-end;
+      padding: 10px;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      background: #fff;
     }
     .chat-foot textarea {
-      flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 12px;
-      color: #e2e8f0; padding: 8px 10px; font-size: 0.85rem; resize: none; min-height: 40px;
-      max-height: 90px; outline: none; font-family: inherit;
+      flex: 1;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      color: #0f172a;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      resize: none;
+      min-height: 40px;
+      max-height: 90px;
+      outline: none;
+      font-family: inherit;
     }
+    .chat-foot textarea:focus { border-color: #0066FF; background: #fff; }
     .gate {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: #f0f4f9;
     }
     .gate-card {
-      background: #1e293b; border: 1px solid #334155; border-radius: 18px; padding: 2rem;
-      max-width: 400px; width: 100%; text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.04);
     }
     .msg-img { max-width: 180px; border-radius: 8px; display: block; margin-bottom: 4px; }
     .topbar {
-      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 1rem;
     }
     .badge-soft {
-      background: #334155; color: #94a3b8; font-size: 0.75rem; padding: 4px 10px; border-radius: 999px;
+      background: rgba(0, 102, 255, 0.08);
+      color: #0066FF;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    #pageTitle { color: #1c1c1e !important; }
+    #sidebarOrderMeta, #chatUserLabel { color: #64748b !important; }
+    #gateTitle { color: #1c1c1e !important; }
+    #gateStatus { color: #64748b !important; }
+    .dev-sidebar strong { color: #1c1c1e !important; }
+    input#progressStatus, input#filePathInput, textarea#progressNote {
+      background: #fff !important;
+      color: #0f172a !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    input#progressStatus:focus, input#filePathInput:focus, textarea#progressNote:focus {
+      border-color: #0066FF !important;
+      outline: none;
     }
   </style>
 </head>
@@ -103,8 +269,8 @@
       <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0066FF,#8B5CF6);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
         <i class="fas fa-shield-alt text-white text-xl"></i>
       </div>
-      <h2 class="text-xl font-bold text-white mb-1" id="gateTitle">Verifying access…</h2>
-      <p id="gateStatus" class="text-sm text-slate-400">Please wait</p>
+      <h2 class="text-xl font-bold mb-1" id="gateTitle">Verifying access…</h2>
+      <p id="gateStatus" class="text-sm text-gray-500">Please wait</p>
       <div id="gateDenied" class="hidden mt-4">
         <p class="text-red-400 text-sm mb-3">Access denied. Admin only.</p>
         <a href="admin-login.html" class="btn-dev" style="display:inline-flex;">Admin Login</a>
@@ -116,10 +282,10 @@
   <div id="devApp" class="dev-layout" style="display:none;">
     <aside class="dev-sidebar">
       <div class="flex items-center justify-between gap-2">
-        <strong class="text-white text-sm">Project files</strong>
+        <strong class="text-sm text-gray-900">Project files</strong>
         <a href="admin-panel.html" class="btn-ghost text-xs" style="padding:4px 8px;">Panel</a>
       </div>
-      <p class="text-xs text-slate-500" id="sidebarOrderMeta">Order —</p>
+      <p class="text-xs text-gray-500" id="sidebarOrderMeta">Order —</p>
       <div class="flex flex-wrap gap-2">
         <button type="button" class="btn-dev text-xs" id="btnNewFile"><i class="fas fa-plus"></i> New</button>
         <label class="btn-ghost text-xs cursor-pointer" style="display:inline-flex;align-items:center;gap:6px;">
@@ -128,13 +294,13 @@
         </label>
       </div>
       <div id="fileList" class="flex-1 overflow-y-auto space-y-1 mt-2"></div>
-      <p class="text-xs text-slate-500">Files stored as text in Firestore. User previews via Visit Site.</p>
+      <p class="text-xs text-gray-500">Files stored as text in Firestore. User previews via Visit Site.</p>
     </aside>
 
     <main class="dev-main">
       <div class="topbar">
         <div>
-          <h1 class="text-lg font-bold text-white m-0" id="pageTitle">Development</h1>
+          <h1 class="text-lg font-bold m-0" id="pageTitle">Development</h1>
           <span class="badge-soft" id="activeFileName">No file selected</span>
         </div>
         <div class="flex flex-wrap gap-2">
@@ -147,34 +313,34 @@
         <h3>Progress (visible to customer)</h3>
         <div class="flex flex-wrap gap-3 items-end">
           <div class="flex-1 min-w-[160px]">
-            <label class="text-xs text-slate-400">Percent: <strong id="pctLabel">0</strong>%</label>
+            <label class="text-xs text-gray-500">Percent: <strong id="pctLabel">0</strong>%</label>
             <input type="range" min="0" max="100" value="0" class="progress-slider" id="progressRange" />
           </div>
           <div>
-            <label class="text-xs text-slate-400 block mb-1">Status label</label>
-            <input type="text" id="progressStatus" style="background:#0f172a;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;min-height:40px;" placeholder="e.g. Designing homepage" />
+            <label class="text-xs text-gray-500 block mb-1">Status label</label>
+            <input type="text" id="progressStatus" style="min-height:40px;" placeholder="e.g. Designing homepage" />
           </div>
         </div>
-        <label class="text-xs text-slate-400 block mt-2 mb-1">Note to customer</label>
-        <textarea id="progressNote" rows="2" style="width:100%;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;" placeholder="Short update for the customer…"></textarea>
+        <label class="text-xs text-gray-500 block mt-2 mb-1">Note to customer</label>
+        <textarea id="progressNote" rows="2" style="width:100%;" placeholder="Short update for the customer…"></textarea>
         <button type="button" class="btn-dev mt-2" id="btnSaveProgress"><i class="fas fa-check"></i> Update progress</button>
       </div>
 
       <div class="panel">
         <h3>File editor</h3>
         <div class="flex flex-wrap gap-2 mb-2">
-          <input type="text" id="filePathInput" style="flex:1;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:10px;padding:8px 12px;min-height:40px;" placeholder="path e.g. index.html" />
+          <input type="text" id="filePathInput" style="flex:1;min-height:40px;" placeholder="path e.g. index.html" />
         </div>
         <textarea id="fileEditor" class="editor-area" placeholder="Select or create a file…" spellcheck="false"></textarea>
       </div>
     </main>
 
     <section class="dev-chat-col">
-      <div style="padding:12px 14px;border-bottom:1px solid #1e293b;">
-        <div class="font-semibold text-white text-sm"><i class="fas fa-comments mr-1"></i> Customer chat</div>
-        <div class="text-xs text-slate-400" id="chatUserLabel">User</div>
+      <div style="padding:12px 14px;border-bottom:1px solid rgba(0,0,0,0.06);">
+        <div class="font-semibold text-gray-900 text-sm"><i class="fas fa-comments mr-1"></i> Customer chat</div>
+        <div class="text-xs text-gray-500" id="chatUserLabel">User</div>
       </div>
-      <div class="chat-body" id="chatBody"><div class="text-center text-slate-500 text-sm py-6">Loading…</div></div>
+      <div class="chat-body" id="chatBody"><div class="text-center text-gray-500 text-sm py-6">Loading…</div></div>
       <div class="chat-foot">
         <label class="btn-ghost" style="padding:8px;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
           <i class="fas fa-image"></i>
@@ -242,7 +408,7 @@
     function renderFileList() {
       const el = document.getElementById('fileList');
       if (!files.length) {
-        el.innerHTML = '<p class="text-xs text-slate-500 px-2">No files yet. Create index.html for Visit Site.</p>';
+        el.innerHTML = '<p class="text-xs text-gray-500 px-2">No files yet. Create index.html for Visit Site.</p>';
         return;
       }
       el.innerHTML = files.map(f => `
@@ -304,27 +470,35 @@
     function renderChat(msgs) {
       const body = document.getElementById('chatBody');
       if (!msgs.length) {
-        body.innerHTML = '<div class="text-center text-slate-500 text-sm py-6">No messages yet</div>';
+        body.innerHTML = '<div class="text-center text-gray-500 text-sm py-6">No messages yet</div>';
         return;
       }
       let html = '';
       msgs.forEach(m => {
-        const isDev = m.fromUserId === 'developer' || m.fromUserId === adminUser?.uid;
+        // Developer / admin → RIGHT; customer → LEFT
+        const from = m.fromUserId || '';
+        const isDev = from === 'developer' || from === 'admin' || (adminUser && from === adminUser.uid);
+        const side = isDev ? 'sent' : 'recv';
+        const label = isDev ? 'You (Developer)' : 'Customer';
         const ts = m.timestamp?.toDate?.();
         const time = ts ? ts.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
         const raw = String(m.content || '');
         const lines = raw.split('\n');
         let text = [], img = null;
         lines.forEach(l => {
-          const t = l.trim();
-          if (isImageUrl(t)) img = t;
-          else if (t) text.push(l);
+          const line = l.trim();
+          if (isImageUrl(line)) img = line;
+          else if (line) text.push(l);
         });
         if (!img && isImageUrl(raw.trim())) { img = raw.trim(); text = []; }
         let content = '';
         if (img) content += `<img class="msg-img" src="${escapeHtml(img)}" alt="" />`;
         if (text.length) content += escapeHtml(text.join('\n'));
-        html += `<div class="c-row ${isDev ? 'sent' : 'recv'}"><div class="c-bubble">${content || '(empty)'}</div><div class="c-time">${time}</div></div>`;
+        html += `<div class="c-row ${side}">
+          <div class="c-label">${label}</div>
+          <div class="c-bubble">${content || '(empty)'}</div>
+          <div class="c-time">${time}</div>
+        </div>`;
       });
       body.innerHTML = html;
       body.scrollTop = body.scrollHeight;
