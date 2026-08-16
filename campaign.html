@@ -404,6 +404,10 @@
             </div>
             <div class="flex flex-wrap gap-2 shrink-0">
               ${payBtnHtml}
+              ${status !== 'cancelled' && o.id ? `
+              <a href="order-progress.html?id=${encodeURIComponent(o.id)}" class="btn-primary text-sm py-2 px-4" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);">
+                <i class="fas fa-code"></i> Progress
+              </a>` : ''}
               <button type="button" id="viewMyEntryBtn" class="btn-primary text-sm py-2 px-4">
                 <i class="fas fa-eye"></i> Details
               </button>

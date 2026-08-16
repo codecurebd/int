@@ -4992,9 +4992,15 @@
                         <td class="text-center">${payReq}</td>
                         <td class="text-center"><span class="${statusClass}">${status}</span></td>
                         <td>
-                            <button type="button" onclick="viewCampaignOrderDetail('${o.id}')" class="text-blue-600 hover:underline text-sm">
-                                <i class="fas fa-eye"></i> Manage
-                            </button>
+                            <div class="flex flex-col gap-1 items-start">
+                              <button type="button" onclick="viewCampaignOrderDetail('${o.id}')" class="text-blue-600 hover:underline text-sm">
+                                  <i class="fas fa-eye"></i> Manage
+                              </button>
+                              ${status !== 'cancelled' ? `
+                              <a href="admin-order-dev.html?id=${o.id}" class="text-purple-600 hover:underline text-sm" title="Development / Progress">
+                                  <i class="fas fa-code"></i> Development
+                              </a>` : ''}
+                            </div>
                         </td>
                     </tr>`;
                 }).join('');
@@ -5061,6 +5067,9 @@
                                     <option value="cancelled" ${status==='cancelled'?'selected':''}>Cancelled</option>
                                 </select>
                                 <button type="button" onclick="updateCampaignOrderStatus('${order.id}')" class="btn-primary btn-sm">Update Status</button>
+                                <a href="admin-order-dev.html?id=${order.id}" class="btn-outline btn-sm" style="color:#7c3aed;border-color:rgba(124,58,237,0.35);">
+                                    <i class="fas fa-code"></i> Development
+                                </a>
                             </div>
                         </div>
 

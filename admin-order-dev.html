@@ -531,9 +531,16 @@
           return;
         }
         orderData = { id: snap.id, ...snap.data() };
-        document.getElementById('pageTitle').textContent = `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
-        document.getElementById('sidebarOrderMeta').textContent =
-          `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
+        const isCampaign = !!(orderData.campaignId || orderData.type === 'campaign' || orderData.isCampaign || orderData.orderType === 'campaign');
+        const campLabel = isCampaign
+          ? (orderData.campaignTitle || orderData.items?.[0]?.name || 'Campaign')
+          : '';
+        document.getElementById('pageTitle').textContent = isCampaign
+          ? `Campaign Dev · #${orderId.slice(0, 8).toUpperCase()}`
+          : `Dev · #${orderId.slice(0, 8).toUpperCase()}`;
+        document.getElementById('sidebarOrderMeta').textContent = isCampaign
+          ? `Campaign · ${campLabel} · #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`
+          : `Order #${orderId.slice(0, 8).toUpperCase()} · ${orderData.status || 'pending'}`;
         document.getElementById('progressRange').value = Number(orderData.progressPercent) || 0;
         document.getElementById('pctLabel').textContent = String(Number(orderData.progressPercent) || 0);
         document.getElementById('progressStatus').value = orderData.progressStatus || '';

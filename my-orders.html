@@ -178,13 +178,22 @@
       background: #fee2e2;
       color: #dc2626;
       border: none;
-      padding: 4px 12px;
+      padding: 6px 14px;
       border-radius: 30px;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
     }
-    .btn-delete:hover { background: #fecaca; }
+    .btn-delete:hover {
+      background: #fecaca;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+    }
 
     .btn-danger {
       background: #dc2626;
@@ -244,20 +253,101 @@
     .pay-due-btn {
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #fff;
-      padding: 6px 16px;
+      padding: 7px 16px;
       border-radius: 30px;
       font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       border: none;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
     }
     .pay-due-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    }
+
+    /* ===== ORDER ACTION BUTTONS ===== */
+    .order-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-decoration: none;
+      white-space: nowrap;
+      line-height: 1.2;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+    }
+    .btn-action:active {
+      transform: translateY(0);
+    }
+    .btn-action.details {
+      background: linear-gradient(135deg, #007AFF, #5856D6);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(0, 122, 255, 0.25);
+    }
+    .btn-action.details:hover {
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+      color: #fff;
+    }
+    .btn-action.progress {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(139, 92, 246, 0.25);
+    }
+    .btn-action.progress:hover {
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+      color: #fff;
+    }
+    .btn-action.cancel {
+      background: #fee2e2;
+      color: #dc2626;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+    }
+    .btn-action.cancel:hover {
+      background: #fecaca;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.18);
+      color: #b91c1c;
+    }
+    .btn-action.pay-due {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(245, 158, 11, 0.25);
+    }
+    .btn-action.pay-due:hover {
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      color: #fff;
+    }
+
+    @media (max-width: 480px) {
+      .order-actions {
+        gap: 6px;
+        justify-content: flex-start;
+      }
+      .btn-action {
+        padding: 6px 12px;
+        font-size: 0.68rem;
+      }
     }
 
     .skeleton-card {
@@ -530,6 +620,28 @@
           <div class="stat-card">
             <div class="stat-number completed" id="completedCount">0</div>
             <div class="stat-label">Completed</div>
+          </div>
+        </div>
+
+        <!-- ===== CAMPAIGN ORDERS NOTICE (not listed here — managed on campaign page) ===== -->
+        <div id="campaignOrdersNotice" class="hidden mb-6 fade-up">
+          <div class="glass-card" style="padding:1rem 1.25rem; border:1px solid rgba(139,92,246,0.2); background:linear-gradient(135deg,rgba(239,246,255,0.9) 0%,rgba(248,250,252,0.95) 100%);">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold uppercase tracking-wide text-purple-600">
+                    <i class="fas fa-bullhorn mr-1"></i> Campaign
+                  </span>
+                  <span id="campaignOrdersCountBadge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700">0</span>
+                </div>
+                <p class="text-sm text-gray-700 mt-1.5" id="campaignOrdersNoticeText">
+                  You have campaign order(s). View progress, payment and details on the Campaign page.
+                </p>
+              </div>
+              <a href="campaign.html" class="btn-primary text-sm py-2 px-4 shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); min-height:auto;">
+                <i class="fas fa-external-link-alt"></i> Go to Campaign
+              </a>
+            </div>
           </div>
         </div>
 
@@ -915,7 +1027,51 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
         const date = o.createdAt?.toDate?.() || new Date(o.createdAt);
         const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const isCamp = isCampaignOrder(o);
 
+        // ----- Campaign order card (no Details / Progress — only Campaign page) -----
+        if (isCamp) {
+          const paidBDT = Number(o.amountBDT) || 0;
+          const campTitle = o.campaignTitle || o.items?.[0]?.name || 'Campaign offer';
+          html += `
+          <div class="glass-card order-card fade-up" style="transition-delay: ${(index % 6) * 0.05}s; border:1px solid rgba(139,92,246,0.22); background:linear-gradient(135deg,rgba(245,243,255,0.95) 0%,rgba(255,255,255,0.9) 100%);">
+            <div class="flex flex-wrap justify-between items-start gap-3">
+              <div class="flex-1 min-w-[150px]">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <p class="font-bold text-gray-900 text-lg">
+                    #${o.id?.slice(0, 8)?.toUpperCase() || 'N/A'}
+                  </p>
+                  <span class="status-badge ${status}">${status}</span>
+                  <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                    <i class="fas fa-bullhorn"></i> Campaign
+                  </span>
+                </div>
+                <p class="text-sm text-purple-700 mt-1.5 font-medium">
+                  <i class="fas fa-info-circle mr-1"></i> This order was placed from Campaign
+                </p>
+                <p class="text-sm text-gray-600 mt-1">
+                  <i class="fas fa-tag mr-1"></i> ${String(campTitle).replace(/</g,'&lt;')}
+                </p>
+                <p class="text-sm text-gray-500 mt-1">
+                  <i class="far fa-calendar-alt mr-1"></i> ${dateStr} at ${timeStr}
+                </p>
+                ${paidBDT > 0 ? `<p class="text-sm text-gray-500">Paid <strong>৳${paidBDT.toLocaleString('en-BD')}</strong> (advance)</p>` : ''}
+                ${o.transactionId ? `<p class="text-xs text-gray-400">Txn: ${o.transactionId}</p>` : ''}
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold text-purple-600 mb-2">Campaign order</p>
+                <div class="order-actions">
+                  <a href="campaign.html" class="btn-action progress" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);">
+                    <i class="fas fa-bullhorn"></i> Campaign
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>`;
+          return;
+        }
+
+        // ----- Normal store order card -----
         const paymentType = o.paymentType || 'full';
         const paymentBadgeClass = paymentType === 'full' ? 'full' : 'advance';
         const paymentLabel = paymentType === 'full' ? '💳 Full' : '⏳ Pay Later';
@@ -944,20 +1100,20 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
               </div>
               <div class="text-right">
                 <p class="text-2xl font-bold text-blue-600">$${o.total?.toFixed(2) || '0.00'}</p>
-                <div class="flex flex-wrap justify-end gap-1 mt-1">
-                  <button onclick="viewOrderDetail('${o.id}')" class="text-blue-600 text-sm hover:underline font-medium">
+                <div class="order-actions">
+                  <button onclick="viewOrderDetail('${o.id}')" class="btn-action details">
                     <i class="fas fa-eye"></i> Details
                   </button>
                   ${status !== 'cancelled' ? `
-                  <a href="order-progress.html?id=${o.id}" class="text-purple-600 text-sm hover:underline font-medium inline-flex items-center gap-1">
+                  <a href="order-progress.html?id=${o.id}" class="btn-action progress">
                     <i class="fas fa-code"></i> Progress
                   </a>` : ''}
                   ${status === 'pending' ? `
-                  <button onclick="deleteOrder('${o.id}')" class="btn-delete text-xs">
+                  <button onclick="deleteOrder('${o.id}')" class="btn-action cancel">
                     <i class="fas fa-trash"></i> Cancel
                   </button>` : ''}
                   ${hasDue && status !== 'cancelled' && status !== 'completed' ? `
-                  <button onclick="payDue('${o.id}')" class="pay-due-btn text-xs">
+                  <button onclick="payDue('${o.id}')" class="btn-action pay-due">
                     <i class="fas fa-credit-card"></i> Pay Due
                   </button>` : ''}
                 </div>
@@ -969,7 +1125,40 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
 
       orderList.innerHTML = html;
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-      updateStats(orders);
+      // Stats: only normal (non-campaign) orders so numbers stay meaningful for store
+      updateStats(orders.filter(o => !isCampaignOrder(o)));
+    }
+
+    function isCampaignOrder(o) {
+      if (!o) return false;
+      if (o.campaignId) return true;
+      if (o.orderType === 'campaign' || o.type === 'campaign' || o.isCampaign === true) return true;
+      if (o.items && o.items.some(it => it && it.isCampaign)) return true;
+      return false;
+    }
+
+    function updateCampaignOrdersNotice() {
+      const notice = document.getElementById('campaignOrdersNotice');
+      const badge = document.getElementById('campaignOrdersCountBadge');
+      const text = document.getElementById('campaignOrdersNoticeText');
+      if (!notice) return;
+
+      const campOrders = (allOrders || []).filter(isCampaignOrder);
+      const activeCamp = campOrders.filter(o => (o.status || 'pending') !== 'cancelled');
+      const count = activeCamp.length || campOrders.length;
+
+      if (count <= 0) {
+        notice.classList.add('hidden');
+        return;
+      }
+
+      notice.classList.remove('hidden');
+      if (badge) badge.textContent = String(count);
+      if (text) {
+        text.textContent = count === 1
+          ? 'You have 1 campaign order. View progress, payment and details on the Campaign page.'
+          : `You have ${count} campaign orders. View progress, payment and details on the Campaign page.`;
+      }
     }
 
     // ===== APPLY FILTERS =====
@@ -977,14 +1166,18 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       const search = searchInput.value.toLowerCase().trim();
       const status = statusFilter.value;
 
+      // Optional top notice (kept hidden — campaign orders now appear as cards in the list)
+      const notice = document.getElementById('campaignOrdersNotice');
+      if (notice) notice.classList.add('hidden');
+
       filteredOrders = allOrders.filter(o => {
-        // Campaign orders are shown on campaign.html only (My Entry)
-        if (o.orderType === 'campaign' || o.campaignId) return false;
+        // Include both normal + campaign orders in the list
         if (search) {
-          const id = o.id?.toLowerCase() || '';
-          if (!id.includes(search)) return false;
+          const id = (o.id || '').toLowerCase();
+          const title = (o.campaignTitle || o.items?.[0]?.name || '').toLowerCase();
+          if (!id.includes(search) && !title.includes(search)) return false;
         }
-        if (status !== 'all' && o.status !== status) return false;
+        if (status !== 'all' && (o.status || 'pending') !== status) return false;
         return true;
       });
 
