@@ -261,6 +261,23 @@
       border-color: #0066FF !important;
       outline: none;
     }
+
+    /* Scrollbar styling for chat */
+    #chatBody {
+      scrollbar-width: thin;
+      scrollbar-color: #0066FF #f1f5f9;
+    }
+    #chatBody::-webkit-scrollbar {
+      width: 8px;
+    }
+    #chatBody::-webkit-scrollbar-thumb {
+      background: #0066FF;
+      border-radius: 4px;
+    }
+    #chatBody::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -475,7 +492,6 @@
       }
       let html = '';
       msgs.forEach(m => {
-        // Developer / admin → RIGHT; customer → LEFT
         const from = m.fromUserId || '';
         const isDev = from === 'developer' || from === 'admin' || (adminUser && from === adminUser.uid);
         const side = isDev ? 'sent' : 'recv';
@@ -708,7 +724,6 @@
       if (f) { pendingChatImage = f; showToast('Image attached — press send', 'info'); }
     });
 
-    // Same as admin-panel: role check only — no password form
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         showDenied('Not signed in.');
@@ -730,6 +745,88 @@
         showDenied('Error verifying access.');
       }
     });
+
+    // === DOWNLOAD OPTION FOR CHAT HISTORY (complete file) ===
+    // This is added at the bottom of the chat section for easy access
+    const chatHeader = document.querySelector('.dev-chat-col > div:first-child');
+    if (chatHeader) {
+      const downloadDiv = document.createElement('div');
+      downloadDiv.style = 'padding: 0 14px 12px; display: flex; justify-content: flex-end;';
+      downloadDiv.innerHTML = `
+        <button type="button" class="btn-ghost text-xs flex items-center gap-2" id="downloadChatBtn">
+          <i class="fas fa-download"></i> Download Chat History (complete file)
+        </button>
+      `;
+      chatHeader.parentNode.insertBefore(downloadDiv, chatHeader.nextSibling);
+
+      document.getElementById('downloadChatBtn').addEventListener('click', async () => {
+        if (!orderId) {
+          showToast('No order ID found. Cannot download chat.', 'error');
+          return;
+        }
+
+        try {
+          const q = query(collection(db, 'devMessages'), where('orderId', '==', orderId));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            let chatText = `=== Chat History for Order #${orderId} ===\n\n`;
+            let currentUser = '';
+            let prevLabel = '';
+
+            snap.forEach(docSnap => {
+              const m = docSnap.data();
+              const ts = m.timestamp?.toDate ? m.timestamp.toDate() : new Date();
+              const timeStr = ts.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+              const from = m.fromUserId || '';
+              const isDev = from === 'developer' || from === 'admin' || (adminUser && from === adminUser.uid);
+              const label = isDev ? 'Developer' : 'Customer';
+              const content = String(m.content || '');
+              const lines = content.split('\n');
+              let msgText = lines.filter(l => l.trim() && !isImageUrl(l.trim())).join('\n');
+              if (msgText) {
+                if (label !== prevLabel) {
+                  chatText += `\n--- ${label} (at ${timeStr}) ---\n`;
+                  prevLabel = label;
+                }
+                chatText += msgText + '\n';
+              }
+              // Image URLs are included in a separate section below
+              if (content.includes('http') && (content.includes('jpg') || content.includes('png') || content.includes('gif') || content.includes('webp') || content.includes('res.cloudinary.com'))) {
+                const imgLines = lines.filter(l => isImageUrl(l.trim()));
+                if (imgLines.length) {
+                  if (label !== prevLabel) {
+                    chatText += `\n--- ${label} (at ${timeStr}) ---\n`;
+                    prevLabel = label;
+                  }
+                  imgLines.forEach(imgUrl => {
+                    chatText += `[IMAGE: ${imgUrl}]\n`;
+                  });
+                  chatText += '\n';
+                }
+              }
+            });
+
+            chatText += '\n=== End of Chat ===';
+
+            const blob = new Blob([chatText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat-history-order-${orderId}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Chat history downloaded successfully!', 'success');
+          } else {
+            showToast('No chat messages found for this order.', 'info');
+          }
+        } catch (err) {
+          console.error('Chat download error:', err);
+          showToast('Failed to download chat history. Please try again.', 'error');
+        }
+      });
+    }
   </script>
 </body>
 </html>
