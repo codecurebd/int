@@ -30,13 +30,17 @@
     }
     @font-face { font-family: 'Inter'; font-display: swap; }
 
-    /* ===== FIXED PAGE HEIGHT (nav + footer er por) ===== */
+    /* ===== FULL-SCREEN CHAT LAYOUT ===== */
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
     .page-wrapper {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
       min-height: 100dvh;
-      max-width: 1280px;
+      max-width: 1280px;           /* Professional fixed width */
       margin: 0 auto;
       width: 100%;
     }
@@ -45,22 +49,23 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
-      padding: 0 24px;
-      overflow: hidden;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
     }
     .chat-full-section {
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-height: 0;
       width: 100%;
-      max-width: 960px;
+      max-width: 960px;            /* Professional chat width */
       margin: 16px auto;
       padding: 12px 16px 16px !important;
       background: #fff;
       border-radius: 20px;
       box-shadow: 0 15px 50px rgba(0,0,0,0.08);
       overflow: hidden;
-      min-height: 0;
     }
 
     /* ===== MESSENGER SHELL ===== */
@@ -158,7 +163,7 @@
       border: 1px solid rgba(0, 102, 255, 0.12);
     }
 
-    /* ===== MESSAGES AREA — FIXED HEIGHT + SCROLL ONLY INSIDE ===== */
+    /* ===== CHAT MESSAGES AREA ===== */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -169,7 +174,6 @@
       background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0, 102, 255, 0.03), transparent 60%), #f8fafc;
       scroll-behavior: smooth;
       position: relative;
-      min-height: 0;
     }
 
     /* Date separator */
@@ -199,7 +203,7 @@
       text-transform: uppercase;
     }
 
-    /* Message row */
+    /* Message row & bubble */
     .msg-row {
       display: flex;
       flex-direction: column;
@@ -245,7 +249,7 @@
     }
     .chat-msg .msg-text { display: inline; white-space: pre-wrap; word-break: normal !important; overflow-wrap: break-word; }
 
-    /* Image */
+    /* Image in message */
     .chat-msg .msg-img-wrap {
       margin: 0 0 4px;
       border-radius: 10px;
@@ -662,7 +666,7 @@
             <span class="header-badge"><i class="fas fa-shield-alt" style="margin-right:4px;"></i> Official</span>
           </div>
 
-          <!-- Chat Messages - FIXED HEIGHT + SCROLL ONLY HERE -->
+          <!-- Chat Messages -->
           <div class="chat-messages" id="chatMessages">
             <div class="skeleton-msg received"></div>
             <div class="skeleton-msg sent"></div>
@@ -720,6 +724,12 @@
   </button>
 
   <div id="toast-container"></div>
+
+  <!-- DOWNLOAD BUTTON (bottom right) -->
+  <button onclick="window.print()" 
+          style="position:fixed; bottom:90px; right:20px; width:48px; height:48px; border-radius:50%; background:#0066FF; color:#fff; border:none; cursor:pointer; box-shadow:0 6px 20px rgba(0,102,255,0.3); font-size:1.2rem; z-index:9999;">
+    <i class="fas fa-download"></i>
+  </button>
 
   <script type="module">
     import { 
@@ -885,15 +895,6 @@
       scrollBottomBtn.classList.remove('show');
     }
 
-    // 🔥 FIXED: Always auto-scroll to latest message (newest upore)
-    function forceScrollToBottom() {
-      chatMessages.scrollTo({
-        top: chatMessages.scrollHeight,
-        behavior: 'auto'
-      });
-      userNearBottom = true;
-    }
-
     chatMessages.addEventListener('scroll', () => {
       userNearBottom = isNearBottom();
       if (userNearBottom) {
@@ -1051,8 +1052,15 @@
 
       chatMessages.innerHTML = html;
 
-      // 🔥 Always scroll to latest message
-      forceScrollToBottom();
+      if (wasNearBottom) {
+        scrollToBottom(false);
+      } else if (grew) {
+        pendingNewCount += (msgs.length - (lastMsgCount - (grew ? 1 : 0)));
+        pendingNewCount = Math.max(1, pendingNewCount);
+        newMsgCountEl.textContent = pendingNewCount > 9 ? '9+' : pendingNewCount;
+        newMsgCountEl.classList.add('show');
+        scrollBottomBtn.classList.add('show');
+      }
     }
 
     function showSkeletons() {
