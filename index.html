@@ -200,7 +200,7 @@
       margin: 0 0 1.75rem;
       padding: 0 8px;
     }
-    #topBannerAd.visible { display: block; }
+    #topBannerAd.visible { display: block !important; }
     #topBannerAd a {
       display: inline-block;
       max-width: 100%;
@@ -1739,19 +1739,43 @@ onAuthStateChanged(auth, async (user) => {
 
 
     // ===== TOP BANNER AD (from settings/bannerAd) =====
+    // Robust loader: only show after image actually loads; force display so
+    // no other CSS can hide it; hide again if the image URL is broken.
     (async function loadTopBanner() {
       try {
         const snap = await getDoc(doc(db, 'settings', 'bannerAd'));
-        if (snap.exists()) {
-          const d = snap.data();
-          if (d.active !== false && d.imageUrl) {
-            const wrap = document.getElementById('topBannerAd');
-            const img = document.getElementById('topBannerImg');
-            if (img && wrap) {
-              img.src = d.imageUrl;
-              wrap.classList.add('visible');
-            }
-          }
+        if (!snap.exists()) return;
+
+        const d = snap.data() || {};
+        const url = String(d.imageUrl || '').trim();
+        // Explicit active:false turns it off; missing/undefined active still shows
+        if (!url || d.active === false) return;
+
+        const wrap = document.getElementById('topBannerAd');
+        const img = document.getElementById('topBannerImg');
+        if (!img || !wrap) return;
+
+        const show = () => {
+          wrap.classList.add('visible');
+          wrap.style.display = 'block';
+        };
+        const hide = () => {
+          wrap.classList.remove('visible');
+          wrap.style.display = 'none';
+          img.removeAttribute('src');
+        };
+
+        img.onload = show;
+        img.onerror = () => {
+          console.warn('Banner image failed to load:', url);
+          hide();
+        };
+
+        // Set src after handlers so we catch both cache-hit and network load
+        img.src = url;
+        // Cached image may already be complete before onload fires
+        if (img.complete && img.naturalWidth > 0) {
+          show();
         }
       } catch (err) {
         console.warn('Banner load skipped:', err);
