@@ -831,13 +831,15 @@ export function renderNavbar() {
   }
 
   const navbarHTML = `
-    <nav id="mainNavbar" class="fixed top-0 left-0 w-full z-50 h-[72px] md:h-[80px] flex items-center px-4 sm:px-8 lg:px-12 transition-all duration-300 ease-out glass shadow-sm border-b border-gray-100/30">
+    <nav id="mainNavbar" class="fixed top-0 left-0 w-full z-50 h-[72px] md:h-[80px] flex items-center px-4 sm:px-8 lg:px-12 transition-all duration-300 ease-out">
       <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+        <!-- Logo -->
         <a href="index.html" class="flex items-center gap-2.5 text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
           <img src="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" alt="CodeCureBD Logo" class="logo-img h-8 w-auto" />
           <span class="logo-text tracking-tight">CodeCure<span class="gradient-text">BD</span></span>
         </a>
-        
+
+        <!-- Desktop Nav -->
         <div class="nav-desktop hidden md:flex items-center">
           <a href="index.html" data-nav="home" class="nav-link text-sm">Home</a>
           <a href="get-new-website.html" data-nav="store" class="nav-link text-sm">Store</a>
@@ -845,7 +847,9 @@ export function renderNavbar() {
           <a href="#" data-nav="contact" onclick="window.handleContactClick(event)" class="nav-link text-sm">Contact</a>
         </div>
 
+        <!-- Right Controls -->
         <div class="flex items-center gap-2 md:gap-3">
+          <!-- Search -->
           <div class="relative">
             <button onclick="window.toggleSearchDropdown()" class="w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-600 hover:text-blue-600 transition-colors text-lg" title="Search products">
               <i class="fas fa-search"></i>
@@ -866,6 +870,7 @@ export function renderNavbar() {
             </div>
           </div>
 
+          <!-- Cart -->
           <div class="relative">
             <button id="cartBtn" onclick="window.toggleCart()" class="w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-600 hover:text-blue-600 transition-colors text-lg relative" title="Cart">
               <i class="fas fa-shopping-cart"></i>
@@ -874,13 +879,12 @@ export function renderNavbar() {
             <div id="cartPopupContainer"></div>
           </div>
 
+          <!-- Auth Required Actions (Notification bell) -->
           <div id="authRequiredActions" class="flex items-center gap-2 md:gap-3" style="display:none;">
             <div class="relative">
               <button onclick="window.toggleNotifications()" class="w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-600 hover:text-blue-600 transition-colors text-lg relative" aria-label="Notifications">
                 <i class="fas fa-bell"></i>
-                <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 hidden">
-                  0
-                </span>
+                <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 hidden">0</span>
               </button>
               <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 max-w-[90vw] bg-white rounded-2xl shadow-xl border border-gray-100 hidden max-h-[70vh] overflow-y-auto z-50">
                 <div class="p-4 font-semibold border-b text-gray-900 flex items-center justify-between">
@@ -896,12 +900,14 @@ export function renderNavbar() {
               </div>
             </div>
           </div>
-          
+
+          <!-- Auth Loading -->
           <div id="auth-loading" class="flex items-center gap-2">
             <div class="w-16 h-8 bg-gray-200 rounded-full animate-pulse"></div>
             <div class="w-24 h-10 bg-gray-200 rounded-full animate-pulse hidden md:block"></div>
           </div>
 
+          <!-- Auth Buttons (Signed out) -->
           <div id="auth-buttons" class="hidden flex items-center gap-1.5 md:gap-2 ml-1 md:ml-2">
             <button onclick="window.openAuthModal('signin')" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-blue-50/50 whitespace-nowrap leading-none md:mr-0.5">Sign In</button>
             <span id="navGetStartedWrap" class="nav-get-started-wrap">
@@ -911,20 +917,22 @@ export function renderNavbar() {
             </span>
           </div>
 
+          <!-- Profile Section (Signed in) -->
           <div id="profile-section" class="relative hidden">
             <button class="profile-avatar" id="profileAvatar" title="Account" aria-label="Account menu"><i class="fas fa-user"></i></button>
             <div class="dropdown-menu" id="dropdownMenu">
-              <a href="my-profile.html" class="hover:bg-blue-50/50"><i class="fas fa-user mr-3 text-gray-400"></i> My Profile</a>
-              <a href="my-orders.html" class="hover:bg-blue-50/50"><i class="fas fa-box mr-3 text-gray-400"></i> My Orders</a>
-              <a href="my-fix-requests.html" class="hover:bg-blue-50/50"><i class="fas fa-tools mr-3 text-gray-400"></i> Fix Requests</a>
-              <a href="messages.html" class="hover:bg-blue-50/50"><i class="fas fa-comment-dots mr-3 text-gray-400"></i> Support Chat</a>
-              <a href="settings.html" class="hover:bg-blue-50/50"><i class="fas fa-cog mr-3 text-gray-400"></i> Settings</a>
-              <a href="admin-panel.html" id="adminPanelLink" class="hidden hover:bg-blue-50/50"><i class="fas fa-shield-alt mr-3 text-blue-500"></i> Admin Panel</a>
+              <a href="my-profile.html"><i class="fas fa-user mr-3 text-gray-400"></i> My Profile</a>
+              <a href="my-orders.html"><i class="fas fa-box mr-3 text-gray-400"></i> My Orders</a>
+              <a href="my-fix-requests.html"><i class="fas fa-tools mr-3 text-gray-400"></i> Fix Requests</a>
+              <a href="messages.html"><i class="fas fa-comment-dots mr-3 text-gray-400"></i> Support Chat</a>
+              <a href="settings.html"><i class="fas fa-cog mr-3 text-gray-400"></i> Settings</a>
+              <a href="admin-panel.html" id="adminPanelLink" class="hidden"><i class="fas fa-shield-alt mr-3 text-blue-500"></i> Admin Panel</a>
               <hr class="my-1 border-gray-100" />
               <a href="#" onclick="window.handleLogout()" class="text-red-500 hover:bg-red-50/50"><i class="fas fa-sign-out-alt mr-3 text-red-400"></i> Logout</a>
             </div>
           </div>
 
+          <!-- Mobile Hamburger -->
           <button onclick="window.toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-full hover:bg-gray-100/60 flex items-center justify-center text-gray-700 text-2xl transition-colors" aria-label="Toggle menu">
             <i class="fas fa-bars" id="hamburgerIcon"></i>
           </button>
@@ -932,6 +940,7 @@ export function renderNavbar() {
       </div>
     </nav>
 
+    <!-- Mobile Menu -->
     <div id="mobileMenu" class="fixed top-[72px] md:top-[80px] left-0 w-full bg-white/95 backdrop-blur-lg shadow-lg z-40 hidden md:hidden overflow-hidden transition-all duration-300 border-b border-gray-100/30" style="max-height:0; opacity:0;">
       <div class="flex flex-col p-4 gap-1">
         <a href="index.html" data-nav="home" class="nav-link py-3 px-4 rounded-xl font-medium text-gray-700">Home</a>
@@ -956,7 +965,7 @@ export function renderNavbar() {
       </div>
     </div>
   `;
-  
+
   const placeholder = document.getElementById('navbar-placeholder');
   if (placeholder) {
     placeholder.innerHTML = navbarHTML;
@@ -965,6 +974,7 @@ export function renderNavbar() {
   setupLandingNavbar();
   setActiveNavLink();
 
+  // Avatar dropdown toggle
   const avatar = document.getElementById('profileAvatar');
   const dropdown = document.getElementById('dropdownMenu');
   if (avatar) {
@@ -973,13 +983,13 @@ export function renderNavbar() {
       dropdown.classList.toggle('show');
     });
   }
-
   document.addEventListener('click', (e) => {
     if (avatar && !avatar.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.remove('show');
     }
   });
 
+  // Search input events
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', function() {
@@ -1028,8 +1038,8 @@ export function renderNavbar() {
       updateNavbarAuth(null, null);
     }
   });
-  
-  // Defer cart popup slightly for faster first paint
+
+  // Defer cart popup render
   if ('requestIdleCallback' in window) {
     requestIdleCallback(() => renderCartPopup(), { timeout: 800 });
   } else {
@@ -1166,7 +1176,7 @@ window.addToCart = async function(productId, productName, productPrice, productI
 // ================================================================
 export function renderFooter() {
   const footerHTML = `
-    <footer class="glass border-t border-gray-200/30 py-12 px-6 sm:px-8 lg:px-12 mt-auto">
+    <footer class="bg-white border-t border-gray-200/60 py-12 px-6 sm:px-8 lg:px-12 mt-auto">
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div class="text-center md:text-left">
@@ -2919,14 +2929,12 @@ function _injectSupportStyles() {
       flex: 1; overflow-y: auto; padding: 14px 12px; background: #f8fafc;
       display: flex; flex-direction: column; gap: 6px;
     }
-    /* Row: fit-content so bubble can size to text (avoid % max-width shrink bug) */
     #ccbdSupportBody .s-row {
       display: flex; flex-direction: column;
       width: fit-content; max-width: 92%; min-width: 0;
     }
     #ccbdSupportBody .s-row.sent { align-self: flex-end; align-items: flex-end; margin-left: auto; }
     #ccbdSupportBody .s-row.recv { align-self: flex-start; align-items: flex-start; margin-right: auto; }
-    /* Bubble: grow with text; no mid-word break like Ok/ye */
     #ccbdSupportBody .s-msg {
       display: block;
       width: max-content;
@@ -3254,4 +3262,3 @@ if (typeof document !== 'undefined') {
 }
 
 console.log('✅ components.js: Auth Modal + Auth Cache + Notifications + Support Widget loaded.');
-
