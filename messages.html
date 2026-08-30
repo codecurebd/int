@@ -61,7 +61,6 @@
       overflow: hidden;
     }
 
-    /* ===== MESSENGER SHELL ===== */
     .messenger-wrap {
       display: flex;
       flex-direction: column;
@@ -76,7 +75,7 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.06);
     }
 
-    /* ===== CHAT HEADER ===== */
+    /* CHAT HEADER */
     .chat-header {
       padding: 14px 20px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.04);
@@ -142,7 +141,7 @@
       50% { opacity: 0.45; transform: scale(0.85); }
     }
 
-    /* ===== CHAT LIST (Sidebar) ===== */
+    /* CHAT LIST (Sidebar) */
     .chat-list {
       width: 280px;
       border-right: 1px solid rgba(0,0,0,0.06);
@@ -171,7 +170,7 @@
       transition: all 0.2s;
     }
     .chat-list-header .btn-new-chat:hover { transform: translateY(-1px); }
-    .chat-list .chat-list-header .title {
+    .chat-list-header .title {
       font-weight: 700;
       color: #0f172a;
       font-size: 1.05rem;
@@ -207,10 +206,7 @@
       font-size: 1rem;
       flex-shrink: 0;
     }
-    .chat-item .info {
-      flex: 1;
-      min-width: 0;
-    }
+    .chat-item .info { flex: 1; min-width: 0; }
     .chat-item .info .name {
       font-weight: 600;
       color: #0f172a;
@@ -227,11 +223,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .chat-item .time {
-      font-size: 0.72rem;
-      color: #94a3b8;
-      text-align: right;
-    }
+    .chat-item .time { font-size: 0.72rem; color: #94a3b8; text-align: right; }
     .chat-item .close-btn {
       opacity: 0;
       transition: opacity 0.2s;
@@ -239,10 +231,9 @@
       color: #ef4444;
       cursor: pointer;
     }
-    .chat-item:hover .close-btn { opacity: 1; }
-    .chat-item.active .close-btn { opacity: 1; }
+    .chat-item:hover .close-btn, .chat-item.active .close-btn { opacity: 1; }
 
-    /* ===== MAIN CHAT AREA ===== */
+    /* MAIN CHAT */
     .chat-main {
       flex: 1;
       display: flex;
@@ -290,10 +281,7 @@
       border-radius: 50%;
       animation: pulse-dot 1.8s ease-in-out infinite;
     }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.85); }
-    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.85); } }
 
     .chat-main .chat-messages {
       flex: 1;
@@ -307,7 +295,6 @@
       position: relative;
     }
 
-    /* Date separator */
     .date-separator {
       display: flex;
       align-items: center;
@@ -366,7 +353,6 @@
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
       padding: 11px 16px;
     }
-
     .chat-main .chat-msg .msg-text { white-space: pre-wrap; word-break: normal; overflow-wrap: break-word; }
 
     .chat-main .chat-msg .msg-img-wrap {
@@ -398,7 +384,6 @@
     }
     .chat-main .chat-msg .msg-img-wrap:hover::after { opacity: 1; }
 
-    /* Time & Status */
     .msg-meta {
       display: flex;
       align-items: center;
@@ -417,7 +402,6 @@
     .msg-meta .msg-status.read { color: #0066FF; }
     .msg-meta .msg-status.unread { color: #94a3b8; opacity: 0.8; }
 
-    /* Scroll to bottom */
     .scroll-bottom-btn {
       position: absolute;
       bottom: 90px;
@@ -453,7 +437,6 @@
     }
     .scroll-bottom-btn .new-count.show { display: flex; }
 
-    /* Quick replies */
     .quick-replies {
       display: flex;
       gap: 8px;
@@ -482,7 +465,6 @@
       transform: translateY(-1px);
     }
 
-    /* Chat Input */
     .chat-input-wrap {
       padding: 12px 16px 14px;
       border-top: 1px solid rgba(0, 0, 0, 0.04);
@@ -632,17 +614,14 @@
     }
     .empty-state .retry-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 102, 255, 0.35); }
 
-    /* Skeletons & Animations */
     .skeleton-msg { height: 52px; background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; border-radius: 16px; margin-bottom: 10px; animation: shimmer 1.4s ease-in-out infinite; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Scrollbar */
     .chat-messages::-webkit-scrollbar { width: 5px; }
     .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     .chat-messages::-webkit-scrollbar-track { background: transparent; }
 
-    /* Image Lightbox */
     .img-lightbox {
       position: fixed;
       inset: 0;
@@ -697,7 +676,7 @@
     <main class="main-content">
       <section class="chat-full-section">
         <div class="messenger-wrap">
-          <!-- Chat List Sidebar -->
+          <!-- Chat List -->
           <div class="chat-list" id="chatList">
             <div class="chat-list-header">
               <div class="title">Conversations</div>
@@ -712,9 +691,8 @@
             </div>
           </div>
 
-          <!-- Chat Main Area -->
+          <!-- Chat Main -->
           <div class="chat-main">
-            <!-- Chat Header -->
             <div class="chat-header" id="chatHeader">
               <div class="chat-avatar" id="chatAvatar">
                 <i class="fas fa-headset"></i>
@@ -728,16 +706,13 @@
               </button>
             </div>
 
-            <!-- Chat Messages -->
             <div class="chat-messages" id="chatMessages"></div>
 
-            <!-- Scroll to bottom -->
             <button type="button" class="scroll-bottom-btn" id="scrollBottomBtn">
               <i class="fas fa-chevron-down"></i>
               <span class="new-count" id="newMsgCount">0</span>
             </button>
 
-            <!-- Quick replies -->
             <div class="quick-replies" id="quickReplies">
               <button data-text="Hi, I need help with my order.">📦 Order help</button>
               <button data-text="I have a payment / transaction question.">💳 Payment</button>
@@ -745,7 +720,6 @@
               <button data-text="Thanks for your help!">🙏 Thank you</button>
             </div>
 
-            <!-- Chat Input -->
             <form class="chat-input-wrap" id="chatForm">
               <div class="input-wrapper">
                 <textarea id="chatInput" rows="1" placeholder="Type a message..." autocomplete="off"></textarea>
@@ -756,7 +730,7 @@
                   </button>
                 </div>
                 <label class="file-btn" id="fileBtn">
-                  <i class="fas fa-image"></i>
+                  <i class="fas fa-paperclip"></i>
                   <input type="file" id="fileInput" accept="image/*" />
                 </label>
               </div>
@@ -809,6 +783,7 @@
       setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
     };
 
+    // ==================== CHAT LOGIC ====================
     const chatMessages = document.getElementById('chatMessages');
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
@@ -825,15 +800,15 @@
     const lbClose = document.getElementById('lbClose');
 
     let currentUser = null;
-    let currentChatId = null;           // currently open chat
-    let currentConversationId = null;   // Firestore document id
+    let currentChatId = null;
+    let currentConversationId = null;
     let unsubMessages = null;
     let pendingImageFile = null;
     let userNearBottom = true;
     let pendingNewCount = 0;
     let lastMsgCount = 0;
 
-    // ===== Auto-resize textarea =====
+    // Auto-resize textarea
     function autoResizeTextarea() {
       chatInput.style.height = 'auto';
       chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
@@ -847,7 +822,7 @@
       }
     });
 
-    // ===== Quick replies =====
+    // Quick replies
     document.getElementById('quickReplies').querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => {
         const text = btn.dataset.text || '';
@@ -858,7 +833,7 @@
       });
     });
 
-    // ===== Image preview =====
+    // Image preview
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -877,7 +852,7 @@
       reader.onload = (ev) => {
         previewImg.src = ev.target.result;
         imagePreview.classList.add('show');
-        fileBtn.querySelector('i').className = 'fas fa-check-circle';
+        fileBtn.querySelector('i').className = 'fas fa-paperclip';
         fileBtn.style.color = '#34C759';
       };
       reader.readAsDataURL(file);
@@ -888,7 +863,7 @@
       imagePreview.classList.remove('show');
       previewImg.src = '#';
       fileInput.value = '';
-      fileBtn.querySelector('i').className = 'fas fa-image';
+      fileBtn.querySelector('i').className = 'fas fa-paperclip';
       fileBtn.style.color = '';
     });
 
@@ -897,11 +872,11 @@
       imagePreview.classList.remove('show');
       previewImg.src = '#';
       fileInput.value = '';
-      fileBtn.querySelector('i').className = 'fas fa-image';
+      fileBtn.querySelector('i').className = 'fas fa-paperclip';
       fileBtn.style.color = '';
     }
 
-    // ===== Scroll helpers =====
+    // Scroll helpers
     function isNearBottom(threshold = 80) {
       return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
     }
@@ -927,7 +902,7 @@
 
     scrollBottomBtn.addEventListener('click', () => scrollToBottom(true));
 
-    // ===== Date label helper =====
+    // Date label
     function getDateLabel(date) {
       if (!date || isNaN(date.getTime())) return '';
       const now = new Date();
@@ -978,7 +953,7 @@
       return { text: textParts.join('\n'), imageUrl };
     }
 
-    // ===== Lightbox =====
+    // Lightbox
     window.openImageLightbox = function(url) {
       if (!url) return;
       lbImage.src = url;
@@ -997,7 +972,7 @@
       if (e.key === 'Escape' && imgLightbox.classList.contains('open')) closeLightbox();
     });
 
-    // ===== Render Chat List =====
+    // Render chat list
     function renderChatList() {
       const container = document.getElementById('chatListContent');
       container.innerHTML = '';
@@ -1020,9 +995,7 @@
         const isActive = chat.id === currentChatId;
         html += `
           <div class="chat-item ${isActive ? 'active' : ''}" data-id="${chat.id}">
-            <div class="avatar">
-              <i class="fas fa-headset"></i>
-            </div>
+            <div class="avatar"><i class="fas fa-headset"></i></div>
             <div class="info">
               <div class="name">${chat.name}</div>
               <div class="last-msg">${chat.lastMsg || 'No message yet'}</div>
@@ -1036,7 +1009,6 @@
       });
       container.innerHTML = html;
 
-      // Click listener
       container.querySelectorAll('.chat-item').forEach(item => {
         item.addEventListener('click', (e) => {
           if (e.target.classList.contains('close-btn')) return;
@@ -1044,7 +1016,6 @@
         });
       });
 
-      // Close button listener
       container.querySelectorAll('.close-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1053,7 +1024,6 @@
       });
     }
 
-    // ===== Open Chat =====
     function openChat(chatId) {
       currentChatId = chatId;
       const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
@@ -1066,17 +1036,14 @@
       document.getElementById('chatName').textContent = chat.name;
       document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
 
-      // Hide list on mobile
       if (window.innerWidth <= 768) {
         document.getElementById('chatList').style.display = 'none';
       }
 
-      // Load messages
       loadMessages();
-      renderChatList(); // refresh list to show active
+      renderChatList();
     }
 
-    // ===== Close Chat =====
     function closeChat(chatId) {
       const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
       const index = chats.findIndex(c => c.id === chatId);
@@ -1099,20 +1066,16 @@
           }
         }
         renderChatList();
-        showToast('Conversation closed', 'success');
       }
     }
 
-    // ===== Close Current Chat =====
     window.closeCurrentChat = function() {
       if (!currentChatId) return;
       closeChat(currentChatId);
     };
 
-    // ===== Load Messages =====
     function loadMessages() {
       if (!currentConversationId) return;
-
       if (unsubMessages) unsubMessages();
 
       const handleSnapshot = (snapshot) => {
@@ -1143,7 +1106,6 @@
       });
     }
 
-    // ===== Render Messages (same as before but with close button) =====
     function renderMessages(msgs) {
       if (!msgs || msgs.length === 0) {
         chatMessages.innerHTML = `
@@ -1218,7 +1180,6 @@
       }
     }
 
-    // ===== Start New Chat =====
     function startNewChat() {
       currentChatId = null;
       currentConversationId = null;
@@ -1227,13 +1188,12 @@
       document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
       chatMessages.innerHTML = '';
 
-      // Hide sidebar on mobile
       if (window.innerWidth <= 768) {
         document.getElementById('chatList').style.display = 'none';
       }
     }
 
-    // ===== Send Message =====
+    // Send message
     chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const text = chatInput.value.trim();
@@ -1257,7 +1217,6 @@
         let finalContent = text;
         if (imageUrl) finalContent = text ? (text + '\n' + imageUrl) : imageUrl;
 
-        // Create new conversation if none active
         if (!currentConversationId) {
           const convDoc = await addDoc(collection(db, 'messages'), {
             conversationId: `conv_${Date.now()}`,
@@ -1283,8 +1242,26 @@
         chatInput.focus();
         userNearBottom = true;
 
-        // Update chat list
-        updateChatListAfterSend(text || 'Image');
+        const lastText = text || 'Image';
+        const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
+        let chat = chats.find(c => c.id === currentChatId);
+
+        if (!chat) {
+          chat = {
+            id: currentChatId,
+            convId: currentConversationId,
+            name: 'Admin Support',
+            lastMsg: lastText,
+            time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
+          };
+          chats.unshift(chat);
+        } else {
+          chat.lastMsg = lastText;
+          chat.time = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+        }
+
+        localStorage.setItem(`user_chats_${currentUser.uid}`, JSON.stringify(chats));
+        renderChatList();
       } catch (err) {
         console.error('Send error:', err);
         showToast('Error sending message: ' + err.message, 'error');
@@ -1294,29 +1271,7 @@
       }
     });
 
-    function updateChatListAfterSend(lastMsg) {
-      const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
-      let chat = chats.find(c => c.id === currentChatId);
-
-      if (!chat) {
-        chat = {
-          id: currentChatId,
-          convId: currentConversationId,
-          name: 'Admin Support',
-          lastMsg: lastMsg,
-          time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
-        };
-        chats.unshift(chat);
-      } else {
-        chat.lastMsg = lastMsg;
-        chat.time = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-      }
-
-      localStorage.setItem(`user_chats_${currentUser.uid}`, JSON.stringify(chats));
-      renderChatList();
-    }
-
-    // ===== Initialize =====
+    // Initialize
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = 'index.html';
@@ -1327,7 +1282,6 @@
       const displayName = userDoc.exists() ? userDoc.data().displayName : user.email.split('@')[0];
       updateNavbarAuth(user, displayName);
 
-      // Load existing chats
       const savedChats = JSON.parse(localStorage.getItem(`user_chats_${user.uid}`) || '[]');
       if (savedChats.length > 0) {
         currentChatId = savedChats[0].id;
@@ -1339,7 +1293,6 @@
 
       renderChatList();
 
-      // New chat button
       document.getElementById('btnNewChat').addEventListener('click', () => {
         startNewChat();
         showToast('New conversation started', 'success');
@@ -1350,7 +1303,7 @@
       if (unsubMessages) unsubMessages();
     });
 
-    console.log('💬 Support Chat - Multi-session mode loaded');
+    console.log('💬 Messages page loaded — gap fixed + attachment icon');
   </script>
 
 </body>
