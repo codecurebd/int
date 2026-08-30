@@ -387,7 +387,7 @@
         </div>
       `;
       container.appendChild(card);
-      observer.observe(card); // ✅ immediate observe
+      observer.observe(card);
 
       card.querySelector('.btn-details').addEventListener('click', () => {
         window.location.href = `product-detail.html?id=${product.id}`;

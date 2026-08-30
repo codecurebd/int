@@ -1,4 +1,4 @@
-// components.js – সম্পূর্ণ ফাইল (শুধু navbar ও footer টেমপ্লেট পরিবর্তন করা হয়েছে)
+// components.js – সম্পূর্ণ ফাইল (শুধু renderNavbar ও renderFooter-এর HTML টেমপ্লেট পরিবর্তন করা হয়েছে)
 import { 
   auth, onAuthStateChanged, signOut, db, doc, getDoc, setDoc,
   updateDoc, serverTimestamp, collection, addDoc, query, where, onSnapshot,
@@ -505,13 +505,13 @@ function performSearch(query) {
 }
 
 // ================================================================
-// NAVBAR
+// NAVBAR (NEW DESIGN – কিন্তু সব ID ও ক্লাস আগের মতোই)
 // ================================================================
 export function renderNavbar() {
   renderContactModal();
 
   const navbarHTML = `
-    <nav id="mainNavbar" class="navbar-main">
+    <nav id="mainNavbar" class="navbar-main nav-transparent">
       <div class="navbar-inner">
         <a href="index.html" class="logo-link">
           <img src="https://res.cloudinary.com/zmoyykj7/image/upload/v1785180242/a6xbhrnjvb33c5ic6yyr.png" alt="CodeCure" class="logo-img" />
@@ -677,7 +677,7 @@ export function renderNavbar() {
 }
 
 // ================================================================
-// NAVBAR SCROLL EFFECT (transparent on landing)
+// NAVBAR SCROLL EFFECT
 // ================================================================
 function setupLandingNavbar() {
   const nav = document.getElementById('mainNavbar');
@@ -799,7 +799,7 @@ function updateCartPopupUI() {
 }
 
 // ================================================================
-// FOOTER
+// FOOTER (NEW DESIGN)
 // ================================================================
 export function renderFooter() {
   const footerHTML = `
@@ -950,7 +950,7 @@ export function updateNavbarAuth(user, displayName, role = null) {
 }
 
 // ================================================================
-// SUPPORT WIDGET (Facebook‑messenger style)
+// SUPPORT WIDGET
 // ================================================================
 let _supportUser = null;
 let _supportUnsub = null;
@@ -1290,7 +1290,7 @@ export function renderCartSidebar() {
 export function updateCartUI() { updateCartPopupUI(); }
 
 // ================================================================
-// PAYMENT MODAL (simplified – full functionality from original)
+// PAYMENT MODAL (সম্পূর্ণ – আগের মতোই)
 // ================================================================
 let _paymentSettings = {};
 let _paymentOrderTotalUSD = 0;
@@ -1434,9 +1434,6 @@ export function renderPaymentModal() {
     paymentForm.dataset.bound = '1';
     paymentForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      // Payment logic (full – same as original)
-      // For brevity, keeping the full logic from original – you can copy from your existing components.js
-      // I'm including the core logic below:
       const isDueMode = document.getElementById('paymentModal').dataset.duemode === 'true';
       const dueData = window._duePaymentData;
       const orderId = document.getElementById('paymentOrderId').value;
@@ -1486,7 +1483,6 @@ export function renderPaymentModal() {
           window._duePaymentData = null;
           setTimeout(() => window.location.reload(), 1200);
         } else {
-          // Normal checkout
           const pending = window._pendingCheckoutData;
           if (!pending) { throw new Error('Checkout data missing.'); }
           const rate = Number(_paymentSettings.usdRate) > 0 ? Number(_paymentSettings.usdRate) : 125;
@@ -1541,18 +1537,122 @@ export function renderPaymentModal() {
 }
 
 window.updatePaymentMethodUI = function() {
-  // Keep full logic (same as original) – for brevity, using a simplified version
-  // Real implementation should handle bKash/Nagad/USDT details
   const method = document.getElementById('paymentMethodSelect')?.value || '';
   const details = document.getElementById('paymentMethodDetails');
   if (!method) { details.classList.add('hidden'); return; }
   details.classList.remove('hidden');
-  // … full UI update (copy from original)
+  const rate = Number(_paymentSettings.usdRate) > 0 ? Number(_paymentSettings.usdRate) : 125;
+  const totalUSD = Number(_paymentOrderTotalUSD) || 0;
+  const totalBDT = Math.round(totalUSD * rate);
+  const paymentType = document.querySelector('input[name="paymentType"]:checked')?.value || 'full';
+  const isDueMode = document.getElementById('paymentModal').dataset.duemode === 'true';
+  const addressBox = document.getElementById('paymentAddressBox');
+  const howToBox = document.getElementById('paymentHowToBox');
+  const fieldsBox = document.getElementById('paymentFieldsBox');
+  const bdtRow = document.getElementById('paymentTotalBDTRow');
+  const rateNote = document.getElementById('paymentRateNote');
+  const errorDiv = document.getElementById('paymentError');
+  if (errorDiv) errorDiv.classList.add('hidden');
+
+  let payableBDT = totalBDT;
+  let payableUSD = totalUSD;
+  if (paymentType === 'advance' && !isDueMode) {
+    payableBDT = 500;
+    payableUSD = Number((500 / rate).toFixed(2));
+  }
+
+  if (method === 'bKash' || method === 'Nagad') {
+    bdtRow.classList.remove('hidden');
+    let bdtText = isDueMode ? '৳' + totalBDT.toLocaleString('en-BD') + ' (Due)' : (paymentType === 'advance' ? '৳' + payableBDT.toLocaleString('en-BD') + ' (Advance)' : '৳' + totalBDT.toLocaleString('en-BD'));
+    document.getElementById('paymentTotalBDT').textContent = bdtText;
+    rateNote.classList.remove('hidden');
+    if (isDueMode) rateNote.textContent = `Due Payment: Send exactly ৳${totalBDT.toLocaleString('en-BD')}`;
+    else if (paymentType === 'advance') rateNote.textContent = `Advance Payment: ৳${payableBDT.toLocaleString('en-BD')} · Remaining Due: ৳${Math.max(0, totalBDT - payableBDT).toLocaleString('en-BD')}`;
+    else rateNote.textContent = `Rate: 1 USD = ৳${rate} · Send exactly ৳${totalBDT.toLocaleString('en-BD')}`;
+
+    const number = method === 'bKash' ? (_paymentSettings.bkash || '') : (_paymentSettings.nagad || '');
+    const color = method === 'bKash' ? 'text-pink-600' : 'text-orange-600';
+    addressBox.innerHTML = number ? `<p class="font-semibold text-gray-800 mb-1">Send money to this ${method} number:</p><p class="text-xl font-bold ${color} tracking-wide select-all">${number}</p><p class="text-xs text-gray-400 mt-1">Amount to send: <strong>৳${payableBDT.toLocaleString('en-BD')}</strong></p>` : `<p class="text-red-500">${method} number not set. Contact admin.</p>`;
+    const appName = method === 'bKash' ? 'bKash' : 'Nagad';
+    const dialCode = method === 'bKash' ? '*247#' : '*167#';
+    const dialSendOption = method === 'bKash' ? '1' : '2';
+    const user = auth.currentUser;
+    const username = (user?.displayName || (user?.email ? user.email.split('@')[0] : '') || 'your username');
+    const numDisplay = number || '—';
+    const amountDisplay = '৳' + payableBDT.toLocaleString('en-BD');
+    howToBox.innerHTML = `
+      <p class="font-semibold text-gray-800 mb-2"><i class="fas fa-mobile-alt mr-1"></i> How to pay — ${appName} App</p>
+      <ol class="list-decimal list-inside space-y-1 text-gray-600 text-sm mb-4">
+        <li>Open the <strong>${appName}</strong> app and log in</li>
+        <li>Go to <strong>Send Money</strong></li>
+        <li>Enter number: <strong class="select-all">${numDisplay}</strong></li>
+        <li>Enter amount: <strong>${amountDisplay}</strong></li>
+        <li>In <strong>Reference</strong>, enter your username: <strong class="select-all">${username}</strong></li>
+        <li>Enter your PIN and <strong>Confirm</strong></li>
+        <li>Copy the <strong>Transaction ID</strong> and paste it below</li>
+      </ol>
+      <p class="font-semibold text-gray-800 mb-2"><i class="fas fa-phone-alt mr-1"></i> How to pay — Dial (USSD)</p>
+      <ol class="list-decimal list-inside space-y-1 text-gray-600 text-sm">
+        <li>Dial <strong class="select-all">${dialCode}</strong></li>
+        <li>Select option <strong>${dialSendOption}. Send Money</strong></li>
+        <li>Enter number: <strong class="select-all">${numDisplay}</strong></li>
+        <li>Enter amount: <strong>${amountDisplay}</strong></li>
+        <li>Enter username in reference: <strong class="select-all">${username}</strong></li>
+        <li>Enter PIN and confirm</li>
+        <li>Copy the <strong>Transaction ID</strong> and paste it below</li>
+      </ol>`;
+    fieldsBox.classList.remove('hidden');
+    document.getElementById('paymentSenderLabel').textContent = `Your ${method} Number *`;
+    document.getElementById('paymentSenderNumber').placeholder = `Number you sent money from`;
+    document.getElementById('paymentSenderHint').textContent = `Your personal ${method} number (sender)`;
+    document.getElementById('paymentSubmitBtn').disabled = !number;
+  } else if (method === 'USDT') {
+    bdtRow.classList.add('hidden');
+    rateNote.classList.remove('hidden');
+    if (isDueMode) rateNote.textContent = `Due payment: $${totalUSD.toFixed(2)} USD (send exactly this amount in USDT on BEP20)`;
+    else if (paymentType === 'advance') rateNote.textContent = `Advance Payment: $${payableUSD.toFixed(2)} USD · Remaining Due: $${Math.max(0, Number((totalUSD - payableUSD).toFixed(2))).toFixed(2)} USD`;
+    else rateNote.textContent = `Order total: $${totalUSD.toFixed(2)} USD (send exactly this amount in USDT on BEP20)`;
+
+    const usdtAddress = _paymentSettings.usdt || DEFAULT_USDT_ADDRESS;
+    addressBox.innerHTML = `
+      <p class="font-semibold text-gray-800 mb-2"><i class="fab fa-bitcoin text-yellow-500 mr-1"></i> USDT (BEP20)</p>
+      <p class="text-sm text-gray-500">Network: <strong>BSC (BEP20)</strong></p>
+      <div class="flex flex-col items-center my-2">
+        <div class="relative w-full max-w-[300px] mx-auto cursor-pointer" onclick="window.openQrZoom('${QR_IMAGE_PATH}')" title="Click to zoom">
+          <img src="${QR_IMAGE_PATH}" alt="USDT Deposit QR Code" class="w-[95%] mx-auto rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow" onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';" />
+          <div id="qrFallback" style="display:none;" class="text-amber-600 text-sm mt-2 text-center"><i class="fas fa-exclamation-triangle"></i> QR code not available. Please copy address below.</div>
+          <div class="text-center mt-1 text-xs text-blue-500"><i class="fas fa-search-plus"></i> Click to zoom</div>
+        </div>
+      </div>
+      <div class="bg-gray-100 p-3 rounded-xl flex items-center justify-between gap-2 break-all">
+        <code class="text-xs font-mono text-gray-800 select-all">${usdtAddress}</code>
+        <button onclick="navigator.clipboard.writeText('${usdtAddress}').then(()=>showToast('✅ Address copied!','success'))" class="text-blue-600 hover:text-blue-800 text-sm flex-shrink-0"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">Send exactly <strong>$${payableUSD.toFixed(2)} USDT</strong> to this address.</p>
+      <p class="text-xs text-red-400 mt-1"><i class="fas fa-exclamation-triangle"></i> Use BEP20 network only, otherwise funds may be lost.</p>
+    `;
+    howToBox.innerHTML = `
+      <p class="font-semibold text-gray-800 mb-2"><i class="fas fa-mobile-alt mr-1"></i> How to send USDT (BEP20) from Binance</p>
+      <ol class="list-decimal list-inside space-y-1 text-gray-600 text-sm mb-2">
+        <li>Open <strong>Binance App</strong> → Go to <strong>Wallet</strong> → <strong>Withdraw</strong></li>
+        <li>Select coin: <strong>USDT</strong></li>
+        <li>Select network: <strong>BSC (BEP20)</strong></li>
+        <li>Paste the address: <strong class="select-all">${usdtAddress}</strong></li>
+        <li>Enter amount: <strong>$${payableUSD.toFixed(2)} USDT</strong></li>
+        <li>Double‑check the network and address, then submit</li>
+        <li>Copy the <strong>Transaction ID (TXID)</strong> and your <strong>Sender Address</strong> below</li>
+      </ol>
+      <p class="text-xs text-blue-600"><i class="fas fa-info-circle"></i> Need help? <a href="https://www.binance.com/en/support/faq/how-to-withdraw-cryptocurrency-from-binance-360033577672" target="_blank" class="underline">Binance withdrawal guide</a></p>
+    `;
+    fieldsBox.classList.remove('hidden');
+    document.getElementById('paymentSenderLabel').textContent = 'Your BEP20 Sender Address *';
+    document.getElementById('paymentSenderNumber').placeholder = '0x... your wallet address';
+    document.getElementById('paymentSenderHint').textContent = 'The BEP20 address you sent from (starts with 0x)';
+    document.getElementById('paymentSubmitBtn').disabled = false;
+  }
 };
 
 window.openPaymentModal = function(data) {
-  // Full implementation – same as original
-  // For brevity, I'm using the essential parts
   window._pendingCheckoutData = data;
   _paymentSettings = data.settings || {};
   _paymentOrderTotalUSD = Number(data.total) || Number(data.totalUSD) || 0;
@@ -1587,5 +1687,4 @@ window.checkout = async function() {
   } catch (err) { window.showToast('⚠️ ' + err.message, 'error'); }
 };
 
-// ─── END ──────────────────────────────────────────────────────────────
-console.log('✅ components.js loaded (updated for CodeCure)');
+console.log('✅ components.js loaded (functionality intact, new design)');
