@@ -136,11 +136,11 @@
       color: #64748b;
     }
 
-    /* ─── CAMPAIGN IMAGE – no black bars ─── */
+    /* ─── CAMPAIGN IMAGE – full view with contain ─── */
     .campaign-img {
       width: 100%;
-      max-height: 400px;
-      object-fit: cover;        /* changed from contain to cover */
+      max-height: 420px;
+      object-fit: contain;        /* full image visible, no cropping */
       object-position: center;
       border-radius: 16px;
       border: 1px solid rgba(0,0,0,0.05);
@@ -149,7 +149,7 @@
     }
     @media (max-width: 640px) {
       .campaign-img {
-        max-height: 240px;
+        max-height: 280px;
       }
     }
 
@@ -245,11 +245,7 @@
     let unsubMyOrder = null;
 
     function escapeHtml(str) {
-      return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function renderEmpty() {
@@ -259,9 +255,7 @@
           <i class="fas fa-bullhorn"></i>
           <h2 class="text-2xl font-bold text-gray-900 mt-4">No Active Campaign</h2>
           <p class="text-gray-500 mt-2 max-w-md mx-auto">There is no special campaign running right now. Check back later or explore our regular packages.</p>
-          <a href="get-new-website.html" class="btn-primary mt-6 inline-flex">
-            <i class="fas fa-store"></i> Browse Store
-          </a>
+          <a href="get-new-website.html" class="btn-primary mt-6 inline-flex"><i class="fas fa-store"></i> Browse Store</a>
         </div>
       `;
       document.title = 'No Campaign – CodeCureBD';
@@ -278,17 +272,11 @@
 
       document.title = `${c.title || 'Campaign'} – CodeCureBD`;
 
-      const featuresHtml = features.length
-        ? `<ul class="feature-list mt-4">${features.map(f => `<li><i class="fas fa-check-circle"></i><span>${escapeHtml(f)}</span></li>`).join('')}</ul>`
-        : '';
+      const featuresHtml = features.length ? `<ul class="feature-list mt-4">${features.map(f => `<li><i class="fas fa-check-circle"></i><span>${escapeHtml(f)}</span></li>`).join('')}</ul>` : '';
 
-      const imgHtml = c.imageUrl
-        ? `<img src="${escapeHtml(c.imageUrl)}" alt="${escapeHtml(c.title)}" class="campaign-img mb-6" loading="lazy" />`
-        : '';
+      const imgHtml = c.imageUrl ? `<img src="${escapeHtml(c.imageUrl)}" alt="${escapeHtml(c.title)}" class="campaign-img mb-6" loading="lazy" />` : '';
 
-      const myEntryHtml = (alreadyJoined && myCampaignOrder)
-        ? renderMyEntryCard(myCampaignOrder)
-        : '';
+      const myEntryHtml = (alreadyJoined && myCampaignOrder) ? renderMyEntryCard(myCampaignOrder) : '';
 
       root.innerHTML = `
         ${myEntryHtml}
@@ -297,9 +285,7 @@
           ${imgHtml}
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="flex-1 min-w-[240px]">
-              <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-blue-600 mb-2">
-                <i class="fas fa-fire"></i> Limited Campaign
-              </span>
+              <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-blue-600 mb-2"><i class="fas fa-fire"></i> Limited Campaign</span>
               <h1>${escapeHtml(c.title || 'Special Campaign')}</h1>
               <p class="text-gray-500 mt-3 leading-relaxed">${escapeHtml(c.description || '')}</p>
             </div>
@@ -315,10 +301,7 @@
               <span class="new">৳${Number(c.campaignPrice || 0).toLocaleString('en-BD')}</span>
               ${c.specialPrice && specialLeft > 0 ? `<span class="text-sm font-semibold text-amber-600">First ${specialLeft} get ৳${Number(c.specialPrice).toLocaleString('en-BD')}</span>` : ''}
             </div>
-            <p class="text-sm text-gray-500 mt-2">
-              <i class="fas fa-hand-holding-usd text-blue-500 mr-1"></i>
-              Pay only <strong>৳${advance}</strong> advance now. Rest after confirmation.
-            </p>
+            <p class="text-sm text-gray-500 mt-2"><i class="fas fa-hand-holding-usd text-blue-500 mr-1"></i> Pay only <strong>৳${advance}</strong> advance now. Rest after confirmation.</p>
           </div>
 
           ${featuresHtml}
@@ -337,30 +320,20 @@
             <h2 class="text-xl font-bold text-gray-900">Participants</h2>
             <span class="text-sm text-gray-500" id="participantCount">${participants.length} joined</span>
           </div>
-          <div class="participant-list" id="participantList">
-            ${renderParticipantsHtml()}
-          </div>
+          <div class="participant-list" id="participantList">${renderParticipantsHtml()}</div>
         </section>
 
-        <!-- My Entry modal -->
         <div id="myEntryModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[400] hidden p-4">
           <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-xl font-bold text-gray-900">My Entry Details</h3>
-              <button type="button" id="closeMyEntryModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-            </div>
+            <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-gray-900">My Entry Details</h3><button type="button" id="closeMyEntryModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button></div>
             <div id="myEntryModalBody" class="space-y-3 text-sm"></div>
           </div>
         </div>
       `;
 
       document.getElementById('joinCampaignBtn')?.addEventListener('click', handleJoin);
-      document.getElementById('closeMyEntryModal')?.addEventListener('click', () => {
-        document.getElementById('myEntryModal')?.classList.add('hidden');
-      });
-      document.getElementById('myEntryModal')?.addEventListener('click', (e) => {
-        if (e.target.id === 'myEntryModal') e.target.classList.add('hidden');
-      });
+      document.getElementById('closeMyEntryModal')?.addEventListener('click', () => document.getElementById('myEntryModal')?.classList.add('hidden'));
+      document.getElementById('myEntryModal')?.addEventListener('click', (e) => { if (e.target.id === 'myEntryModal') e.target.classList.add('hidden'); });
       document.getElementById('viewMyEntryBtn')?.addEventListener('click', openMyEntryDetail);
       document.getElementById('payRemainingBtn')?.addEventListener('click', handlePayRemaining);
     }
@@ -371,54 +344,30 @@
       const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
       const payEnabled = !!o.remainingPaymentEnabled && dueBDT > 0;
       const date = o.createdAt?.toDate?.() || (o.createdAt ? new Date(o.createdAt) : null);
-      const dateStr = date
-        ? date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-        : '—';
-      const statusColor = {
-        pending: 'bg-amber-50 text-amber-700',
-        processing: 'bg-blue-50 text-blue-700',
-        completed: 'bg-green-50 text-green-700',
-        cancelled: 'bg-red-50 text-red-700'
-      }[status] || 'bg-gray-50 text-gray-600';
+      const dateStr = date ? date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+      const statusColor = { pending: 'bg-amber-50 text-amber-700', processing: 'bg-blue-50 text-blue-700', completed: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' }[status] || 'bg-gray-50 text-gray-600';
 
-      const payBtnHtml = payEnabled
-        ? `<button type="button" id="payRemainingBtn" class="btn-join text-sm py-2.5 px-4 shrink-0" style="min-height:42px;width:auto;box-shadow:0 4px 16px rgba(22,163,74,0.25);background:linear-gradient(135deg,#16a34a,#059669);">
-             <i class="fas fa-credit-card"></i> Pay Remaining ৳${dueBDT.toLocaleString('en-BD')}
-           </button>`
-        : '';
+      const payBtnHtml = payEnabled ? `<button type="button" id="payRemainingBtn" class="btn-join text-sm py-2.5 px-4 shrink-0" style="min-height:42px;width:auto;box-shadow:0 4px 16px rgba(22,163,74,0.25);background:linear-gradient(135deg,#16a34a,#059669);"><i class="fas fa-credit-card"></i> Pay Remaining ৳${dueBDT.toLocaleString('en-BD')}</button>` : '';
 
-      return `
-        <section class="mb-6 glass-card" style="padding:1.15rem 1.25rem; border:1px solid rgba(0,102,255,0.15); background:linear-gradient(135deg,#eff6ff 0%,#f8fafc 100%);">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs font-bold uppercase tracking-wide text-blue-600">
-                  <i class="fas fa-ticket-alt mr-1"></i> My Entry
-                </span>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusColor}">${escapeHtml(status)}</span>
-                ${payEnabled ? '<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-50 text-green-700">Payment due</span>' : ''}
-              </div>
-              <p class="text-sm text-gray-700 mt-1.5">
-                Paid <strong class="text-gray-900">৳${paidBDT.toLocaleString('en-BD')}</strong>
-                <span class="text-gray-400 mx-1">·</span>
-                <span class="text-gray-500">${dateStr}</span>
-              </p>
-              ${payEnabled ? `<p class="text-sm text-amber-700 mt-1 font-semibold"><i class="fas fa-exclamation-circle"></i> Remaining due: ৳${dueBDT.toLocaleString('en-BD')}</p>` : ''}
-              ${o.transactionId ? `<p class="text-xs text-gray-400 mt-0.5">Txn: ${escapeHtml(o.transactionId)}</p>` : ''}
+      return `<section class="mb-6 glass-card" style="padding:1.15rem 1.25rem; border:1px solid rgba(0,102,255,0.15); background:linear-gradient(135deg,#eff6ff 0%,#f8fafc 100%);">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xs font-bold uppercase tracking-wide text-blue-600"><i class="fas fa-ticket-alt mr-1"></i> My Entry</span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${statusColor}">${escapeHtml(status)}</span>
+              ${payEnabled ? '<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-50 text-green-700">Payment due</span>' : ''}
             </div>
-            <div class="flex flex-wrap gap-2 shrink-0">
-              ${payBtnHtml}
-              ${status !== 'cancelled' && o.id ? `
-              <a href="order-progress.html?id=${encodeURIComponent(o.id)}" class="btn-primary text-sm py-2 px-4" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);">
-                <i class="fas fa-code"></i> Progress
-              </a>` : ''}
-              <button type="button" id="viewMyEntryBtn" class="btn-primary text-sm py-2 px-4">
-                <i class="fas fa-eye"></i> Details
-              </button>
-            </div>
+            <p class="text-sm text-gray-700 mt-1.5">Paid <strong class="text-gray-900">৳${paidBDT.toLocaleString('en-BD')}</strong><span class="text-gray-400 mx-1">·</span><span class="text-gray-500">${dateStr}</span></p>
+            ${payEnabled ? `<p class="text-sm text-amber-700 mt-1 font-semibold"><i class="fas fa-exclamation-circle"></i> Remaining due: ৳${dueBDT.toLocaleString('en-BD')}</p>` : ''}
+            ${o.transactionId ? `<p class="text-xs text-gray-400 mt-0.5">Txn: ${escapeHtml(o.transactionId)}</p>` : ''}
           </div>
-        </section>
-      `;
+          <div class="flex flex-wrap gap-2 shrink-0">
+            ${payBtnHtml}
+            ${status !== 'cancelled' && o.id ? `<a href="order-progress.html?id=${encodeURIComponent(o.id)}" class="btn-primary text-sm py-2 px-4" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);"><i class="fas fa-code"></i> Progress</a>` : ''}
+            <button type="button" id="viewMyEntryBtn" class="btn-primary text-sm py-2 px-4"><i class="fas fa-eye"></i> Details</button>
+          </div>
+        </div>
+      </section>`;
     }
 
     function openMyEntryDetail() {
@@ -427,7 +376,6 @@
       const body = document.getElementById('myEntryModalBody');
       const modal = document.getElementById('myEntryModal');
       if (!body || !modal) return;
-
       const status = o.status || 'pending';
       const paidBDT = Number(o.amountBDT) || 0;
       const paidUSD = Number(o.amountUSD) || 0;
@@ -436,81 +384,31 @@
       const dueUSD = dueBDT > 0 ? Math.round((dueBDT / rateForDue) * 100) / 100 : 0;
       const payEnabled = !!o.remainingPaymentEnabled && dueBDT > 0;
       const date = o.createdAt?.toDate?.() || (o.createdAt ? new Date(o.createdAt) : null);
-      const dateStr = date
-        ? date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-        : '—';
+      const dateStr = date ? date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
       const pkg = o.packageType === 'special' ? 'Special price slot' : 'Normal slot';
 
       body.innerHTML = `
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Order ID</span>
-          <span class="font-semibold text-gray-900">#${escapeHtml((o.id || '').slice(0, 10).toUpperCase())}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Campaign</span>
-          <span class="font-semibold text-gray-900 text-right max-w-[60%]">${escapeHtml(o.campaignTitle || activeCampaign?.title || 'Campaign')}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Status</span>
-          <span class="font-semibold text-gray-900 capitalize">${escapeHtml(status)}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Amount Paid</span>
-          <span class="font-bold text-green-700">৳${paidBDT.toLocaleString('en-BD')}${paidUSD ? ` ($${paidUSD.toFixed(2)})` : ''}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Remaining Due</span>
-          <span class="font-semibold ${payEnabled ? 'text-amber-700' : 'text-gray-900'}">${dueBDT > 0 ? `৳${dueBDT.toLocaleString('en-BD')}${dueUSD ? ` ($${dueUSD.toFixed(2)})` : ''}` : '—'}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Payment Method</span>
-          <span class="font-semibold text-gray-900">${escapeHtml(o.paymentMethod || '—')}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Transaction ID</span>
-          <span class="font-semibold text-gray-900 select-all">${escapeHtml(o.transactionId || '—')}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-gray-100">
-          <span class="text-gray-500">Slot Type</span>
-          <span class="font-semibold text-gray-900">${escapeHtml(pkg)}</span>
-        </div>
-        <div class="flex justify-between py-2">
-          <span class="text-gray-500">Joined At</span>
-          <span class="font-semibold text-gray-900">${dateStr}</span>
-        </div>
-        ${payEnabled ? `
-          <div class="mt-4 p-3 rounded-xl bg-green-50 border border-green-100">
-            <p class="text-sm text-green-800 font-semibold mb-2"><i class="fas fa-credit-card"></i> Admin has requested remaining payment</p>
-            <p class="text-xs text-green-700 mb-3">Please pay <strong>৳${dueBDT.toLocaleString('en-BD')}</strong> to complete your order.</p>
-            <button type="button" id="payRemainingModalBtn" class="btn-join" style="min-height:44px;background:linear-gradient(135deg,#16a34a,#059669);">
-              <i class="fas fa-credit-card"></i> Pay ৳${dueBDT.toLocaleString('en-BD')} Now
-            </button>
-          </div>
-        ` : `
-          <p class="text-xs text-gray-400 mt-3 leading-relaxed">
-            Final amount is confirmed by admin after work is done. You will get a Pay Remaining option here when it is ready.
-          </p>
-        `}
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Order ID</span><span class="font-semibold text-gray-900">#${escapeHtml((o.id || '').slice(0, 10).toUpperCase())}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Campaign</span><span class="font-semibold text-gray-900 text-right max-w-[60%]">${escapeHtml(o.campaignTitle || activeCampaign?.title || 'Campaign')}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Status</span><span class="font-semibold text-gray-900 capitalize">${escapeHtml(status)}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Amount Paid</span><span class="font-bold text-green-700">৳${paidBDT.toLocaleString('en-BD')}${paidUSD ? ` ($${paidUSD.toFixed(2)})` : ''}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Remaining Due</span><span class="font-semibold ${payEnabled ? 'text-amber-700' : 'text-gray-900'}">${dueBDT > 0 ? `৳${dueBDT.toLocaleString('en-BD')}${dueUSD ? ` ($${dueUSD.toFixed(2)})` : ''}` : '—'}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Payment Method</span><span class="font-semibold text-gray-900">${escapeHtml(o.paymentMethod || '—')}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Transaction ID</span><span class="font-semibold text-gray-900 select-all">${escapeHtml(o.transactionId || '—')}</span></div>
+        <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">Slot Type</span><span class="font-semibold text-gray-900">${escapeHtml(pkg)}</span></div>
+        <div class="flex justify-between py-2"><span class="text-gray-500">Joined At</span><span class="font-semibold text-gray-900">${dateStr}</span></div>
+        ${payEnabled ? `<div class="mt-4 p-3 rounded-xl bg-green-50 border border-green-100"><p class="text-sm text-green-800 font-semibold mb-2"><i class="fas fa-credit-card"></i> Admin has requested remaining payment</p><p class="text-xs text-green-700 mb-3">Please pay <strong>৳${dueBDT.toLocaleString('en-BD')}</strong> to complete your order.</p><button type="button" id="payRemainingModalBtn" class="btn-join" style="min-height:44px;background:linear-gradient(135deg,#16a34a,#059669);"><i class="fas fa-credit-card"></i> Pay ৳${dueBDT.toLocaleString('en-BD')} Now</button></div>` : `<p class="text-xs text-gray-400 mt-3 leading-relaxed">Final amount is confirmed by admin after work is done. You will get a Pay Remaining option here when it is ready.</p>`}
       `;
       modal.classList.remove('hidden');
-      document.getElementById('payRemainingModalBtn')?.addEventListener('click', () => {
-        modal.classList.add('hidden');
-        handlePayRemaining();
-      });
+      document.getElementById('payRemainingModalBtn')?.addEventListener('click', () => { modal.classList.add('hidden'); handlePayRemaining(); });
     }
 
     async function handlePayRemaining() {
       const o = myCampaignOrder;
       if (!o || !o.id) return;
-      if (!o.remainingPaymentEnabled) {
-        showToast('No remaining payment request from admin yet.', 'info');
-        return;
-      }
+      if (!o.remainingPaymentEnabled) { showToast('No remaining payment request from admin yet.', 'info'); return; }
       const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
-      if (dueBDT <= 0) {
-        showToast('Due amount is not set yet.', 'warning');
-        return;
-      }
+      if (dueBDT <= 0) { showToast('Due amount is not set yet.', 'warning'); return; }
       try {
         const snap = await getDoc(doc(db, 'settings', 'payment'));
         const settings = snap.exists() ? snap.data() : {};
@@ -518,37 +416,19 @@
         const rate = usdRate > 0 ? usdRate : 125;
         const finalBDT = dueBDT;
         const finalUSD = Math.round((finalBDT / rate) * 100) / 100;
-
         if (typeof window.openDuePaymentModal === 'function') {
           window.openDuePaymentModal(o.id, finalUSD, finalBDT, { ...settings, usdRate: rate }, o);
-        } else {
-          showToast('Payment system not ready. Please refresh.', 'error');
-        }
-      } catch (err) {
-        showToast('⚠️ ' + (err.message || 'Failed to open payment'), 'error');
-      }
+        } else { showToast('Payment system not ready. Please refresh.', 'error'); }
+      } catch (err) { showToast('⚠️ ' + (err.message || 'Failed to open payment'), 'error'); }
     }
 
     function renderParticipantsHtml() {
-      if (!participants.length) {
-        return `<div class="p-6 text-center text-gray-400 text-sm">No one has joined yet. Be the first!</div>`;
-      }
+      if (!participants.length) return `<div class="p-6 text-center text-gray-400 text-sm">No one has joined yet. Be the first!</div>`;
       return participants.map((p, i) => {
         const name = p.userName || p.displayName || 'User';
         const letter = name.charAt(0).toUpperCase();
-        const time = p.createdAt?.toDate?.()
-          ? p.createdAt.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-          : '';
-        return `
-          <div class="participant-item">
-            <div class="participant-avatar">${letter}</div>
-            <div class="flex-1 min-w-0">
-              <div class="font-semibold text-gray-900 text-sm">${escapeHtml(name)}</div>
-              <div class="text-xs text-gray-400">${time || 'Recently'}</div>
-            </div>
-            <span class="text-xs font-semibold text-green-600">#${i + 1}</span>
-          </div>
-        `;
+        const time = p.createdAt?.toDate?.() ? p.createdAt.toDate().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        return `<div class="participant-item"><div class="participant-avatar">${letter}</div><div class="flex-1 min-w-0"><div class="font-semibold text-gray-900 text-sm">${escapeHtml(name)}</div><div class="text-xs text-gray-400">${time || 'Recently'}</div></div><span class="text-xs font-semibold text-green-600">#${i + 1}</span></div>`;
       }).join('');
     }
 
@@ -559,23 +439,14 @@
         return;
       }
       if (!activeCampaign) return;
-      if (alreadyJoined) {
-        showToast('You already joined this campaign.', 'info');
-        return;
-      }
-      if (activeCampaign.status === 'closed' || (activeCampaign.remainingSlots ?? 0) <= 0) {
-        showToast('This campaign is closed.', 'warning');
-        return;
-      }
+      if (alreadyJoined) { showToast('You already joined this campaign.', 'info'); return; }
+      if (activeCampaign.status === 'closed' || (activeCampaign.remainingSlots ?? 0) <= 0) { showToast('This campaign is closed.', 'warning'); return; }
 
       const advance = Number(activeCampaign.advanceAmount ?? 500);
-      const advanceUSD = advance / usdRate;
-
       try {
         const snap = await getDoc(doc(db, 'settings', 'payment'));
         const settings = snap.exists() ? snap.data() : {};
         if (settings.usdRate && Number(settings.usdRate) > 0) usdRate = Number(settings.usdRate);
-
         if (typeof window.openCampaignPaymentModal === 'function') {
           window.openCampaignPaymentModal(activeCampaign, advance, advance / usdRate, settings);
         } else {
@@ -591,49 +462,26 @@
             paymentType: 'advance',
             dueAmountBDT: 0,
             dueAmountUSD: 0,
-            items: [{
-              id: activeCampaign.id,
-              name: activeCampaign.title || 'Campaign',
-              price: advance / usdRate,
-              quantity: 1,
-              isCampaign: true
-            }]
+            items: [{ id: activeCampaign.id, name: activeCampaign.title || 'Campaign', price: advance / usdRate, quantity: 1, isCampaign: true }]
           });
         }
-      } catch (err) {
-        showToast('⚠️ ' + err.message, 'error');
-      }
+      } catch (err) { showToast('⚠️ ' + err.message, 'error'); }
     }
 
     async function loadUsdRate() {
       try {
         const snap = await getDoc(doc(db, 'settings', 'payment'));
-        if (snap.exists() && snap.data().usdRate) {
-          usdRate = Number(snap.data().usdRate) || 125;
-        }
+        if (snap.exists() && snap.data().usdRate) usdRate = Number(snap.data().usdRate) || 125;
       } catch (_) {}
     }
 
     function stopParticipantsListener() {
-      if (typeof unsubParticipants === 'function') {
-        try { unsubParticipants(); } catch (_) {}
-        unsubParticipants = null;
-      }
+      if (typeof unsubParticipants === 'function') { try { unsubParticipants(); } catch (_) {}; unsubParticipants = null; }
     }
 
     function extractParticipantName(data) {
       if (!data || typeof data !== 'object') return 'User';
-      const raw =
-        data.userName ||
-        data.customerName ||
-        data.displayName ||
-        data.name ||
-        data.fullName ||
-        data.customer?.name ||
-        data.user?.displayName ||
-        (data.userEmail ? String(data.userEmail).split('@')[0] : '') ||
-        (data.email ? String(data.email).split('@')[0] : '') ||
-        '';
+      const raw = data.userName || data.customerName || data.displayName || data.name || data.fullName || data.customer?.name || data.user?.displayName || (data.userEmail ? String(data.userEmail).split('@')[0] : '') || (data.email ? String(data.email).split('@')[0] : '') || '';
       const name = String(raw || '').trim();
       return name || 'User';
     }
@@ -645,13 +493,7 @@
         const id = d.id || data.id || '';
         if (data.status === 'cancelled') return;
         if (activeCampaign && data.campaignId && data.campaignId !== activeCampaign.id) return;
-
-        list.push({
-          id,
-          userName: extractParticipantName(data),
-          createdAt: data.createdAt,
-          status: data.status
-        });
+        list.push({ id, userName: extractParticipantName(data), createdAt: data.createdAt, status: data.status });
       });
       list.sort((a, b) => {
         const ta = a.createdAt?.toDate?.()?.getTime?.() || (a.createdAt ? new Date(a.createdAt).getTime() : 0) || 0;
@@ -672,32 +514,14 @@
     function listenParticipants(campaignId) {
       stopParticipantsListener();
       participants = [];
-      if (!campaignId) {
-        updateParticipantsUI();
-        return;
-      }
-
-      const q = query(
-        collection(db, 'orders'),
-        where('campaignId', '==', campaignId)
-      );
-
-      unsubParticipants = onSnapshot(q, (snap) => {
-        applyParticipantsFromDocs(snap.docs);
-      }, async (err) => {
+      if (!campaignId) { updateParticipantsUI(); return; }
+      const q = query(collection(db, 'orders'), where('campaignId', '==', campaignId));
+      unsubParticipants = onSnapshot(q, (snap) => { applyParticipantsFromDocs(snap.docs); }, async (err) => {
         console.warn('listenParticipants (live) failed:', err?.code || err?.message || err);
-        try {
-          const snap = await getDocs(q);
-          applyParticipantsFromDocs(snap.docs);
-        } catch (err2) {
+        try { const snap = await getDocs(q); applyParticipantsFromDocs(snap.docs); } catch (err2) {
           console.warn('loadParticipants fallback failed:', err2?.code || err2?.message || err2);
           if (Array.isArray(activeCampaign?.participants) && activeCampaign.participants.length) {
-            participants = activeCampaign.participants.map((p, i) => ({
-              id: p.id || String(i),
-              userName: extractParticipantName(p),
-              createdAt: p.createdAt || null,
-              status: p.status || 'pending'
-            }));
+            participants = activeCampaign.participants.map((p, i) => ({ id: p.id || String(i), userName: extractParticipantName(p), createdAt: p.createdAt || null, status: p.status || 'pending' }));
             updateParticipantsUI();
           }
         }
@@ -707,42 +531,22 @@
     function listenCampaign() {
       const q = query(collection(db, 'campaigns'), where('status', '==', 'active'));
       onSnapshot(q, async (snap) => {
-        if (snap.empty) {
-          stopParticipantsListener();
-          activeCampaign = null;
-          participants = [];
-          renderEmpty();
-          return;
-        }
+        if (snap.empty) { stopParticipantsListener(); activeCampaign = null; participants = []; renderEmpty(); return; }
         const d = snap.docs[0];
         const next = { id: d.id, ...d.data() };
         const campaignChanged = !activeCampaign || activeCampaign.id !== next.id;
         activeCampaign = next;
         await checkIfJoined();
-        if (campaignChanged) {
-          listenParticipants(activeCampaign.id);
-        } else if (Array.isArray(activeCampaign.participants) && !participants.length) {
-          participants = activeCampaign.participants.map((p, i) => ({
-            id: p.id || String(i),
-            userName: extractParticipantName(p),
-            createdAt: p.createdAt || null,
-            status: p.status || 'pending'
-          }));
+        if (campaignChanged) { listenParticipants(activeCampaign.id); } else if (Array.isArray(activeCampaign.participants) && !participants.length) {
+          participants = activeCampaign.participants.map((p, i) => ({ id: p.id || String(i), userName: extractParticipantName(p), createdAt: p.createdAt || null, status: p.status || 'pending' }));
         }
         renderCampaign(activeCampaign);
         updateParticipantsUI();
-      }, (err) => {
-        console.error(err);
-        stopParticipantsListener();
-        renderEmpty();
-      });
+      }, (err) => { console.error(err); stopParticipantsListener(); renderEmpty(); });
     }
 
     function stopMyOrderListener() {
-      if (typeof unsubMyOrder === 'function') {
-        try { unsubMyOrder(); } catch (_) {}
-        unsubMyOrder = null;
-      }
+      if (typeof unsubMyOrder === 'function') { try { unsubMyOrder(); } catch (_) {}; unsubMyOrder = null; }
     }
 
     function listenMyOrder(orderId) {
@@ -752,10 +556,7 @@
         if (!snap.exists()) return;
         myCampaignOrder = { id: snap.id, ...snap.data() };
         alreadyJoined = true;
-        if (activeCampaign) {
-          renderCampaign(activeCampaign);
-          updateParticipantsUI();
-        }
+        if (activeCampaign) { renderCampaign(activeCampaign); updateParticipantsUI(); }
       }, (err) => console.warn('listenMyOrder:', err?.code || err?.message || err));
     }
 
@@ -765,54 +566,28 @@
       stopMyOrderListener();
       if (!currentUser || !activeCampaign) return;
       try {
-        const q = query(
-          collection(db, 'orders'),
-          where('userId', '==', currentUser.uid),
-          where('campaignId', '==', activeCampaign.id)
-        );
+        const q = query(collection(db, 'orders'), where('userId', '==', currentUser.uid), where('campaignId', '==', activeCampaign.id));
         const snap = await getDocs(q);
         alreadyJoined = !snap.empty;
-        if (!snap.empty) {
-          const d = snap.docs[0];
-          myCampaignOrder = { id: d.id, ...d.data() };
-          listenMyOrder(d.id);
-        }
+        if (!snap.empty) { const d = snap.docs[0]; myCampaignOrder = { id: d.id, ...d.data() }; listenMyOrder(d.id); }
       } catch (err) {
         console.warn('checkIfJoined:', err);
         try {
-          const q2 = query(
-            collection(db, 'orders'),
-            where('userId', '==', currentUser.uid)
-          );
+          const q2 = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
           const snap2 = await getDocs(q2);
           for (const d of snap2.docs) {
             const data = d.data();
             if (data.status === 'cancelled') continue;
-            const match =
-              data.campaignId === activeCampaign.id ||
-              (data.type === 'campaign' && (
-                data.campaignTitle === activeCampaign.title ||
-                data.items?.[0]?.id === activeCampaign.id
-              ));
-            if (match) {
-              alreadyJoined = true;
-              myCampaignOrder = { id: d.id, ...data };
-              listenMyOrder(d.id);
-              break;
-            }
+            const match = data.campaignId === activeCampaign.id || (data.type === 'campaign' && (data.campaignTitle === activeCampaign.title || data.items?.[0]?.id === activeCampaign.id));
+            if (match) { alreadyJoined = true; myCampaignOrder = { id: d.id, ...data }; listenMyOrder(d.id); break; }
           }
-        } catch (err2) {
-          console.warn('checkIfJoined fallback:', err2);
-        }
+        } catch (err2) { console.warn('checkIfJoined fallback:', err2); }
       }
     }
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && activeCampaign) {
-        checkIfJoined().then(() => {
-          if (activeCampaign) renderCampaign(activeCampaign);
-          updateParticipantsUI();
-        });
+        checkIfJoined().then(() => { if (activeCampaign) renderCampaign(activeCampaign); updateParticipantsUI(); });
       }
     });
 
@@ -845,7 +620,7 @@
     await loadUsdRate();
     listenCampaign();
 
-    console.log('📢 Campaign page loaded – image now uses cover to remove black bars');
+    console.log('📢 Campaign page loaded – full image with contain');
   </script>
 </body>
 </html>
