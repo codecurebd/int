@@ -70,17 +70,17 @@
                 <div class="hero-stat"><strong>100%</strong><span>Secure</span></div>
               </div>
             </div>
-            <!-- Product Grid (right side of hero) -->
+            <!-- Hero Products Grid -->
             <div id="heroProducts" class="hero-products-grid"></div>
           </div>
         </div>
 
-        <!-- Featured Packages (below hero) -->
+        <!-- Featured Packages -->
         <div id="featuredPackages" class="featured-packages"></div>
       </div>
     </section>
 
-    <!-- ===== SERVICES / FEATURES ===== -->
+    <!-- ===== SERVICES ===== -->
     <section id="services" class="section-light">
       <div class="container">
         <div class="section-header">
@@ -290,7 +290,7 @@
       renderAuthModal, showToast
     } from './components.js';
 
-    // Initial render
+    // ─── Render Navbar, Footer, etc. ───
     renderNavbar();
     renderAuthModal();
     renderFooter();
@@ -298,14 +298,14 @@
     renderPaymentModal();
     updateCartBadge();
 
-    // Scroll to top button
+    // ─── Scroll to top ───
     const scrollBtn = document.getElementById('scrollTopBtn');
     window.addEventListener('scroll', () => {
       scrollBtn.classList.toggle('show', window.scrollY > 400);
     }, { passive: true });
     scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    // Auth state
+    // ─── Auth state ───
     import { onAuthStateChanged } from './firebase-config.js';
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -318,7 +318,17 @@
       }
     });
 
-    // ─── Load Products for Hero & Featured ───
+    // ─── Intersection Observer ───
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    // ─── Global Data ───
     let allProducts = [];
     let usdRate = 125;
     let allDiscounts = [];
@@ -338,6 +348,7 @@
       return all.length ? all.reduce((a, b) => a.discountPercent > b.discountPercent ? a : b) : null;
     }
 
+    // ─── Render Product Card ───
     function renderProductCard(product, container) {
       const discount = getDiscountForProduct(product);
       let priceHtml = '';
@@ -363,10 +374,11 @@
 
       const card = document.createElement('div');
       card.className = 'product-card glass-card fade-up';
+      const preview = product.htmlContent
+        ? `<iframe srcdoc="${encodeURIComponent(product.htmlContent)}" scrolling="no" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>`
+        : `<img src="${product.imageUrl || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${product.name}" loading="lazy" />`;
       card.innerHTML = `
-        <div class="product-img">
-          ${product.htmlContent ? `<iframe srcdoc="${encodeURIComponent(product.htmlContent)}" scrolling="no" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>` : `<img src="${product.imageUrl || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${product.name}" loading="lazy" />`}
-        </div>
+        <div class="product-img">${preview}</div>
         <div class="product-body">
           <h4 class="product-name">${product.name}</h4>
           <p class="product-desc">${product.desc || product.description || ''}</p>
@@ -375,30 +387,36 @@
         </div>
       `;
       container.appendChild(card);
-      // View button redirect
+      observer.observe(card); // ✅ immediate observe
+
       card.querySelector('.btn-details').addEventListener('click', () => {
         window.location.href = `product-detail.html?id=${product.id}`;
       });
     }
 
+    // ─── Load Products ───
     async function loadProducts() {
       try {
         const snap = await getDocs(collection(db, 'products'));
         allProducts = [];
         snap.forEach(doc => allProducts.push({ id: doc.id, ...doc.data() }));
-        // Load discounts
+
         const discountSnap = await getDocs(collection(db, 'discounts'));
         allDiscounts = [];
         discountSnap.forEach(doc => allDiscounts.push({ id: doc.id, ...doc.data() }));
-        // Load rate
+
         const settingsSnap = await getDoc(doc(db, 'settings', 'payment'));
         if (settingsSnap.exists() && settingsSnap.data().usdRate) {
           usdRate = Number(settingsSnap.data().usdRate);
         }
 
-        // Featured packages (below hero)
+        // Featured Packages
         const featuredContainer = document.getElementById('featuredPackages');
-        featuredContainer.innerHTML = '<div class="section-label">Featured Packages</div><h3 class="section-title">Bestselling <strong>Packages</strong></h3><div class="featured-grid" id="featuredGrid"></div>';
+        featuredContainer.innerHTML = `
+          <div class="section-label">Featured Packages</div>
+          <h3 class="section-title">Bestselling <strong>Packages</strong></h3>
+          <div class="featured-grid" id="featuredGrid"></div>
+        `;
         const grid = document.getElementById('featuredGrid');
         const featured = allProducts.filter(p => p.featured).slice(0, 6);
         if (featured.length === 0) {
@@ -407,7 +425,7 @@
           featured.forEach(p => renderProductCard(p, grid));
         }
 
-        // Hero products (right side)
+        // Hero Products
         const heroGrid = document.getElementById('heroProducts');
         if (heroGrid) {
           const heroProducts = allProducts.filter(p => p.hero).slice(0, 4);
@@ -419,22 +437,15 @@
           }
         }
 
-        // Observe fade-ups
-        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        // Observe any remaining .fade-up (like static sections)
+        document.querySelectorAll('.fade-up:not(.visible)').forEach(el => observer.observe(el));
+
+        console.log('✅ Products loaded successfully');
       } catch (err) {
         console.error('Product load error:', err);
+        document.getElementById('featuredPackages').innerHTML = '<p class="text-red-500">Error loading products.</p>';
       }
     }
-
-    // ─── Intersection Observer for fade-up ───
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
     // ─── Testimonials ───
     async function loadTestimonials() {
@@ -452,8 +463,8 @@
           div.className = 'testimonial-card fade-up';
           div.innerHTML = `<p class="quote">“${t.text}”</p><p class="author">- ${t.name}</p><p class="role">${t.role || ''}</p>`;
           container.appendChild(div);
+          observer.observe(div);
         });
-        document.querySelectorAll('.testimonial-card').forEach(el => observer.observe(el));
       } catch (err) {
         console.error('Testimonials error:', err);
       }
@@ -546,7 +557,7 @@
       }
     });
 
-    // ─── Typing animation ───
+    // ─── Typing Animation ───
     (function initHeroTyping() {
       const el = document.querySelector('.hero-title .typed-text');
       if (!el) return;
@@ -582,7 +593,7 @@
     loadTestimonials();
     loadFaqs();
 
-    console.log('🚀 CodeCure landing page loaded with new design.');
+    console.log('🚀 CodeCure landing page loaded.');
   </script>
 </body>
 </html>
