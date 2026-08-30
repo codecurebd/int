@@ -19,9 +19,8 @@
     <link rel="stylesheet" href="style.css" />
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        /* ── same styles as before ── */
+        * { box-sizing: border-box; }
         body {
             background: #f0f4f9;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,10 +29,7 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-        @font-face {
-            font-family: 'Inter';
-            font-display: swap;
-        }
+        @font-face { font-family: 'Inter'; font-display: swap; }
 
         .page-wrapper {
             display: flex;
@@ -83,11 +79,11 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
         }
 
-        /* CHAT HEADER */
+        /* ── chat header ── */
         .chat-header {
             padding: 14px 20px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.85) 100%);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.85) 100%);
             backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
@@ -148,18 +144,11 @@
             animation: pulse-dot 1.8s ease-in-out infinite;
         }
         @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.45;
-                transform: scale(0.85);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.85); }
         }
 
-        /* CHAT LIST */
+        /* ── chat list ── */
         .chat-list {
             width: 280px;
             border-right: 1px solid rgba(0, 0, 0, 0.06);
@@ -187,9 +176,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .chat-list-header .btn-new-chat:hover {
-            transform: translateY(-1px);
-        }
+        .chat-list-header .btn-new-chat:hover { transform: translateY(-1px); }
         .chat-list-header .title {
             font-weight: 700;
             color: #0f172a;
@@ -209,11 +196,9 @@
             align-items: center;
             gap: 12px;
         }
-        .chat-item:hover {
-            background: rgba(0, 102, 255, 0.05);
-        }
+        .chat-item:hover { background: rgba(0,102,255,0.05); }
         .chat-item.active {
-            background: rgba(0, 102, 255, 0.08);
+            background: rgba(0,102,255,0.08);
             border-left: 3px solid #0066FF;
         }
         .chat-item .avatar {
@@ -261,11 +246,9 @@
             cursor: pointer;
         }
         .chat-item:hover .close-btn,
-        .chat-item.active .close-btn {
-            opacity: 1;
-        }
+        .chat-item.active .close-btn { opacity: 1; }
 
-        /* MAIN CHAT */
+        /* ── main chat ── */
         .chat-main {
             flex: 1;
             display: flex;
@@ -275,7 +258,7 @@
         .chat-main .chat-header {
             padding: 14px 20px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.85) 100%);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.85) 100%);
             backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
@@ -316,10 +299,8 @@
             animation: pulse-dot 1.8s ease-in-out infinite;
         }
 
-        /* --- NEW: CLOSE BUTTON in header --- */
         .close-chat-btn {
             display: none;
-            /* hidden by default, shown via JS */
             margin-left: auto;
             background: #ef4444;
             color: #fff;
@@ -340,25 +321,12 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
         }
-        .close-chat-btn:active {
-            transform: scale(0.97);
-        }
-        .close-chat-btn i {
-            font-size: 0.9rem;
-        }
-        .close-chat-btn.show {
-            display: flex;
-            animation: fadeInBtn 0.25s ease;
-        }
+        .close-chat-btn:active { transform: scale(0.97); }
+        .close-chat-btn i { font-size: 0.9rem; }
+        .close-chat-btn.show { display: flex; animation: fadeInBtn 0.25s ease; }
         @keyframes fadeInBtn {
-            from {
-                opacity: 0;
-                transform: translateX(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(8px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .chat-main .chat-messages {
@@ -380,8 +348,7 @@
             margin: 14px 0 10px;
             gap: 12px;
         }
-        .date-separator::before,
-        .date-separator::after {
+        .date-separator::before, .date-separator::after {
             content: '';
             flex: 1;
             height: 1px;
@@ -407,14 +374,8 @@
             max-width: min(85%, 520px);
             margin-bottom: 2px;
         }
-        .msg-row.sent {
-            align-self: flex-end;
-            margin-left: auto;
-        }
-        .msg-row.received {
-            align-self: flex-start;
-            margin-right: auto;
-        }
+        .msg-row.sent { align-self: flex-end; margin-left: auto; }
+        .msg-row.received { align-self: flex-start; margin-right: auto; }
 
         .chat-main .chat-msg {
             display: block;
@@ -452,9 +413,7 @@
             max-width: 240px;
             position: relative;
         }
-        .chat-main .chat-msg .msg-img-wrap:hover img {
-            transform: scale(1.02);
-        }
+        .chat-main .chat-msg .msg-img-wrap:hover img { transform: scale(1.02); }
         .chat-main .chat-msg .msg-img-wrap::after {
             content: '\f00e';
             font-family: 'Font Awesome 6 Free';
@@ -462,7 +421,7 @@
             position: absolute;
             top: 8px;
             right: 8px;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0,0,0,0.45);
             color: #fff;
             width: 26px;
             height: 26px;
@@ -474,9 +433,7 @@
             opacity: 0;
             transition: opacity 0.2s;
         }
-        .chat-main .chat-msg .msg-img-wrap:hover::after {
-            opacity: 1;
-        }
+        .chat-main .chat-msg .msg-img-wrap:hover::after { opacity: 1; }
         .chat-main .chat-msg .msg-img-wrap img {
             display: block;
             width: 100%;
@@ -494,21 +451,14 @@
             font-weight: 500;
             color: #94a3b8;
         }
-        .msg-row.sent .msg-meta {
-            justify-content: flex-end;
-        }
+        .msg-row.sent .msg-meta { justify-content: flex-end; }
         .msg-meta .msg-status {
             font-size: 0.7rem;
             letter-spacing: -1px;
             margin-left: 1px;
         }
-        .msg-meta .msg-status.read {
-            color: #0066FF;
-        }
-        .msg-meta .msg-status.unread {
-            color: #94a3b8;
-            opacity: 0.8;
-        }
+        .msg-meta .msg-status.read { color: #0066FF; }
+        .msg-meta .msg-status.unread { color: #94a3b8; opacity: 0.8; }
 
         .scroll-bottom-btn {
             position: absolute;
@@ -528,10 +478,7 @@
             justify-content: center;
             z-index: 20;
         }
-        .scroll-bottom-btn.show {
-            display: flex;
-            animation: fadeUp 0.25s ease;
-        }
+        .scroll-bottom-btn.show { display: flex; animation: fadeUp 0.25s ease; }
         .scroll-bottom-btn:hover {
             transform: scale(1.08);
             box-shadow: 0 6px 24px rgba(0, 102, 255, 0.2);
@@ -551,9 +498,7 @@
             align-items: center;
             justify-content: center;
         }
-        .scroll-bottom-btn .new-count.show {
-            display: flex;
-        }
+        .scroll-bottom-btn .new-count.show { display: flex; }
 
         .quick-replies {
             display: flex;
@@ -564,9 +509,7 @@
             background: rgba(248, 250, 252, 0.9);
             scrollbar-width: none;
         }
-        .quick-replies::-webkit-scrollbar {
-            display: none;
-        }
+        .quick-replies::-webkit-scrollbar { display: none; }
         .quick-replies button {
             flex-shrink: 0;
             background: #fff;
@@ -624,10 +567,7 @@
             font-family: inherit;
             color: #1e293b;
         }
-        .chat-input-wrap .input-wrapper textarea::placeholder {
-            color: #94a3b8;
-            opacity: 1;
-        }
+        .chat-input-wrap .input-wrapper textarea::placeholder { color: #94a3b8; opacity: 1; }
 
         .chat-input-wrap .file-btn {
             background: none;
@@ -650,9 +590,7 @@
             color: #0066FF;
             background: rgba(0, 102, 255, 0.08);
         }
-        .chat-input-wrap .file-btn input[type="file"] {
-            display: none;
-        }
+        .chat-input-wrap .file-btn input[type="file"] { display: none; }
 
         .chat-input-wrap .image-preview {
             display: none;
@@ -665,9 +603,7 @@
             flex-shrink: 0;
             border: 1px solid rgba(0, 102, 255, 0.1);
         }
-        .chat-input-wrap .image-preview.show {
-            display: flex;
-        }
+        .chat-input-wrap .image-preview.show { display: flex; }
         .chat-input-wrap .image-preview img {
             width: 36px;
             height: 36px;
@@ -685,10 +621,7 @@
             border-radius: 50%;
             transition: 0.15s;
         }
-        .chat-input-wrap .image-preview .remove-preview:hover {
-            color: #FF3B30;
-            background: rgba(255, 59, 48, 0.08);
-        }
+        .chat-input-wrap .image-preview .remove-preview:hover { color: #FF3B30; background: rgba(255, 59, 48, 0.08); }
         .chat-input-wrap .send-btn {
             border-radius: 50%;
             width: 48px;
@@ -709,10 +642,7 @@
             transform: scale(1.06);
             box-shadow: 0 6px 22px rgba(0, 102, 255, 0.38);
         }
-        .chat-input-wrap .send-btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-        }
+        .chat-input-wrap .send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
         .empty-state {
             display: flex;
@@ -742,17 +672,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .empty-state .empty-title {
-            font-weight: 700;
-            color: #334155;
-            font-size: 1.05rem;
-        }
-        .empty-state .empty-desc {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            max-width: 260px;
-            line-height: 1.5;
-        }
+        .empty-state .empty-title { font-weight: 700; color: #334155; font-size: 1.05rem; }
+        .empty-state .empty-desc { font-size: 0.85rem; color: #94a3b8; max-width: 260px; line-height: 1.5; }
         .empty-state .retry-btn {
             margin-top: 12px;
             background: linear-gradient(135deg, #0066FF, #5856D6);
@@ -779,34 +700,17 @@
             animation: shimmer 1.4s ease-in-out infinite;
         }
         @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .chat-messages::-webkit-scrollbar {
-            width: 5px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
+        .chat-messages::-webkit-scrollbar { width: 5px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .chat-messages::-webkit-scrollbar-track { background: transparent; }
 
         .img-lightbox {
             position: fixed;
@@ -820,18 +724,8 @@
             padding: 1.5rem;
             cursor: zoom-out;
         }
-        .img-lightbox.open {
-            display: flex;
-            animation: fadeIn 0.2s ease;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+        .img-lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .img-lightbox img {
             max-width: 95vw;
             max-height: 88vh;
@@ -856,11 +750,8 @@
             justify-content: center;
             transition: 0.2s;
         }
-        .img-lightbox .lb-close:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
+        .img-lightbox .lb-close:hover { background: rgba(255, 255, 255, 0.25); }
 
-        /* toast */
         #toast-container {
             position: fixed;
             bottom: 24px;
@@ -886,49 +777,23 @@
             animation: slideIn 0.3s ease;
             transition: all 0.3s ease;
         }
-        .toast.success {
-            border-left-color: #22c55e;
-        }
-        .toast.error {
-            border-left-color: #ef4444;
-        }
-        .toast.warning {
-            border-left-color: #f59e0b;
-        }
-        .toast.hide {
-            opacity: 0;
-            transform: translateX(30px);
-        }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #f59e0b; }
+        .toast.hide { opacity: 0; transform: translateX(30px); }
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @media (max-width: 768px) {
-            .chat-list {
-                display: none;
-            }
-            .chat-full-section {
-                border-radius: 14px;
-            }
-            .page-wrapper {
-                padding-top: 66px;
-            }
-            .close-chat-btn {
-                padding: 6px 14px;
-                font-size: 0.78rem;
-            }
+            .chat-list { display: none; }
+            .chat-full-section { border-radius: 14px; }
+            .page-wrapper { padding-top: 66px; }
+            .close-chat-btn { padding: 6px 14px; font-size: 0.78rem; }
         }
         @media (max-width: 480px) {
-            .page-wrapper {
-                padding-top: 60px;
-            }
+            .page-wrapper { padding-top: 60px; }
         }
     </style>
 </head>
@@ -965,7 +830,6 @@
                                 <div class="name" id="chatName">Admin Support</div>
                                 <div class="status"><span class="dot"></span> Online · Usually replies fast</div>
                             </div>
-                            <!-- NEW CLOSE BUTTON – shown only when a conversation is active -->
                             <button class="close-chat-btn" id="closeChatBtn">
                                 <i class="fas fa-times"></i> Close
                             </button>
@@ -1049,7 +913,11 @@
                 setTimeout(() => toast.remove(), 400); }, 4500);
         };
 
-        // ==================== CHAT LOGIC ====================
+        // ─────────────────────────────────────────────────────────────
+        //  CHAT LOGIC – ENHANCED & FIXED
+        // ─────────────────────────────────────────────────────────────
+
+        // DOM refs
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
         const chatInput = document.getElementById('chatInput');
@@ -1065,33 +933,37 @@
         const lbImage = document.getElementById('lbImage');
         const lbClose = document.getElementById('lbClose');
         const closeChatBtn = document.getElementById('closeChatBtn');
+        const chatListContent = document.getElementById('chatListContent');
 
         let currentUser = null;
-        let currentChatId = null;
-        let currentConversationId = null;
+        let currentChatId = null;          // deterministic conversation ID (e.g. conv_<uid>_admin)
+        let currentConversationId = null;  // same as currentChatId
         let unsubMessages = null;
         let pendingImageFile = null;
         let userNearBottom = true;
         let pendingNewCount = 0;
         let lastMsgCount = 0;
 
-        // ---- close button visibility ----
-        function updateCloseButton() {
-            if (currentChatId) {
-                closeChatBtn.classList.add('show');
-            } else {
-                closeChatBtn.classList.remove('show');
-            }
+        // ─── deterministic conversation ID helper ──────────────────
+        function getConversationId(userId) {
+            if (!userId) return null;
+            const parts = [userId, 'admin'].sort();
+            return `conv_${parts[0]}_${parts[1]}`;
         }
 
-        // ---- close handler ----
+        // ─── close button visibility ──────────────────────────────
+        function updateCloseButton() {
+            closeChatBtn.classList.toggle('show', !!currentChatId);
+        }
+
+        // ─── close handler ─────────────────────────────────────────
         function handleCloseChat() {
             if (!currentChatId) return;
             closeChat(currentChatId);
         }
         closeChatBtn.addEventListener('click', handleCloseChat);
 
-        // ---- auto-resize textarea ----
+        // ─── auto-resize textarea ────────────────────────────────
         function autoResizeTextarea() {
             chatInput.style.height = 'auto';
             chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
@@ -1105,7 +977,7 @@
             }
         });
 
-        // ---- quick replies ----
+        // ─── quick replies ────────────────────────────────────────
         document.getElementById('quickReplies').querySelectorAll('button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const text = btn.dataset.text || '';
@@ -1116,10 +988,8 @@
             });
         });
 
-        // ---- file attachment ----
-        fileBtn.addEventListener('click', () => {
-            fileInput.click();
-        });
+        // ─── file attachment ──────────────────────────────────────
+        fileBtn.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -1163,7 +1033,7 @@
             fileBtn.style.color = '';
         }
 
-        // ---- scroll helpers ----
+        // ─── scroll helpers ──────────────────────────────────────
         function isNearBottom(threshold = 80) {
             return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
         }
@@ -1189,7 +1059,7 @@
 
         scrollBottomBtn.addEventListener('click', () => scrollToBottom(true));
 
-        // ---- date helpers ----
+        // ─── date helpers ──────────────────────────────────────────
         function getDateLabel(date) {
             if (!date || isNaN(date.getTime())) return '';
             const now = new Date();
@@ -1199,8 +1069,7 @@
             if (diffDays === 0) return 'Today';
             if (diffDays === 1) return 'Yesterday';
             if (diffDays < 7) return date.toLocaleDateString('en-US', { weekday: 'long' });
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: date.getFullYear() !== now
-                    .getFullYear() ? 'numeric' : undefined });
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined });
         }
 
         function isImageUrl(str) {
@@ -1223,7 +1092,6 @@
             const lines = raw.split('\n');
             let textParts = [];
             let imageUrl = null;
-
             lines.forEach(line => {
                 const t = line.trim();
                 if (isImageUrl(t)) {
@@ -1232,16 +1100,14 @@
                     textParts.push(line);
                 }
             });
-
             if (!imageUrl && isImageUrl(raw.trim())) {
                 imageUrl = raw.trim();
                 textParts = [];
             }
-
             return { text: textParts.join('\n'), imageUrl };
         }
 
-        // ---- lightbox ----
+        // ─── lightbox ──────────────────────────────────────────────
         window.openImageLightbox = function(url) {
             if (!url) return;
             lbImage.src = url;
@@ -1261,50 +1127,45 @@
             if (e.key === 'Escape' && imgLightbox.classList.contains('open')) closeLightbox();
         });
 
-        // ---- chat list ----
+        // ─── chat list ──────────────────────────────────────────────
         function renderChatList() {
-            const container = document.getElementById('chatListContent');
+            const container = chatListContent;
             container.innerHTML = '';
-
             const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
-
             if (chats.length === 0) {
                 container.innerHTML = `
-              <div class="empty-state">
-                <i class="fas fa-comments" style="font-size:3rem;color:#e2e8f0;margin-bottom:12px;"></i>
-                <div style="font-weight:600;color:#64748b;">No conversations yet</div>
-                <div style="font-size:0.85rem;color:#94a3b8;margin-top:4px;">Start a new conversation with support</div>
-              </div>
-            `;
+                    <div class="empty-state">
+                        <i class="fas fa-comments" style="font-size:3rem;color:#e2e8f0;margin-bottom:12px;"></i>
+                        <div style="font-weight:600;color:#64748b;">No conversations yet</div>
+                        <div style="font-size:0.85rem;color:#94a3b8;margin-top:4px;">Start a new conversation with support</div>
+                    </div>
+                `;
                 return;
             }
-
             let html = '';
             chats.forEach(chat => {
                 const isActive = chat.id === currentChatId;
                 html += `
-              <div class="chat-item ${isActive ? 'active' : ''}" data-id="${chat.id}">
-                <div class="avatar"><i class="fas fa-headset"></i></div>
-                <div class="info">
-                  <div class="name">${chat.name}</div>
-                  <div class="last-msg">${chat.lastMsg || 'No message yet'}</div>
-                </div>
-                <div class="time">${chat.time}</div>
-                <span class="close-btn" data-id="${chat.id}" title="Close chat">
-                  <i class="fas fa-times"></i>
-                </span>
-              </div>
-            `;
+                    <div class="chat-item ${isActive ? 'active' : ''}" data-id="${chat.id}">
+                        <div class="avatar"><i class="fas fa-headset"></i></div>
+                        <div class="info">
+                            <div class="name">${chat.name}</div>
+                            <div class="last-msg">${chat.lastMsg || 'No message yet'}</div>
+                        </div>
+                        <div class="time">${chat.time}</div>
+                        <span class="close-btn" data-id="${chat.id}" title="Close chat">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
             });
             container.innerHTML = html;
-
             container.querySelectorAll('.chat-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     if (e.target.classList.contains('close-btn')) return;
                     openChat(item.dataset.id);
                 });
             });
-
             container.querySelectorAll('.close-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1313,23 +1174,18 @@
             });
         }
 
-        // ---- open / close chat ----
+        // ─── open / close chat ──────────────────────────────────────
         function openChat(chatId) {
             currentChatId = chatId;
+            currentConversationId = chatId; // deterministic ID
             const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
             const chat = chats.find(c => c.id === chatId);
-
             if (!chat) return;
-
-            currentConversationId = chat.convId;
-
             document.getElementById('chatName').textContent = chat.name;
             document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
-
             if (window.innerWidth <= 768) {
                 document.getElementById('chatList').style.display = 'none';
             }
-
             updateCloseButton();
             loadMessages();
             renderChatList();
@@ -1338,14 +1194,12 @@
         function closeChat(chatId) {
             const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
             const index = chats.findIndex(c => c.id === chatId);
-
             if (index > -1) {
                 chats.splice(index, 1);
                 localStorage.setItem(`user_chats_${currentUser.uid}`, JSON.stringify(chats));
-
                 if (currentChatId === chatId) {
                     currentChatId = chats.length > 0 ? chats[0].id : null;
-                    currentConversationId = chats.length > 0 ? chats[0].convId : null;
+                    currentConversationId = currentChatId;
                     if (currentChatId) {
                         document.getElementById('chatName').textContent = chats[0].name;
                         document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
@@ -1366,109 +1220,99 @@
             closeChat(currentChatId);
         };
 
-        // ---- load messages ----
+        // ─── load messages (realtime) ─────────────────────────────
         function loadMessages() {
             if (!currentConversationId) return;
             if (unsubMessages) unsubMessages();
-
-            const handleSnapshot = (snapshot) => {
+            const q = query(
+                collection(db, 'messages'),
+                where('conversationId', '==', currentConversationId)
+            );
+            unsubMessages = onSnapshot(q, (snapshot) => {
                 const msgs = [];
                 snapshot.forEach(d => {
-                    const data = d.data();
-                    if (data.conversationId === currentConversationId || !data.conversationId) {
-                        msgs.push({ id: d.id, ...data });
-                    }
+                    msgs.push({ id: d.id, ...d.data() });
                 });
-                msgs.sort((a, b) => (a.timestamp?.toDate?.()?.getTime() || 0) - (b.timestamp?.toDate?.()?.getTime() ||
-                0));
+                msgs.sort((a, b) => (a.timestamp?.toDate?.()?.getTime() || 0) - (b.timestamp?.toDate?.()?.getTime() || 0));
                 renderMessages(msgs);
-
+                // Mark incoming messages as read
                 const unread = msgs.filter(m => m.fromUserId === 'admin' && !m.read);
                 if (unread.length > 0) {
-                    unread.forEach(async m => {
+                    unread.forEach(async (m) => {
                         try {
-                            await setDoc(doc(db, 'messages', m.id), { read: true, readAt: serverTimestamp() },
-                            { merge: true });
+                            await setDoc(doc(db, 'messages', m.id), { read: true, readAt: serverTimestamp() }, { merge: true });
                         } catch (err) { console.warn('Mark read error:', err); }
                     });
                 }
-            };
-
-            const q = query(collection(db, 'messages'), where('conversationId', '==', currentConversationId));
-            unsubMessages = onSnapshot(q, handleSnapshot, (error) => {
+            }, (error) => {
                 console.error('Snapshot error:', error);
-                chatMessages.innerHTML =
-                    `<div class="empty-state"><i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;"></i><div style="margin-top:12px;color:#ef4444;">Could not load messages</div></div>`;
+                chatMessages.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;"></i>
+                        <div style="margin-top:12px;color:#ef4444;">Could not load messages</div>
+                    </div>
+                `;
             });
         }
 
-        // ---- render messages ----
+        // ─── render messages ──────────────────────────────────────
         function renderMessages(msgs) {
             if (!msgs || msgs.length === 0) {
                 chatMessages.innerHTML = `
-              <div class="empty-state">
-                <i class="fas fa-comments" style="font-size:3rem;color:#e2e8f0;margin-bottom:16px;"></i>
-                <div style="font-weight:600;color:#64748b;">No messages yet</div>
-                <div style="font-size:0.9rem;color:#94a3b8;margin-top:8px;">Start chatting with support</div>
-              </div>
-            `;
+                    <div class="empty-state">
+                        <i class="fas fa-comments" style="font-size:3rem;color:#e2e8f0;margin-bottom:16px;"></i>
+                        <div style="font-weight:600;color:#64748b;">No messages yet</div>
+                        <div style="font-size:0.9rem;color:#94a3b8;margin-top:8px;">Start chatting with support</div>
+                    </div>
+                `;
                 scrollBottomBtn.classList.remove('show');
                 lastMsgCount = 0;
                 return;
             }
-
             const wasNearBottom = userNearBottom || lastMsgCount === 0;
             const grew = msgs.length > lastMsgCount;
             lastMsgCount = msgs.length;
-
             let html = '';
             let lastDateKey = '';
-
             msgs.forEach(m => {
                 const isSent = m.fromUserId === currentUser?.uid;
                 const ts = m.timestamp?.toDate?.() || null;
                 const dateKey = ts ? ts.toDateString() : '';
                 const dateLabel = ts ? getDateLabel(ts) : '';
-
                 if (dateLabel && dateKey !== lastDateKey) {
                     html += `<div class="date-separator"><span>${dateLabel}</span></div>`;
                     lastDateKey = dateKey;
                 }
-
                 const time = ts ? ts.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
-
                 let statusHtml = '';
                 if (isSent) {
                     const read = !!m.read;
                     statusHtml = `<span class="msg-status ${read ? 'read' : 'unread'}">${read ? '✓✓' : '✓'}</span>`;
                 }
-
                 const { text, imageUrl } = parseMessageContent(m.content || '');
                 let contentHtml = '';
                 if (imageUrl) {
-                    contentHtml +=
-                        `<div class="msg-img-wrap" onclick="window.openImageLightbox('${escapeHtml(imageUrl)}')"><img src="${escapeHtml(imageUrl)}" alt="Attachment" loading="lazy" /></div>`;
+                    contentHtml += `
+                        <div class="msg-img-wrap" onclick="window.openImageLightbox('${escapeHtml(imageUrl)}')">
+                            <img src="${escapeHtml(imageUrl)}" alt="Attachment" loading="lazy" />
+                        </div>`;
                 }
                 if (text) {
                     contentHtml += `<span class="msg-text">${escapeHtml(text)}</span>`;
                 }
                 if (!contentHtml) contentHtml = '<span class="msg-text" style="opacity:0.6;">(empty)</span>';
-
                 const imgOnly = imageUrl && !text ? ' img-only' : '';
-
                 html += `
-              <div class="msg-row ${isSent ? 'sent' : 'received'}">
-                <div class="chat-msg${imgOnly}">${contentHtml}</div>
-                <div class="msg-meta">
-                  <span class="msg-time">${time}</span>
-                  ${statusHtml}
-                </div>
-              </div>
-            `;
+                    <div class="msg-row ${isSent ? 'sent' : 'received'}">
+                        <div class="chat-msg${imgOnly}">${contentHtml}</div>
+                        <div class="msg-meta">
+                            <span class="msg-time">${time}</span>
+                            ${statusHtml}
+                        </div>
+                    </div>
+                `;
             });
-
             chatMessages.innerHTML = html;
-
             if (wasNearBottom) scrollToBottom(false);
             else if (grew) {
                 pendingNewCount += Math.max(1, msgs.length - (lastMsgCount - (grew ? 1 : 0)));
@@ -1478,27 +1322,46 @@
             }
         }
 
-        // ---- start new chat ----
+        // ─── start new chat ────────────────────────────────────────
         function startNewChat() {
-            currentChatId = null;
-            currentConversationId = null;
+            // Generate deterministic conversation ID but do NOT create it yet.
+            // The ID will be created on first message.
+            const parts = [currentUser.uid, 'admin'].sort();
+            const newId = `conv_${parts[0]}_${parts[1]}`;
+            currentChatId = newId;
+            currentConversationId = newId;
 
             document.getElementById('chatName').textContent = 'Admin Support';
             document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
             chatMessages.innerHTML = '';
             updateCloseButton();
 
+            // Load messages (will be empty) – this also attaches listener
+            loadMessages();
+
+            // Add to localStorage so it appears in the list
+            const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
+            if (!chats.find(c => c.id === newId)) {
+                chats.unshift({
+                    id: newId,
+                    name: 'Admin Support',
+                    lastMsg: 'Start a conversation',
+                    time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                });
+                localStorage.setItem(`user_chats_${currentUser.uid}`, JSON.stringify(chats));
+                renderChatList();
+            }
             if (window.innerWidth <= 768) {
                 document.getElementById('chatList').style.display = 'none';
             }
+            chatInput.focus();
         }
 
-        // ---- send message ----
+        // ─── send message ──────────────────────────────────────────
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = chatInput.value.trim();
             const hasFile = !!pendingImageFile;
-
             if (!text && !hasFile) {
                 showToast('Please type a message or attach an image.', 'warning');
                 return;
@@ -1507,27 +1370,22 @@
 
             setLoading(chatSendBtn, true);
             let imageUrl = null;
-
             try {
                 if (hasFile) {
                     imageUrl = await uploadImage(pendingImageFile);
                     clearImagePreview();
                 }
-
                 let finalContent = text;
                 if (imageUrl) finalContent = text ? (text + '\n' + imageUrl) : imageUrl;
 
+                // If no conversation ID, generate deterministic one
                 if (!currentConversationId) {
-                    const convDoc = await addDoc(collection(db, 'messages'), {
-                        conversationId: `conv_${Date.now()}`,
-                        participants: [currentUser.uid, 'admin'],
-                        createdAt: serverTimestamp()
-                    });
-                    currentConversationId = convDoc.id;
-                    currentChatId = convDoc.id;
-                    updateCloseButton();
+                    const parts = [currentUser.uid, 'admin'].sort();
+                    currentConversationId = `conv_${parts[0]}_${parts[1]}`;
+                    currentChatId = currentConversationId;
                 }
 
+                // Send message with participants array
                 await addDoc(collection(db, 'messages'), {
                     conversationId: currentConversationId,
                     fromUserId: currentUser.uid,
@@ -1543,14 +1401,13 @@
                 chatInput.focus();
                 userNearBottom = true;
 
+                // Update chat list with latest message
                 const lastText = text || 'Image';
                 const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
                 let chat = chats.find(c => c.id === currentChatId);
-
                 if (!chat) {
                     chat = {
                         id: currentChatId,
-                        convId: currentConversationId,
                         name: 'Admin Support',
                         lastMsg: lastText,
                         time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
@@ -1560,7 +1417,6 @@
                     chat.lastMsg = lastText;
                     chat.time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                 }
-
                 localStorage.setItem(`user_chats_${currentUser.uid}`, JSON.stringify(chats));
                 renderChatList();
             } catch (err) {
@@ -1572,7 +1428,7 @@
             }
         });
 
-        // ---- auth state ----
+        // ─── auth state ────────────────────────────────────────────
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'index.html';
@@ -1585,16 +1441,17 @@
 
             const savedChats = JSON.parse(localStorage.getItem(`user_chats_${user.uid}`) || '[]');
             if (savedChats.length > 0) {
+                // Open the first conversation
                 currentChatId = savedChats[0].id;
-                currentConversationId = savedChats[0].convId;
+                currentConversationId = currentChatId;
                 document.getElementById('chatName').textContent = savedChats[0].name;
                 document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
                 loadMessages();
                 updateCloseButton();
             } else {
+                // No conversations – show empty state
                 updateCloseButton();
             }
-
             renderChatList();
 
             document.getElementById('btnNewChat').addEventListener('click', () => {
@@ -1607,7 +1464,7 @@
             if (unsubMessages) unsubMessages();
         });
 
-        console.log('💬 Messages page updated — close button + Firestore rules verified');
+        console.log('💬 messages.html – fully rewritten with deterministic conversation ID and enhancements.');
     </script>
 </body>
 </html>
