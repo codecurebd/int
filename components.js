@@ -1,4 +1,4 @@
-// components.js – সম্পূর্ণ ফাইল (শুধু renderNavbar ও renderFooter-এর HTML টেমপ্লেট পরিবর্তন করা হয়েছে)
+// components.js – সম্পূর্ণ ফাইল (ঠিক করা)
 import { 
   auth, onAuthStateChanged, signOut, db, doc, getDoc, setDoc,
   updateDoc, serverTimestamp, collection, addDoc, query, where, onSnapshot,
@@ -505,7 +505,7 @@ function performSearch(query) {
 }
 
 // ================================================================
-// NAVBAR (NEW DESIGN – কিন্তু সব ID ও ক্লাস আগের মতোই)
+// NAVBAR
 // ================================================================
 export function renderNavbar() {
   renderContactModal();
@@ -606,7 +606,7 @@ export function renderNavbar() {
   const placeholder = document.getElementById('navbar-placeholder');
   if (placeholder) placeholder.innerHTML = navbarHTML;
 
-  // Navbar scroll effect (transparent on landing)
+  // Navbar scroll effect
   setupLandingNavbar();
 
   // Profile dropdown toggle
@@ -799,7 +799,7 @@ function updateCartPopupUI() {
 }
 
 // ================================================================
-// FOOTER (NEW DESIGN)
+// FOOTER
 // ================================================================
 export function renderFooter() {
   const footerHTML = `
@@ -1290,7 +1290,7 @@ export function renderCartSidebar() {
 export function updateCartUI() { updateCartPopupUI(); }
 
 // ================================================================
-// PAYMENT MODAL (সম্পূর্ণ – আগের মতোই)
+// PAYMENT MODAL
 // ================================================================
 let _paymentSettings = {};
 let _paymentOrderTotalUSD = 0;
