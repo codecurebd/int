@@ -141,7 +141,7 @@
       50% { opacity: 0.45; transform: scale(0.85); }
     }
 
-    /* CHAT LIST (Sidebar) */
+    /* CHAT LIST */
     .chat-list {
       width: 280px;
       border-right: 1px solid rgba(0,0,0,0.06);
@@ -730,7 +730,7 @@
                   </button>
                 </div>
                 <label class="file-btn" id="fileBtn">
-                  <i class="fas fa-paperclip"></i>
+                  <i class="fas fa-image"></i>
                   <input type="file" id="fileInput" accept="image/*" />
                 </label>
               </div>
@@ -833,7 +833,7 @@
       });
     });
 
-    // Image preview
+    // Image preview (no file select button)
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -852,7 +852,7 @@
       reader.onload = (ev) => {
         previewImg.src = ev.target.result;
         imagePreview.classList.add('show');
-        fileBtn.querySelector('i').className = 'fas fa-paperclip';
+        fileBtn.querySelector('i').className = 'fas fa-image';
         fileBtn.style.color = '#34C759';
       };
       reader.readAsDataURL(file);
@@ -863,7 +863,7 @@
       imagePreview.classList.remove('show');
       previewImg.src = '#';
       fileInput.value = '';
-      fileBtn.querySelector('i').className = 'fas fa-paperclip';
+      fileBtn.querySelector('i').className = 'fas fa-image';
       fileBtn.style.color = '';
     });
 
@@ -872,7 +872,7 @@
       imagePreview.classList.remove('show');
       previewImg.src = '#';
       fileInput.value = '';
-      fileBtn.querySelector('i').className = 'fas fa-paperclip';
+      fileBtn.querySelector('i').className = 'fas fa-image';
       fileBtn.style.color = '';
     }
 
@@ -1303,7 +1303,7 @@
       if (unsubMessages) unsubMessages();
     });
 
-    console.log('💬 Messages page loaded — gap fixed + attachment icon');
+    console.log('💬 Messages page loaded — gap fixed + only image logo + no file select');
   </script>
 
 </body>
