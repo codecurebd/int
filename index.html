@@ -200,7 +200,7 @@
       margin: 0 0 1.75rem;
       padding: 0 8px;
     }
-    #topBannerAd.visible { display: block !important; }
+    #topBannerAd.visible { display: block; }
     #topBannerAd a {
       display: inline-block;
       max-width: 100%;
@@ -942,7 +942,173 @@
       border-radius: 40px;
       margin-bottom: 0.75rem;
     }
-  
+
+    /* ─── CAMPAIGN BANNER (new) ─── */
+    .campaign-banner {
+      display: none;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d1b69 100%);
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      margin: 1.5rem 0 2rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .campaign-banner.show { display: block; }
+    .campaign-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .campaign-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -5%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(0, 102, 255, 0.15), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .campaign-banner .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      margin-bottom: 0.75rem;
+    }
+    .campaign-banner .badge i { font-size: 0.6rem; }
+    .campaign-banner .camp-title {
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+    .campaign-banner .camp-desc {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      max-width: 80%;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .campaign-banner .camp-offer {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 18px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+    .campaign-banner .camp-offer .price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffd700;
+    }
+    .campaign-banner .camp-offer .old {
+      text-decoration: line-through;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+    .campaign-banner .camp-offer .discount {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ff6b6b;
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .campaign-banner .camp-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ffd700, #f59e0b);
+      color: #1a1a2e;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: 0.25s ease;
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+      margin-top: 1.25rem;
+      position: relative;
+      z-index: 1;
+      border: none;
+      cursor: pointer;
+    }
+    .campaign-banner .camp-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
+    }
+    .campaign-banner .camp-cta i { font-size: 0.85rem; }
+
+    .campaign-banner .camp-img {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      max-height: 140px;
+      max-width: 200px;
+      border-radius: 12px;
+      opacity: 0.8;
+      object-fit: cover;
+      z-index: 0;
+    }
+    @media (max-width: 768px) {
+      .campaign-banner {
+        padding: 1.5rem;
+        margin: 1rem 0 1.5rem;
+        border-radius: 16px;
+      }
+      .campaign-banner .camp-desc { max-width: 100%; font-size: 0.85rem; }
+      .campaign-banner .camp-img {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        max-height: 100px;
+        max-width: 100%;
+        margin: 0.5rem 0 0;
+        width: 100%;
+        object-fit: cover;
+      }
+      .campaign-banner .camp-offer { font-size: 0.8rem; padding: 6px 14px; }
+      .campaign-banner .camp-offer .price { font-size: 1.1rem; }
+      .campaign-banner .camp-cta { padding: 10px 20px; font-size: 0.85rem; }
+    }
+    @media (max-width: 480px) {
+      .campaign-banner { padding: 1rem; margin: 0.5rem 0 1rem; }
+      .campaign-banner .camp-title { font-size: 1.1rem; }
+      .campaign-banner .camp-desc { font-size: 0.8rem; }
+      .campaign-banner .camp-offer { font-size: 0.75rem; gap: 8px; }
+      .campaign-banner .camp-cta { padding: 8px 16px; font-size: 0.8rem; }
+    }
   </style>
 </head>
 <body class="landing-page">
@@ -1017,6 +1183,11 @@
           </div>
         </div>
       </section>
+
+      <!-- ===== CAMPAIGN BANNER ===== -->
+      <div id="campaignBanner" class="campaign-banner max-w-7xl mx-auto px-6" style="display:none;">
+        <!-- Rendered by JS -->
+      </div>
 
       <!-- ===== SERVICES ===== -->
       <section id="services" class="py-16 md:py-20 px-6 bg-gray-50/50">
@@ -1232,10 +1403,6 @@
     <i class="fas fa-arrow-up"></i>
   </button>
 
-  <!-- Auth Modal is now rendered by components.js (renderAuthModal) -->
-
-  </div>
-
   <div id="toast-container"></div>
 
   <script type="module">
@@ -1279,7 +1446,7 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          observer.unobserve(entry.target); // one-shot — less work while scrolling
+          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
@@ -1299,7 +1466,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
         const y = window.scrollY || window.pageYOffset;
         if (y > 400) scrollBtn.classList.add('show');
         else scrollBtn.classList.remove('show');
-        // Pause expensive orb animation once hero is scrolled past
         if (heroSection) {
           if (y > (heroSection.offsetHeight || 600)) {
             heroSection.classList.add('orbs-paused');
@@ -1314,12 +1480,8 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // ===== AUTH MODAL =====
-    // Auth handled by components.js (renderAuthModal / openAuthModal)
-// togglePasswordVisibility moved to components.js as toggleAuthPassword
-// socialLogin handled by components.js
-// Auth form handled by components.js
-onAuthStateChanged(auth, async (user) => {
+    // ===== AUTH =====
+    onAuthStateChanged(auth, async (user) => {
       let name = null;
       if (user) {
         await syncCart(user.uid);
@@ -1329,8 +1491,7 @@ onAuthStateChanged(auth, async (user) => {
       updateNavbarAuth(user, name);
     });
 
-    // handleLogout handled by components.js
-// ================================================================
+    // ================================================================
     // ✅ PRICE & DISCOUNT HELPERS (for featured products)
     // ================================================================
 
@@ -1365,6 +1526,54 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     // ================================================================
+    // ✅ CAMPAIGN BANNER (NEW – realtime listener)
+    // ================================================================
+    function loadCampaignBanner() {
+      const banner = document.getElementById('campaignBanner');
+      if (!banner) return;
+
+      const q = query(collection(db, 'campaigns'), where('status', '==', 'active'));
+      onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+          banner.style.display = 'none';
+          return;
+        }
+        const doc = snapshot.docs[0];
+        const data = doc.data();
+        const title = data.title || 'Special Campaign Offer';
+        const description = data.description || 'Get your dream website at an unbeatable price. Limited slots available!';
+        const campaignPrice = Number(data.campaignPrice) || 0;
+        const originalPrice = Number(data.originalPrice) || 0;
+        const discount = originalPrice > campaignPrice ? Math.round(((originalPrice - campaignPrice) / originalPrice) * 100) : 0;
+        const imageUrl = data.imageUrl || '';
+        const advance = Number(data.advanceAmount) || 500;
+
+        banner.innerHTML = `
+          <span class="badge"><i class="fas fa-bolt"></i> 🔥 Limited Time Offer</span>
+          <h2 class="camp-title">${title}</h2>
+          <p class="camp-desc">${description}</p>
+          <div class="camp-offer">
+            ${originalPrice > 0 ? `<span class="old">৳${originalPrice.toLocaleString('en-BD')}</span>` : ''}
+            <span class="price">৳${campaignPrice.toLocaleString('en-BD')}</span>
+            ${discount > 0 ? `<span class="discount">-${discount}% OFF</span>` : ''}
+            <span style="opacity:0.6;font-size:0.8rem;">|</span>
+            <span style="font-size:0.85rem;">Pay <strong>৳${advance}</strong> advance</span>
+          </div>
+          <a href="campaign.html" class="camp-cta">
+            <i class="fas fa-rocket"></i> Join Campaign
+          </a>
+          ${imageUrl ? `<img src="${imageUrl}" alt="${title}" class="camp-img" loading="lazy" />` : ''}
+        `;
+
+        banner.style.display = 'block';
+        banner.style.animation = 'fadeUp 0.4s ease';
+      }, (err) => {
+        console.warn('Campaign banner error:', err);
+        banner.style.display = 'none';
+      });
+    }
+
+    // ================================================================
     // ✅ ফিচার্ড প্রোডাক্ট (HTML preview + DISCOUNT + BDT + SINGLE-LINE TITLE)
     // ================================================================
     const packagesContainer = document.getElementById('featuredPackages');
@@ -1384,7 +1593,6 @@ onAuthStateChanged(auth, async (user) => {
         `;
       }
       packagesContainer.innerHTML = html;
-      // Featured packages are in the hero — show immediately without waiting for scroll
     }
     renderSkeletons();
 
@@ -1395,12 +1603,10 @@ onAuthStateChanged(auth, async (user) => {
 
     async function loadFeaturedProducts() {
       try {
-        // Load discounts
         const discountSnap = await getDocs(collection(db, 'discounts'));
         allDiscounts = [];
         discountSnap.forEach(doc => allDiscounts.push({ id: doc.id, ...doc.data() }));
 
-        // Load settings for USD rate
         const settingsSnap = await getDoc(doc(db, 'settings', 'payment'));
         if (settingsSnap.exists()) {
           const data = settingsSnap.data();
@@ -1449,7 +1655,6 @@ onAuthStateChanged(auth, async (user) => {
             `;
           }
 
-          // ---- DISCOUNT & PRICE ----
           const discount = getDiscountForProduct(p);
           let priceHtml = '';
           if (discount) {
@@ -1495,7 +1700,6 @@ onAuthStateChanged(auth, async (user) => {
           `;
         });
         packagesContainer.innerHTML = html;
-        // Featured products are in the hero section — force visible on load (no scroll required)
       } catch (err) {
         console.error('Error loading featured products:', err);
         packagesContainer.innerHTML = `<p class="text-red-500 col-span-3 text-center">Error loading products.</p>`;
@@ -1503,6 +1707,11 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     loadFeaturedProducts();
+
+    // ================================================================
+    // ✅ CAMPAIGN BANNER — CALL AFTER PRODUCTS LOAD
+    // ================================================================
+    loadCampaignBanner();
 
     // ================================================================
     // ✅ টেস্টিমোনিয়াল
@@ -1666,7 +1875,7 @@ onAuthStateChanged(auth, async (user) => {
       }
     });
 
-    // ===== HERO TYPING ANIMATION (3 texts × 4s each) =====
+    // ===== HERO TYPING ANIMATION =====
     (function initHeroTyping() {
       const el = document.getElementById('typedHero');
       if (!el) return;
@@ -1676,7 +1885,7 @@ onAuthStateChanged(auth, async (user) => {
         'Bug Fix, Speed Up & Secure Your Site',
         'Ready-Made Sites for Your Business'
       ];
-      const DURATION = 4000; // total time per text (ms)
+      const DURATION = 4000;
       const typeMs = 42;
       const deleteMs = 28;
       let textIndex = 0;
@@ -1684,16 +1893,14 @@ onAuthStateChanged(auth, async (user) => {
       let deleting = false;
       let holdUntil = 0;
 
-      // Start with full first text already visible, then cycle
       el.textContent = texts[0];
       charIndex = texts[0].length;
-      holdUntil = performance.now() + 2200; // brief hold before first delete
+      holdUntil = performance.now() + 2200;
 
       function tick(now) {
         const full = texts[textIndex];
 
         if (!deleting && charIndex === full.length) {
-          // Holding full text until DURATION window ends
           if (now < holdUntil) {
             requestAnimationFrame(tick);
             return;
@@ -1708,7 +1915,6 @@ onAuthStateChanged(auth, async (user) => {
             setTimeout(() => requestAnimationFrame(tick), deleteMs);
             return;
           }
-          // move to next
           deleting = false;
           textIndex = (textIndex + 1) % texts.length;
           charIndex = 0;
@@ -1716,11 +1922,9 @@ onAuthStateChanged(auth, async (user) => {
           return;
         }
 
-        // typing
         charIndex++;
         el.textContent = full.slice(0, charIndex);
         if (charIndex === full.length) {
-          // schedule hold so total ~DURATION from start of this phrase
           const typedTime = charIndex * typeMs;
           const hold = Math.max(1200, DURATION - typedTime - (full.length * deleteMs) - 280);
           holdUntil = performance.now() + hold;
@@ -1728,7 +1932,6 @@ onAuthStateChanged(auth, async (user) => {
         setTimeout(() => requestAnimationFrame(tick), typeMs);
       }
 
-      // Prefer reduced motion: show first text only
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.textContent = texts[0];
         return;
@@ -1737,52 +1940,27 @@ onAuthStateChanged(auth, async (user) => {
       requestAnimationFrame(tick);
     })();
 
-
-    // ===== TOP BANNER AD (from settings/bannerAd) =====
-    // Robust loader: only show after image actually loads; force display so
-    // no other CSS can hide it; hide again if the image URL is broken.
+    // ===== TOP BANNER AD =====
     (async function loadTopBanner() {
       try {
         const snap = await getDoc(doc(db, 'settings', 'bannerAd'));
-        if (!snap.exists()) return;
-
-        const d = snap.data() || {};
-        const url = String(d.imageUrl || '').trim();
-        // Explicit active:false turns it off; missing/undefined active still shows
-        if (!url || d.active === false) return;
-
-        const wrap = document.getElementById('topBannerAd');
-        const img = document.getElementById('topBannerImg');
-        if (!img || !wrap) return;
-
-        const show = () => {
-          wrap.classList.add('visible');
-          wrap.style.display = 'block';
-        };
-        const hide = () => {
-          wrap.classList.remove('visible');
-          wrap.style.display = 'none';
-          img.removeAttribute('src');
-        };
-
-        img.onload = show;
-        img.onerror = () => {
-          console.warn('Banner image failed to load:', url);
-          hide();
-        };
-
-        // Set src after handlers so we catch both cache-hit and network load
-        img.src = url;
-        // Cached image may already be complete before onload fires
-        if (img.complete && img.naturalWidth > 0) {
-          show();
+        if (snap.exists()) {
+          const d = snap.data();
+          if (d.active !== false && d.imageUrl) {
+            const wrap = document.getElementById('topBannerAd');
+            const img = document.getElementById('topBannerImg');
+            if (img && wrap) {
+              img.src = d.imageUrl;
+              wrap.classList.add('visible');
+            }
+          }
         }
       } catch (err) {
         console.warn('Banner load skipped:', err);
       }
     })();
 
-    console.log('🏠 Landing page loaded — hero typing animation active');
+    console.log('🏠 Landing page loaded — campaign banner active');
   </script>
 </body>
 </html>
