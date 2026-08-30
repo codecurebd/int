@@ -9,7 +9,7 @@
 <meta name="description" content="Professional website development, fixing & e-commerce solutions in Bangladesh. Fast delivery within 24-48 hours. BKash, Nagad & USDT payment accepted. 100+ projects delivered.">
 <meta name="keywords" content="website development bangladesh, website design dhaka, website fix bangladesh, buy website in bd, website purchase bd, e-commerce website bkash, e-commerce website nagad, e-commerce website bd, ecommerce website bangladesh, custom website bangladesh">
   
-  <!-- ✅ Preconnect & Preload for faster font loading -->
+  <!-- ✅ Preconnect & Preload -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
@@ -37,7 +37,6 @@
       padding: 0;
       min-height: 100vh;
     }
-    /* Prevent system dark mode from inverting page colors */
     @media (prefers-color-scheme: dark) {
       body {
         background: #f2f4f7 !important;
@@ -45,12 +44,10 @@
       }
     }
 
-    /* ✅ Fix: remove main-content top gap so hero goes under transparent navbar */
     body.landing-page .main-content {
       padding-top: 0 !important;
     }
 
-    /* ===== FONT DISPLAY SWAP ===== */
     @font-face {
       font-family: 'Inter';
       font-display: swap;
@@ -188,7 +185,6 @@
       flex-direction: column;
     }
 
-    /* Banner — match live site size (728×90 style) */
     #topBannerAd {
       display: none;
       width: 100%;
@@ -486,7 +482,6 @@
       display: block;
     }
 
-    /* Featured packages stay below split inside hero */
     #featuredPackages {
       margin-top: 2.75rem !important;
     }
@@ -510,7 +505,6 @@
       transform: translate3d(0, -3px, 0);
     }
 
-    /* ===== FEATURED PRODUCT CARD ===== */
     .featured-card {
       overflow: hidden;
       padding: 0;
@@ -540,7 +534,6 @@
       padding: 1rem 1.25rem 1.25rem;
     }
 
-    /* ✅ এক লাইনে টাইটেল */
     .product-title {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -551,7 +544,6 @@
       max-height: 1.2em;
     }
 
-    /* ✅ এক লাইনে ডেসক্রিপশন */
     .product-desc {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -969,7 +961,6 @@
     }
     .campaign-banner.show { display: block; }
 
-    /* Subtle blue glow orbs */
     .campaign-banner::before {
       content: '';
       position: absolute;
@@ -993,7 +984,6 @@
       pointer-events: none;
     }
 
-    /* Badge */
     .campaign-banner .badge {
       display: inline-flex;
       align-items: center;
@@ -1016,7 +1006,6 @@
       color: #f59e0b;
     }
 
-    /* Title */
     .campaign-banner .camp-title {
       font-size: clamp(1.4rem, 2.4vw, 1.9rem);
       font-weight: 800;
@@ -1027,7 +1016,6 @@
       z-index: 1;
     }
 
-    /* Description */
     .campaign-banner .camp-desc {
       font-size: 0.95rem;
       color: #475569;
@@ -1038,7 +1026,6 @@
       z-index: 1;
     }
 
-    /* Offer box */
     .campaign-banner .camp-offer {
       display: inline-flex;
       align-items: center;
@@ -1084,7 +1071,7 @@
       font-weight: 700;
     }
 
-    /* CTA Button */
+    /* ─── CTA Button ─── */
     .campaign-banner .camp-cta {
       display: inline-flex;
       align-items: center;
@@ -1115,19 +1102,21 @@
       transform: translateX(4px);
     }
 
-    /* Image */
+    /* ─── IMAGE – larger, no black bars ─── */
     .campaign-banner .camp-img {
       position: absolute;
-      right: 2rem;
+      right: 1.5rem;
       top: 50%;
       transform: translateY(-50%);
-      max-height: 140px;
-      max-width: 200px;
-      border-radius: 12px;
-      object-fit: cover;
+      max-height: 220px;        /* increased from 140px */
+      max-width: 320px;         /* increased from 200px */
+      width: auto;
+      height: auto;
+      border-radius: 16px;
+      object-fit: cover;        /* ensures no black bars */
       z-index: 1;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* ─── Responsive ─── */
@@ -1146,9 +1135,9 @@
         right: auto;
         top: auto;
         transform: none;
-        max-height: 100px;
+        max-height: 140px;
         max-width: 100%;
-        margin: 0.5rem 0 0;
+        margin: 0.75rem 0 0;
         width: 100%;
         object-fit: cover;
         border-radius: 10px;
@@ -1191,7 +1180,7 @@
         font-size: 0.8rem;
       }
       .campaign-banner .camp-img {
-        max-height: 80px;
+        max-height: 100px;
       }
     }
   </style>
@@ -1201,7 +1190,7 @@
     <div id="navbar-placeholder"></div>
 
     <main class="main-content">
-      <!-- ===== HERO (full-bleed under transparent nav) ===== -->
+      <!-- ===== HERO ===== -->
       <section class="hero-section">
         <div class="hero-orbs" aria-hidden="true">
           <div class="hero-orb o1"></div>
@@ -1209,7 +1198,6 @@
           <div class="hero-orb o3"></div>
         </div>
         <div class="hero-inner">
-          <!-- Enhanced full-width campaign banner -->
           <div id="topBannerAd" aria-label="Promotional banner">
             <a href="campaign.html" id="topBannerLink">
               <img id="topBannerImg" src="" alt="Campaign banner" width="728" height="90" loading="eager" />
@@ -1217,7 +1205,6 @@
           </div>
 
           <div class="hero-split">
-            <!-- LEFT: brand + copy -->
             <div class="hero-left">
               <div class="hero-eyebrow fade-up">
                 <span class="live-dot" aria-hidden="true"></span>
@@ -1239,7 +1226,6 @@
               </div>
             </div>
 
-            <!-- RIGHT: actions -->
             <div class="hero-right fade-up" style="transition-delay:0.12s;">
               <div class="hero-action-card">
                 <h3><i class="fas fa-sparkles"></i> Get started</h3>
@@ -1262,9 +1248,8 @@
             </div>
           </div>
 
-          <!-- ===== FEATURED PACKAGES (max 6) ===== -->
           <div id="featuredPackages" class="mt-16 grid md:grid-cols-3 gap-6 text-left">
-            <!-- Skeleton will be rendered by JS -->
+            <!-- Skeleton -->
           </div>
         </div>
       </section>
@@ -1413,19 +1398,15 @@
       <section id="testimonials" class="py-16 px-6 bg-gray-50/50">
         <div class="max-w-6xl mx-auto">
           <h2 class="text-3xl font-bold text-center fade-up">What Our Clients Say</h2>
-          <div id="testimonialList" class="mt-8 grid md:grid-cols-3 gap-6">
-            <!-- Skeleton will be rendered by JS -->
-          </div>
+          <div id="testimonialList" class="mt-8 grid md:grid-cols-3 gap-6"></div>
         </div>
       </section>
 
-      <!-- ===== FAQ (with Show More) ===== -->
+      <!-- ===== FAQ ===== -->
       <section id="faq" class="py-16 px-6">
         <div class="max-w-3xl mx-auto">
           <h2 class="text-3xl font-bold text-center fade-up">Frequently Asked Questions</h2>
-          <div id="faqList" class="mt-8 space-y-4">
-            <!-- FAQ items injected by JS -->
-          </div>
+          <div id="faqList" class="mt-8 space-y-4"></div>
           <div class="text-center">
             <button id="faqToggleBtn" class="faq-show-more-btn" style="display:none;">
               <span id="faqToggleText">Show More</span>
@@ -1435,7 +1416,7 @@
         </div>
       </section>
 
-      <!-- ===== CONTACT FORM (NEW) ===== -->
+      <!-- ===== CONTACT ===== -->
       <section id="contact" class="py-16 px-6 bg-gray-50/50">
         <div class="max-w-3xl mx-auto">
           <h2 class="text-3xl font-bold text-center fade-up">Contact Us</h2>
@@ -1483,7 +1464,6 @@
     <div id="footer-placeholder"></div>
   </div>
 
-  <!-- ===== BACK TO TOP ===== -->
   <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Back to top">
     <i class="fas fa-arrow-up"></i>
   </button>
@@ -1491,9 +1471,6 @@
   <div id="toast-container"></div>
 
   <script type="module">
-    // ================================================================
-    // ইমপোর্ট
-    // ================================================================
     import { 
       auth, db, collection, doc, getDoc, getDocs, onSnapshot, query, where,
       signInWithEmailAndPassword, createUserWithEmailAndPassword, 
@@ -1501,12 +1478,11 @@
       signInWithPopup, googleProvider, serverTimestamp, addDoc
     } from './firebase-config.js';
     import {
-renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
+      renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       renderCartSidebar, setLoading, renderPaymentModal, syncCart, updateCartInFirestore,
-  renderAuthModal
-} from './components.js';
+      renderAuthModal
+    } from './components.js';
 
-    // ===== রেন্ডার =====
     renderNavbar();
     renderAuthModal();
     renderFooter();
@@ -1514,7 +1490,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
     renderPaymentModal();
     updateCartBadge();
 
-    // ===== টোস্ট =====
     window.showToast = (message, type = 'success') => {
       const container = document.getElementById('toast-container');
       if (!container) return;
@@ -1526,7 +1501,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 4500);
     };
 
-    // ===== SCROLL ANIMATION =====
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1540,7 +1514,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     });
 
-    // ===== BACK TO TOP + pause hero orbs when off-screen (perf) =====
     const scrollBtn = document.getElementById('scrollTopBtn');
     const heroSection = document.querySelector('.hero-section');
     let scrollTicking = false;
@@ -1565,7 +1538,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // ===== AUTH =====
     onAuthStateChanged(auth, async (user) => {
       let name = null;
       if (user) {
@@ -1575,10 +1547,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       }
       updateNavbarAuth(user, name);
     });
-
-    // ================================================================
-    // ✅ PRICE & DISCOUNT HELPERS (for featured products)
-    // ================================================================
 
     let usdRate = 125;
     let allDiscounts = [];
@@ -1610,9 +1578,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       return null;
     }
 
-    // ================================================================
-    // ✅ CAMPAIGN BANNER (NEW – realtime listener)
-    // ================================================================
     function loadCampaignBanner() {
       const banner = document.getElementById('campaignBanner');
       if (!banner) return;
@@ -1658,9 +1623,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       });
     }
 
-    // ================================================================
-    // ✅ ফিচার্ড প্রোডাক্ট (HTML preview + DISCOUNT + BDT + SINGLE-LINE TITLE)
-    // ================================================================
     const packagesContainer = document.getElementById('featuredPackages');
 
     function renderSkeletons(count = 6) {
@@ -1792,17 +1754,9 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
     }
 
     loadFeaturedProducts();
-
-    // ================================================================
-    // ✅ CAMPAIGN BANNER — CALL AFTER PRODUCTS LOAD
-    // ================================================================
     loadCampaignBanner();
 
-    // ================================================================
-    // ✅ টেস্টিমোনিয়াল
-    // ================================================================
     const testimonialContainer = document.getElementById('testimonialList');
-
     async function loadTestimonials() {
       try {
         const snap = await getDocs(collection(db, 'testimonials'));
@@ -1830,9 +1784,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
     }
     loadTestimonials();
 
-    // ================================================================
-    // ✅ FAQ
-    // ================================================================
     const faqContainer = document.getElementById('faqList');
     const toggleBtn = document.getElementById('faqToggleBtn');
     const toggleText = document.getElementById('faqToggleText');
@@ -1921,9 +1872,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
 
     loadFaqs();
 
-    // ================================================================
-    // ✅ CONTACT FORM
-    // ================================================================
     const contactForm = document.getElementById('contactForm');
     const contactSubmitBtn = document.getElementById('contactSubmitBtn');
     const contactError = document.getElementById('contactError');
@@ -1960,7 +1908,7 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       }
     });
 
-    // ===== HERO TYPING ANIMATION =====
+    // Typing animation
     (function initHeroTyping() {
       const el = document.getElementById('typedHero');
       if (!el) return;
@@ -2025,7 +1973,6 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
       requestAnimationFrame(tick);
     })();
 
-    // ===== TOP BANNER AD =====
     (async function loadTopBanner() {
       try {
         const snap = await getDoc(doc(db, 'settings', 'bannerAd'));

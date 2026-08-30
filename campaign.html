@@ -135,20 +135,24 @@
       opacity: 0.25;
       color: #64748b;
     }
+
+    /* ─── CAMPAIGN IMAGE – no black bars ─── */
     .campaign-img {
       width: 100%;
-      max-height: 380px;
-      object-fit: contain; /* full image visible — no top/bottom text crop */
+      max-height: 400px;
+      object-fit: cover;        /* changed from contain to cover */
       object-position: center;
       border-radius: 16px;
       border: 1px solid rgba(0,0,0,0.05);
-      background: #0b1220;
+      background: #f0f2f5;
+      display: block;
     }
     @media (max-width: 640px) {
       .campaign-img {
-        max-height: 220px;
+        max-height: 240px;
       }
     }
+
     .btn-join {
       width: 100%;
       padding: 14px 24px;
@@ -235,10 +239,10 @@
     let currentUser = null;
     let participants = [];
     let alreadyJoined = false;
-    let myCampaignOrder = null; // user's order for this campaign (if any)
+    let myCampaignOrder = null;
     let usdRate = 125;
-    let unsubParticipants = null; // live listener for participant list
-    let unsubMyOrder = null; // live listener for current user's campaign order
+    let unsubParticipants = null;
+    let unsubMyOrder = null;
 
     function escapeHtml(str) {
       return String(str || '')
@@ -338,7 +342,7 @@
           </div>
         </section>
 
-        <!-- My Entry detail modal -->
+        <!-- My Entry modal -->
         <div id="myEntryModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[400] hidden p-4">
           <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -428,7 +432,6 @@
       const paidBDT = Number(o.amountBDT) || 0;
       const paidUSD = Number(o.amountUSD) || 0;
       const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
-      // Always derive USD from BDT + current settings rate (ignore stale stored USD)
       const rateForDue = (Number(usdRate) > 0 ? Number(usdRate) : (Number(o.usdRate) > 0 ? Number(o.usdRate) : 125));
       const dueUSD = dueBDT > 0 ? Math.round((dueBDT / rateForDue) * 100) / 100 : 0;
       const payEnabled = !!o.remainingPaymentEnabled && dueBDT > 0;
@@ -503,7 +506,6 @@
         showToast('No remaining payment request from admin yet.', 'info');
         return;
       }
-      // BDT is source of truth — never trust a stale stored USD
       const dueBDT = Number(o.remainingPaymentAmountBDT ?? o.dueAmountBDT) || 0;
       if (dueBDT <= 0) {
         showToast('Due amount is not set yet.', 'warning');
@@ -569,17 +571,14 @@
       const advance = Number(activeCampaign.advanceAmount ?? 500);
       const advanceUSD = advance / usdRate;
 
-      // Load payment settings then open modal in campaign mode
       try {
         const snap = await getDoc(doc(db, 'settings', 'payment'));
         const settings = snap.exists() ? snap.data() : {};
         if (settings.usdRate && Number(settings.usdRate) > 0) usdRate = Number(settings.usdRate);
 
-        // Use existing payment modal with campaign-specific payload
         if (typeof window.openCampaignPaymentModal === 'function') {
           window.openCampaignPaymentModal(activeCampaign, advance, advance / usdRate, settings);
         } else {
-          // Fallback: openPaymentModal with custom flag
           openPaymentModal({
             type: 'campaign',
             campaignId: activeCampaign.id,
@@ -645,7 +644,6 @@
         const data = typeof d.data === 'function' ? d.data() : d;
         const id = d.id || data.id || '';
         if (data.status === 'cancelled') return;
-        // Ensure order belongs to this campaign when campaignId is present
         if (activeCampaign && data.campaignId && data.campaignId !== activeCampaign.id) return;
 
         list.push({
@@ -688,13 +686,11 @@
         applyParticipantsFromDocs(snap.docs);
       }, async (err) => {
         console.warn('listenParticipants (live) failed:', err?.code || err?.message || err);
-        // Fallback: one-shot getDocs
         try {
           const snap = await getDocs(q);
           applyParticipantsFromDocs(snap.docs);
         } catch (err2) {
           console.warn('loadParticipants fallback failed:', err2?.code || err2?.message || err2);
-          // Last resort: denormalized list on campaign document
           if (Array.isArray(activeCampaign?.participants) && activeCampaign.participants.length) {
             participants = activeCampaign.participants.map((p, i) => ({
               id: p.id || String(i),
@@ -709,7 +705,6 @@
     }
 
     function listenCampaign() {
-      // Single active campaign: status == 'active'
       const q = query(collection(db, 'campaigns'), where('status', '==', 'active'));
       onSnapshot(q, async (snap) => {
         if (snap.empty) {
@@ -719,7 +714,6 @@
           renderEmpty();
           return;
         }
-        // Take the first active (admin should only keep one)
         const d = snap.docs[0];
         const next = { id: d.id, ...d.data() };
         const campaignChanged = !activeCampaign || activeCampaign.id !== next.id;
@@ -785,7 +779,6 @@
         }
       } catch (err) {
         console.warn('checkIfJoined:', err);
-        // Fallback for older orders that may lack campaignId
         try {
           const q2 = query(
             collection(db, 'orders'),
@@ -814,7 +807,6 @@
       }
     }
 
-    // Refresh when user returns after payment (modal / other tab)
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && activeCampaign) {
         checkIfJoined().then(() => {
@@ -824,7 +816,6 @@
       }
     });
 
-    // components.js / payment modal can call this after successful campaign payment
     window.refreshCampaignPage = async () => {
       if (!activeCampaign) return;
       await checkIfJoined();
@@ -854,7 +845,7 @@
     await loadUsdRate();
     listenCampaign();
 
-    console.log('📢 Campaign page loaded');
+    console.log('📢 Campaign page loaded – image now uses cover to remove black bars');
   </script>
 </body>
 </html>
