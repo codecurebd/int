@@ -943,171 +943,259 @@
       margin-bottom: 0.75rem;
     }
 
-    /* ─── CAMPAIGN BANNER (new) ─── */
+    /* ─── CAMPAIGN BANNER (iOS Style, Bright) ─── */
     .campaign-banner {
       display: none;
-      background: linear-gradient(135deg, #1e3a5f 0%, #2d1b69 100%);
-      border-radius: 20px;
-      padding: 2rem 2.5rem;
-      margin: 1.5rem 0 2rem;
+      background: linear-gradient(135deg, #00c6fb 0%, #8b5cf6 60%, #a78bfa 100%);
+      border-radius: 28px;
+      padding: 2.5rem 3rem;
+      margin: 2.5rem 0 3rem;
       color: #fff;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 20px 60px rgba(0, 198, 251, 0.25),
+        0 8px 30px rgba(139, 92, 246, 0.15);
+      backdrop-filter: blur(0);
+      border: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .campaign-banner:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        0 32px 80px rgba(0, 198, 251, 0.3),
+        0 12px 40px rgba(139, 92, 246, 0.2);
     }
     .campaign-banner.show { display: block; }
+
+    /* Orbs (decorative background) */
     .campaign-banner::before {
       content: '';
       position: absolute;
-      top: -50%;
+      top: -40%;
       right: -10%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent 70%);
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 60%);
       border-radius: 50%;
       pointer-events: none;
     }
     .campaign-banner::after {
       content: '';
       position: absolute;
-      bottom: -40%;
+      bottom: -30%;
       left: -5%;
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, rgba(0, 102, 255, 0.15), transparent 70%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 198, 251, 0.25), transparent 60%);
       border-radius: 50%;
       pointer-events: none;
     }
+
+    /* Badge (Limited Offer) */
     .campaign-banner .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 215, 0, 0.2);
-      color: #ffd700;
-      padding: 4px 14px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      padding: 6px 18px;
       border-radius: 40px;
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border: 1px solid rgba(255, 215, 0, 0.15);
-      margin-bottom: 0.75rem;
+      letter-spacing: 0.06em;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 1rem;
     }
-    .campaign-banner .badge i { font-size: 0.6rem; }
+    .campaign-banner .badge i { 
+      font-size: 0.65rem;
+      color: #ffd700;
+    }
+
+    /* Title */
     .campaign-banner .camp-title {
-      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
       font-weight: 800;
       margin: 0 0 0.5rem;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
       position: relative;
       z-index: 1;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
     }
+
+    /* Description */
     .campaign-banner .camp-desc {
-      font-size: 0.95rem;
-      opacity: 0.85;
-      max-width: 80%;
-      line-height: 1.6;
-      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      opacity: 0.9;
+      max-width: 70%;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
       position: relative;
       z-index: 1;
+      font-weight: 400;
     }
+
+    /* Offer box – price + discount */
     .campaign-banner .camp-offer {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 8px 18px;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 10px 22px;
       border-radius: 60px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       position: relative;
       z-index: 1;
       flex-wrap: wrap;
+      margin-bottom: 1.5rem;
     }
     .campaign-banner .camp-offer .price {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: #ffd700;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     }
     .campaign-banner .camp-offer .old {
       text-decoration: line-through;
       opacity: 0.6;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
     .campaign-banner .camp-offer .discount {
-      background: rgba(239, 68, 68, 0.2);
+      background: rgba(255, 59, 48, 0.2);
       color: #ff6b6b;
-      padding: 2px 12px;
+      padding: 3px 14px;
       border-radius: 40px;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid rgba(255, 59, 48, 0.15);
+    }
+    .campaign-banner .camp-offer span:last-child {
+      opacity: 0.8;
+      font-size: 0.85rem;
+    }
+    .campaign-banner .camp-offer span:last-child strong {
+      color: #fff;
       font-weight: 700;
     }
+
+    /* CTA Button – bright gradient */
     .campaign-banner .camp-cta {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #ffd700, #f59e0b);
-      color: #1a1a2e;
-      padding: 12px 28px;
+      gap: 10px;
+      background: linear-gradient(135deg, #ffffff, #f0f4ff);
+      color: #0066FF;
+      padding: 14px 32px;
       border-radius: 60px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 1rem;
       text-decoration: none;
-      transition: 0.25s ease;
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-      margin-top: 1.25rem;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 32px rgba(0, 102, 255, 0.25);
       position: relative;
       z-index: 1;
       border: none;
       cursor: pointer;
     }
     .campaign-banner .camp-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(0, 102, 255, 0.35);
+      background: #ffffff;
     }
-    .campaign-banner .camp-cta i { font-size: 0.85rem; }
+    .campaign-banner .camp-cta i {
+      font-size: 0.9rem;
+      transition: transform 0.3s ease;
+    }
+    .campaign-banner .camp-cta:hover i {
+      transform: translateX(4px);
+    }
 
+    /* Image – right side with subtle shadow */
     .campaign-banner .camp-img {
       position: absolute;
-      right: 1.5rem;
+      right: 2rem;
       top: 50%;
       transform: translateY(-50%);
-      max-height: 140px;
-      max-width: 200px;
-      border-radius: 12px;
-      opacity: 0.8;
+      max-height: 160px;
+      max-width: 220px;
+      border-radius: 16px;
       object-fit: cover;
-      z-index: 0;
+      z-index: 1;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.08);
     }
+
+    /* ─── Responsive ─── */
     @media (max-width: 768px) {
       .campaign-banner {
-        padding: 1.5rem;
-        margin: 1rem 0 1.5rem;
-        border-radius: 16px;
+        padding: 1.8rem 1.5rem;
+        margin: 1.5rem 0 2rem;
+        border-radius: 20px;
       }
-      .campaign-banner .camp-desc { max-width: 100%; font-size: 0.85rem; }
+      .campaign-banner .camp-desc {
+        max-width: 100%;
+        font-size: 0.9rem;
+      }
       .campaign-banner .camp-img {
         position: relative;
         right: auto;
         top: auto;
         transform: none;
-        max-height: 100px;
+        max-height: 120px;
         max-width: 100%;
-        margin: 0.5rem 0 0;
+        margin: 0.75rem 0 0;
         width: 100%;
         object-fit: cover;
+        border-radius: 12px;
       }
-      .campaign-banner .camp-offer { font-size: 0.8rem; padding: 6px 14px; }
-      .campaign-banner .camp-offer .price { font-size: 1.1rem; }
-      .campaign-banner .camp-cta { padding: 10px 20px; font-size: 0.85rem; }
+      .campaign-banner .camp-offer {
+        font-size: 0.85rem;
+        padding: 8px 16px;
+        gap: 10px;
+      }
+      .campaign-banner .camp-offer .price {
+        font-size: 1.25rem;
+      }
+      .campaign-banner .camp-cta {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+      }
     }
     @media (max-width: 480px) {
-      .campaign-banner { padding: 1rem; margin: 0.5rem 0 1rem; }
-      .campaign-banner .camp-title { font-size: 1.1rem; }
-      .campaign-banner .camp-desc { font-size: 0.8rem; }
-      .campaign-banner .camp-offer { font-size: 0.75rem; gap: 8px; }
-      .campaign-banner .camp-cta { padding: 8px 16px; font-size: 0.8rem; }
+      .campaign-banner {
+        padding: 1.25rem 1rem;
+        margin: 1rem 0 1.5rem;
+        border-radius: 16px;
+      }
+      .campaign-banner .camp-title {
+        font-size: 1.2rem;
+      }
+      .campaign-banner .camp-desc {
+        font-size: 0.8rem;
+      }
+      .campaign-banner .camp-offer {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        gap: 6px;
+      }
+      .campaign-banner .camp-offer .price {
+        font-size: 1.1rem;
+      }
+      .campaign-banner .camp-cta {
+        padding: 10px 18px;
+        font-size: 0.8rem;
+      }
+      .campaign-banner .camp-img {
+        max-height: 90px;
+        margin-top: 0.5rem;
+      }
     }
   </style>
 </head>
@@ -1556,7 +1644,7 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
             ${originalPrice > 0 ? `<span class="old">৳${originalPrice.toLocaleString('en-BD')}</span>` : ''}
             <span class="price">৳${campaignPrice.toLocaleString('en-BD')}</span>
             ${discount > 0 ? `<span class="discount">-${discount}% OFF</span>` : ''}
-            <span style="opacity:0.6;font-size:0.8rem;">|</span>
+            <span style="opacity:0.7;">|</span>
             <span style="font-size:0.85rem;">Pay <strong>৳${advance}</strong> advance</span>
           </div>
           <a href="campaign.html" class="camp-cta">
@@ -1566,7 +1654,7 @@ renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
         `;
 
         banner.style.display = 'block';
-        banner.style.animation = 'fadeUp 0.4s ease';
+        banner.style.animation = 'fadeUp 0.5s ease';
       }, (err) => {
         console.warn('Campaign banner error:', err);
         banner.style.display = 'none';
