@@ -43,7 +43,6 @@
             max-width: 1280px;
             margin: 0 auto;
             width: 100%;
-            /* FIX 1: push content down so navbar doesn't overlap */
             padding-top: 72px;
         }
 
@@ -316,15 +315,49 @@
             border-radius: 50%;
             animation: pulse-dot 1.8s ease-in-out infinite;
         }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
+
+        /* --- NEW: CLOSE BUTTON in header --- */
+        .close-chat-btn {
+            display: none;
+            /* hidden by default, shown via JS */
+            margin-left: auto;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+        }
+        .close-chat-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+        }
+        .close-chat-btn:active {
+            transform: scale(0.97);
+        }
+        .close-chat-btn i {
+            font-size: 0.9rem;
+        }
+        .close-chat-btn.show {
+            display: flex;
+            animation: fadeInBtn 0.25s ease;
+        }
+        @keyframes fadeInBtn {
+            from {
+                opacity: 0;
+                transform: translateX(8px);
             }
-            50% {
-                opacity: 0.45;
-                transform: scale(0.85);
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
 
@@ -417,6 +450,7 @@
             overflow: hidden;
             cursor: pointer;
             max-width: 240px;
+            position: relative;
         }
         .chat-main .chat-msg .msg-img-wrap:hover img {
             transform: scale(1.02);
@@ -442,6 +476,13 @@
         }
         .chat-main .chat-msg .msg-img-wrap:hover::after {
             opacity: 1;
+        }
+        .chat-main .chat-msg .msg-img-wrap img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.2s;
         }
 
         .msg-meta {
@@ -507,6 +548,8 @@
             height: 18px;
             border-radius: 50%;
             display: none;
+            align-items: center;
+            justify-content: center;
         }
         .scroll-bottom-btn .new-count.show {
             display: flex;
@@ -586,7 +629,6 @@
             opacity: 1;
         }
 
-        /* FIX 2: file input hidden, only icon shows */
         .chat-input-wrap .file-btn {
             background: none;
             border: none;
@@ -609,15 +651,6 @@
             background: rgba(0, 102, 255, 0.08);
         }
         .chat-input-wrap .file-btn input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-            padding: 0;
-            margin: 0;
-            border: 0;
-            pointer-events: none;
-            /* hide completely */
             display: none;
         }
 
@@ -823,8 +856,60 @@
             justify-content: center;
             transition: 0.2s;
         }
+        .img-lightbox .lb-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
 
-        /* Responsive */
+        /* toast */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: #fff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #0066FF;
+            animation: slideIn 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        .toast.success {
+            border-left-color: #22c55e;
+        }
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+        .toast.hide {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         @media (max-width: 768px) {
             .chat-list {
                 display: none;
@@ -834,6 +919,10 @@
             }
             .page-wrapper {
                 padding-top: 66px;
+            }
+            .close-chat-btn {
+                padding: 6px 14px;
+                font-size: 0.78rem;
             }
         }
         @media (max-width: 480px) {
@@ -876,8 +965,9 @@
                                 <div class="name" id="chatName">Admin Support</div>
                                 <div class="status"><span class="dot"></span> Online · Usually replies fast</div>
                             </div>
-                            <button onclick="closeCurrentChat()" style="margin-left:auto;background:none;border:none;color:#ef4444;font-size:1.4rem;cursor:pointer;">
-                                <i class="fas fa-times"></i>
+                            <!-- NEW CLOSE BUTTON – shown only when a conversation is active -->
+                            <button class="close-chat-btn" id="closeChatBtn">
+                                <i class="fas fa-times"></i> Close
                             </button>
                         </div>
 
@@ -932,7 +1022,7 @@
     <script type="module">
         import {
             auth, db, collection, doc, getDoc, setDoc, addDoc, onSnapshot,
-            query, where, serverTimestamp, signOut, onAuthStateChanged
+            query, where, serverTimestamp, onAuthStateChanged
         } from './firebase-config.js';
         import {
             renderNavbar, renderFooter, updateNavbarAuth, updateCartBadge,
@@ -974,6 +1064,7 @@
         const imgLightbox = document.getElementById('imgLightbox');
         const lbImage = document.getElementById('lbImage');
         const lbClose = document.getElementById('lbClose');
+        const closeChatBtn = document.getElementById('closeChatBtn');
 
         let currentUser = null;
         let currentChatId = null;
@@ -984,6 +1075,23 @@
         let pendingNewCount = 0;
         let lastMsgCount = 0;
 
+        // ---- close button visibility ----
+        function updateCloseButton() {
+            if (currentChatId) {
+                closeChatBtn.classList.add('show');
+            } else {
+                closeChatBtn.classList.remove('show');
+            }
+        }
+
+        // ---- close handler ----
+        function handleCloseChat() {
+            if (!currentChatId) return;
+            closeChat(currentChatId);
+        }
+        closeChatBtn.addEventListener('click', handleCloseChat);
+
+        // ---- auto-resize textarea ----
         function autoResizeTextarea() {
             chatInput.style.height = 'auto';
             chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
@@ -997,6 +1105,7 @@
             }
         });
 
+        // ---- quick replies ----
         document.getElementById('quickReplies').querySelectorAll('button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const text = btn.dataset.text || '';
@@ -1007,9 +1116,8 @@
             });
         });
 
-        // FIX 2: file input hidden — label click triggers the hidden input
-        fileBtn.addEventListener('click', (e) => {
-            // manually trigger the hidden file input
+        // ---- file attachment ----
+        fileBtn.addEventListener('click', () => {
             fileInput.click();
         });
 
@@ -1055,6 +1163,7 @@
             fileBtn.style.color = '';
         }
 
+        // ---- scroll helpers ----
         function isNearBottom(threshold = 80) {
             return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
         }
@@ -1080,6 +1189,7 @@
 
         scrollBottomBtn.addEventListener('click', () => scrollToBottom(true));
 
+        // ---- date helpers ----
         function getDateLabel(date) {
             if (!date || isNaN(date.getTime())) return '';
             const now = new Date();
@@ -1131,6 +1241,7 @@
             return { text: textParts.join('\n'), imageUrl };
         }
 
+        // ---- lightbox ----
         window.openImageLightbox = function(url) {
             if (!url) return;
             lbImage.src = url;
@@ -1150,6 +1261,7 @@
             if (e.key === 'Escape' && imgLightbox.classList.contains('open')) closeLightbox();
         });
 
+        // ---- chat list ----
         function renderChatList() {
             const container = document.getElementById('chatListContent');
             container.innerHTML = '';
@@ -1201,6 +1313,7 @@
             });
         }
 
+        // ---- open / close chat ----
         function openChat(chatId) {
             currentChatId = chatId;
             const chats = JSON.parse(localStorage.getItem(`user_chats_${currentUser.uid}`) || '[]');
@@ -1217,6 +1330,7 @@
                 document.getElementById('chatList').style.display = 'none';
             }
 
+            updateCloseButton();
             loadMessages();
             renderChatList();
         }
@@ -1241,6 +1355,7 @@
                         document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
                         chatMessages.innerHTML = '';
                     }
+                    updateCloseButton();
                 }
                 renderChatList();
             }
@@ -1251,6 +1366,7 @@
             closeChat(currentChatId);
         };
 
+        // ---- load messages ----
         function loadMessages() {
             if (!currentConversationId) return;
             if (unsubMessages) unsubMessages();
@@ -1286,6 +1402,7 @@
             });
         }
 
+        // ---- render messages ----
         function renderMessages(msgs) {
             if (!msgs || msgs.length === 0) {
                 chatMessages.innerHTML = `
@@ -1361,6 +1478,7 @@
             }
         }
 
+        // ---- start new chat ----
         function startNewChat() {
             currentChatId = null;
             currentConversationId = null;
@@ -1368,12 +1486,14 @@
             document.getElementById('chatName').textContent = 'Admin Support';
             document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
             chatMessages.innerHTML = '';
+            updateCloseButton();
 
             if (window.innerWidth <= 768) {
                 document.getElementById('chatList').style.display = 'none';
             }
         }
 
+        // ---- send message ----
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = chatInput.value.trim();
@@ -1405,6 +1525,7 @@
                     });
                     currentConversationId = convDoc.id;
                     currentChatId = convDoc.id;
+                    updateCloseButton();
                 }
 
                 await addDoc(collection(db, 'messages'), {
@@ -1451,6 +1572,7 @@
             }
         });
 
+        // ---- auth state ----
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'index.html';
@@ -1468,6 +1590,9 @@
                 document.getElementById('chatName').textContent = savedChats[0].name;
                 document.getElementById('chatAvatar').innerHTML = `<i class="fas fa-headset"></i>`;
                 loadMessages();
+                updateCloseButton();
+            } else {
+                updateCloseButton();
             }
 
             renderChatList();
@@ -1482,8 +1607,7 @@
             if (unsubMessages) unsubMessages();
         });
 
-        console.log('💬 Messages page loaded — fixes applied: navbar gap + hidden file input');
+        console.log('💬 Messages page updated — close button + Firestore rules verified');
     </script>
-
 </body>
 </html>
