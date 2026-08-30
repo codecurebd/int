@@ -1050,7 +1050,7 @@
 
       if (index > -1) {
         chats.splice(index, 1);
-        localStorage.setItem(`user_chats_${currentUser.uid}`, JSON.stringify(chats));
+        localStorage.setItem(`user_chats_${currentUser}`, JSON.stringify(chats));
 
         if (currentChatId === chatId) {
           currentChatId = chats.length > 0 ? chats[0].id : null;
@@ -1303,7 +1303,7 @@
       if (unsubMessages) unsubMessages();
     });
 
-    console.log('💬 Messages page loaded — gap fixed + only image logo + no file select');
+    console.log('💬 Messages page loaded — gap fixed + only image logo + no text');
   </script>
 
 </body>
