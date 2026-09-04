@@ -19,10 +19,9 @@
     <link rel="stylesheet" href="style.css" />
 
     <style>
-        /* ─────────────────────────────────────────────
+        /* ─────────────────────────────────────────────────────────────
            PROFESSIONAL SUPPORT CHAT — MODERN SAAS STYLE
-           Inspired by Intercom, Gorgias, and Revolut
-           ───────────────────────────────────────────── */
+           ───────────────────────────────────────────────────────────── */
         * { box-sizing: border-box; }
         body {
             background: #f0f4f9;
@@ -32,7 +31,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-        @font-face { font-family: 'Inter'; font-display: swap; }
 
         .page-wrapper {
             display: flex;
@@ -66,7 +64,6 @@
             overflow: hidden;
         }
 
-        /* ─── Messenger Wrapper ─── */
         .messenger-wrap {
             display: flex;
             flex: 1;
@@ -242,6 +239,14 @@
         }
         .conv-item:hover .archive-icon { opacity: 1; }
         .conv-item .archive-icon:hover { color: #ef4444; }
+        .conv-item .restore-icon {
+            color: #22c55e;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .conv-item:hover .restore-icon { opacity: 1; }
+        .conv-item .restore-icon:hover { color: #16a34a; }
 
         /* ─── Chat Area ─── */
         .chat-area {
@@ -325,6 +330,11 @@
             background: rgba(239, 68, 68, 0.08);
             color: #ef4444;
         }
+        .chat-header-actions .unarchive-btn { color: #94a3b8; }
+        .chat-header-actions .unarchive-btn:hover {
+            background: rgba(34, 197, 94, 0.08);
+            color: #22c55e;
+        }
 
         .chat-messages {
             flex: 1;
@@ -405,7 +415,7 @@
             border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            max-width: 220px;
+            max-width: 240px;
             position: relative;
         }
         .msg-bubble .img-wrap:hover img { transform: scale(1.02); }
@@ -787,6 +797,9 @@
                                 <button class="archive-btn" id="archiveBtn" title="Archive conversation">
                                     <i class="fas fa-archive"></i>
                                 </button>
+                                <button class="unarchive-btn" id="unarchiveBtn" title="Restore from archive" style="display:none;">
+                                    <i class="fas fa-undo"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -911,6 +924,7 @@
         const chatName = document.getElementById('chatName');
         const chatAvatar = document.getElementById('chatAvatar');
         const archiveBtn = document.getElementById('archiveBtn');
+        const unarchiveBtn = document.getElementById('unarchiveBtn');
         const newChatBtn = document.getElementById('newChatBtn');
         const filterBtns = document.querySelectorAll('.conv-filter button');
 
@@ -924,8 +938,9 @@
 
         function isImageUrl(str) {
             if (!str) return false;
-            return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(str.trim()) ||
-                str.includes('res.cloudinary.com');
+            const t = String(str).trim();
+            return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(t) ||
+                t.includes('res.cloudinary.com');
         }
 
         function formatTime(timestamp) {
@@ -983,8 +998,8 @@
                 return;
             }
             filtered.sort((a, b) => {
-                const ta = a.lastMessageTime?.toDate?.()?.getTime() || 0;
-                const tb = b.lastMessageTime?.toDate?.()?.getTime() || 0;
+                const ta = a.lastMessageTime?.toDate?.()?.getTime() || a.lastMessageTime || 0;
+                const tb = b.lastMessageTime?.toDate?.()?.getTime() || b.lastMessageTime || 0;
                 return tb - ta;
             });
 
@@ -1008,15 +1023,37 @@
                             <div class="last">${escapeHtml(last)}</div>
                         </div>
                         ${unread > 0 ? `<span class="badge">${unread}</span>` : ''}
+                        ${isArchived ? `<span class="restore-icon" data-id="${conv.id}" title="Restore"><i class="fas fa-undo"></i></span>` : `<span class="archive-icon" data-id="${conv.id}" title="Archive"><i class="fas fa-archive"></i></span>`}
                     </div>
                 `;
             });
             convItems.innerHTML = html;
 
+            // Click on conversation item
             convItems.querySelectorAll('.conv-item').forEach(el => {
-                el.addEventListener('click', () => {
+                el.addEventListener('click', (e) => {
+                    // Ignore clicks on archive/restore icons
+                    if (e.target.closest('.archive-icon') || e.target.closest('.restore-icon')) return;
                     const id = el.dataset.id;
                     if (id) selectConversation(id);
+                });
+            });
+
+            // Archive icon click
+            convItems.querySelectorAll('.archive-icon').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = el.dataset.id;
+                    if (id) toggleArchive(id);
+                });
+            });
+
+            // Restore icon click
+            convItems.querySelectorAll('.restore-icon').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = el.dataset.id;
+                    if (id) toggleArchive(id);
                 });
             });
         }
@@ -1031,7 +1068,9 @@
             currentConvId = convId;
             chatName.textContent = 'Admin Support';
             chatAvatar.innerHTML = `<i class="fas fa-headset"></i>`;
-            archiveBtn.style.display = conv.status === 'active' ? 'inline-flex' : 'none';
+            const isArchived = conv.status === 'archived';
+            archiveBtn.style.display = isArchived ? 'none' : 'inline-flex';
+            unarchiveBtn.style.display = isArchived ? 'inline-flex' : 'none';
             loadMessages(convId);
             if (conv.unreadCount > 0) {
                 updateDoc(doc(db, 'conversations', convId), { unreadCount: 0 });
@@ -1170,7 +1209,10 @@
                 showToast('Please type a message or attach an image.', 'warning');
                 return;
             }
-            if (!currentUser) return;
+            if (!currentUser) {
+                showToast('Please sign in first.', 'warning');
+                return;
+            }
             if (!currentConvId) {
                 const newId = await createConversation();
                 if (!newId) return;
@@ -1196,7 +1238,7 @@
                 });
 
                 await updateDoc(doc(db, 'conversations', currentConvId), {
-                    lastMessage: text || 'Image',
+                    lastMessage: text || '📷 Image',
                     lastMessageTime: serverTimestamp(),
                     unreadCount: 0
                 });
@@ -1230,6 +1272,7 @@
                     unreadCount: 0,
                 });
                 const newId = ref.id;
+                // Add to local state
                 conversations.unshift({
                     id: newId,
                     participants: [currentUser.uid, 'admin'],
@@ -1240,8 +1283,9 @@
                     unreadCount: 0,
                 });
                 currentConvId = newId;
-                selectConversation(newId);
+                // Force re-render
                 renderConvList();
+                selectConversation(newId);
                 showToast('New conversation started', 'success');
                 return newId;
             } catch (err) {
@@ -1254,35 +1298,59 @@
         newChatBtn.addEventListener('click', createConversation);
 
         // ─────────────────────────────────────────────────────────────
-        // ARCHIVE / UNARCHIVE
+        // ARCHIVE / UNARCHIVE (FIXED)
         // ─────────────────────────────────────────────────────────────
         async function toggleArchive(convId) {
+            if (!convId) return;
             const conv = conversations.find(c => c.id === convId);
             if (!conv) return;
+
             const newStatus = conv.status === 'active' ? 'archived' : 'active';
             try {
-                await updateDoc(doc(db, 'conversations', convId), { status: newStatus });
+                await updateDoc(doc(db, 'conversations', convId), {
+                    status: newStatus,
+                    updatedAt: serverTimestamp()
+                });
+                // Update local state
                 conv.status = newStatus;
-                if (newStatus === 'archived' && convId === currentConvId) {
-                    currentConvId = null;
-                    chatMessages.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-archive"></i>
-                            <div class="title">Conversation archived</div>
-                            <div class="desc">You can view it in the archived tab.</div>
-                        </div>`;
-                    chatName.textContent = 'Admin Support';
-                    chatAvatar.innerHTML = `<i class="fas fa-headset"></i>`;
-                    archiveBtn.style.display = 'none';
+
+                // If we archived the currently open conversation
+                if (convId === currentConvId) {
+                    if (newStatus === 'archived') {
+                        // Clear the chat view
+                        currentConvId = null;
+                        chatMessages.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-archive"></i>
+                                <div class="title">Conversation archived</div>
+                                <div class="desc">You can view it in the archived tab.</div>
+                            </div>`;
+                        chatName.textContent = 'Admin Support';
+                        chatAvatar.innerHTML = `<i class="fas fa-headset"></i>`;
+                        archiveBtn.style.display = 'none';
+                        unarchiveBtn.style.display = 'none';
+                        if (unsubMessages) unsubMessages();
+                    } else {
+                        // Restored - show it
+                        selectConversation(convId);
+                    }
                 }
+
+                // Always re-render the list
                 renderConvList();
+
                 showToast(`Conversation ${newStatus === 'archived' ? 'archived' : 'restored'}`, 'success');
             } catch (err) {
+                console.error('Archive toggle error:', err);
                 showToast('Error: ' + err.message, 'error');
             }
         }
 
         archiveBtn.addEventListener('click', () => {
+            if (currentConvId) toggleArchive(currentConvId);
+        });
+
+        unarchiveBtn.addEventListener('click', () => {
             if (currentConvId) toggleArchive(currentConvId);
         });
 
@@ -1399,11 +1467,14 @@
                 where('participants', 'array-contains', currentUser.uid)
             );
             unsubConversations = onSnapshot(q, (snapshot) => {
-                conversations = [];
+                const newConvs = [];
                 snapshot.forEach(doc => {
-                    conversations.push({ id: doc.id, ...doc.data() });
+                    newConvs.push({ id: doc.id, ...doc.data() });
                 });
+                conversations = newConvs;
                 renderConvList();
+
+                // If current conversation no longer exists, clear it
                 if (currentConvId && !conversations.find(c => c.id === currentConvId)) {
                     currentConvId = null;
                     chatMessages.innerHTML = `
@@ -1415,6 +1486,15 @@
                     chatName.textContent = 'Admin Support';
                     chatAvatar.innerHTML = `<i class="fas fa-headset"></i>`;
                     archiveBtn.style.display = 'none';
+                    unarchiveBtn.style.display = 'none';
+                } else if (currentConvId) {
+                    // Update header buttons for current conversation
+                    const conv = conversations.find(c => c.id === currentConvId);
+                    if (conv) {
+                        const isArchived = conv.status === 'archived';
+                        archiveBtn.style.display = isArchived ? 'none' : 'inline-flex';
+                        unarchiveBtn.style.display = isArchived ? 'inline-flex' : 'none';
+                    }
                 }
             }, (err) => {
                 console.error('Conversations error:', err);
@@ -1456,7 +1536,7 @@
             if (unsubConversations) unsubConversations();
         });
 
-        console.log('✅ Support Chat — modern professional design');
+        console.log('✅ Support Chat — archive fixed, image support added');
     </script>
 </body>
 </html>
